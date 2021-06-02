@@ -1,0 +1,38 @@
+<html>
+<body>
+<pre>
+<h1>Build Log</h1>
+<h3>
+--------------------Configuration: MiniSQL - Win32 Debug--------------------
+</h3>
+<h3>Command Lines</h3>
+Creating temporary file "C:\DOCUME~1\sharp\LOCALS~1\Temp\RSP72.tmp" with contents
+[
+/nologo /MTd /W3 /Gm /GX /ZI /Od /D "WIN32" /D "_DEBUG" /D "_CONSOLE" /D "_MBCS" /Fp"Debug/MiniSQL.pch" /YX /Fo"Debug/" /Fd"Debug/" /FD /GZ /c 
+"F:\MiniSQL\Code\API_Module.cpp"
+]
+Creating command line "cl.exe @C:\DOCUME~1\sharp\LOCALS~1\Temp\RSP72.tmp" 
+Creating temporary file "C:\DOCUME~1\sharp\LOCALS~1\Temp\RSP73.tmp" with contents
+[
+/nologo /subsystem:console /incremental:yes /pdb:"Debug/MiniSQL.pdb" /debug /machine:I386 /out:"Debug/MiniSQL.exe" /pdbtype:sept 
+.\Debug\API_Module.obj
+.\Debug\Buffer_Manager.obj
+.\Debug\Catalog_Manager.obj
+.\Debug\Index_Manager.obj
+.\Debug\Interpreter.obj
+.\Debug\MiniSQL.obj
+.\Debug\Record_Manager.obj
+]
+Creating command line "link.exe @C:\DOCUME~1\sharp\LOCALS~1\Temp\RSP73.tmp"
+<h3>Output Window</h3>
+Compiling...
+API_Module.cpp
+Linking...
+
+
+
+<h3>Results</h3>
+MiniSQL.exe - 0 error(s), 0 warning(s)
+</pre>
+</body>
+</html>
