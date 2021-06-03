@@ -12,7 +12,7 @@
 #define ATTR_INFO_LENGTH 20
 #define FILE_HEAD_LENGTH 31
 
-//¶¨Òå±íµÄË÷Òı½ÚµãĞÅÏ¢
+//å®šä¹‰è¡¨çš„ç´¢å¼•èŠ‚ç‚¹ä¿¡æ¯
 struct index_info
 {
 	CString index_name;
@@ -22,7 +22,7 @@ struct index_info
 	CString value;
 };
 
-//¶¨Òådelete Óï¾äµÄÌõ¼şĞÅÏ¢
+//å®šä¹‰delete è¯­å¥çš„æ¡ä»¶ä¿¡æ¯
 struct condition_info
 {
 	char left_type;
@@ -37,7 +37,7 @@ struct condition_info
 	CString condition;
 };	
 
-//¶¨Òåselect Óï¾äÏÔÊ¾¸÷ÊôĞÔĞÅÏ¢
+//å®šä¹‰select è¯­å¥æ˜¾ç¤ºå„å±æ€§ä¿¡æ¯
 struct attr_info
 {
 	CString attr_name;

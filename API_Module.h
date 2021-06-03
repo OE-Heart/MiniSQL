@@ -15,15 +15,15 @@
 #include"MiniSQL.h"
 
 void  API_Module(CString SQL);
-//ÏÔÊ¾°ïÖúĞÅÏ¢
+//æ˜¾ç¤ºå¸®åŠ©ä¿¡æ¯
 void Help();
-//²åÈëË÷Òı½Úµã
+//æ’å…¥ç´¢å¼•èŠ‚ç‚¹
 void Insert_Index(CString DB_Name,CString Table_Name,index_info & index);
-//É¾³ıË÷Òı½Úµã
+//åˆ é™¤ç´¢å¼•èŠ‚ç‚¹
 void Delete_Index(CString DB_Name,CString Table_Name,index_info & index);
-//²éÕÒË÷Òı½Úµã
+//æŸ¥æ‰¾ç´¢å¼•èŠ‚ç‚¹
 void Find_Index(CString DB_Name,CString Table_Name,index_info & index);
-//»ñÈ¡Ìõ¼şµÄË÷ÒıĞÅÏ¢
+//è·å–æ¡ä»¶çš„ç´¢å¼•ä¿¡æ¯
 void Get_Index(CString DB_Name,CString Table_Name,int & start,int & end,int type,index_info & index);
 
 #endif

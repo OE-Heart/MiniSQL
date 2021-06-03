@@ -18,12 +18,12 @@ void API_Module(CString SQL)
 	SQL=SQL.Mid(2,SQL.GetLength()-2);
 
 	/////////////////////////////////////////////////////////////////////////////////////////
-	//´´½¨Êı¾İ¿â
+	//åˆ›å»ºæ•°æ®åº“
 	if(Type=="00")
 		Create_Database(SQL);
 	
 	/////////////////////////////////////////////////////////////////////////////////////////
-	//´´½¨Êı¾İ±í
+	//åˆ›å»ºæ•°æ®è¡¨
 	else if(Type=="01")
 	{
 		if(DB_Name.IsEmpty())
@@ -34,16 +34,16 @@ void API_Module(CString SQL)
 			Table_Name=SQL.Left(index);
 			Attr=SQL.Right(SQL.GetLength()-index-1);
 			Attr_Name.Empty();
-			//´´½¨Êı¾İ±í
+			//åˆ›å»ºæ•°æ®è¡¨
 			Create_Table(Table_Name,Attr,DB_Name,Attr_Name);
-			//ÅĞ¶ÏÊÇ·ñ´´½¨Ö÷¼üË÷Òı
+			//åˆ¤æ–­æ˜¯å¦åˆ›å»ºä¸»é”®ç´¢å¼•
 			if(!Attr_Name.IsEmpty())
 				Create_Index(Table_Name,Table_Name,Attr_Name,DB_Name,length,offset,type);
 		}		
 	}
 
 	/////////////////////////////////////////////////////////////////////////////////////////
-	//´´½¨Ë÷Òı
+	//åˆ›å»ºç´¢å¼•
 	else if(Type=="02")
 	{
 		if(DB_Name.IsEmpty())
@@ -51,28 +51,28 @@ void API_Module(CString SQL)
 		else
 		{
 			index=SQL.Find(' ');
-			//»ñÈ¡Ë÷ÒıÃû
+			//è·å–ç´¢å¼•å
 			Index_Name=SQL.Left(index);
 			index++;
 			end=SQL.Find(' ',index);
-			//»ñÈ¡±íÃû
+			//è·å–è¡¨å
 			Table_Name=SQL.Mid(index,end-index);
-			//»ñÈ¡ÊôĞÔÃû
+			//è·å–å±æ€§å
 			Attr=SQL.Right(SQL.GetLength()-end-1);
 			Create_Index(Index_Name,Table_Name,Attr,DB_Name,length,offset,type);
-			//²åÈëËùÓĞË÷Òı½Úµã
+			//æ’å…¥æ‰€æœ‰ç´¢å¼•èŠ‚ç‚¹
 			if(length!=-1)
 				Insert_Index_All(DB_Name,Table_Name,Index_Name,length,offset,type);			
 		}
 	}
 
 	/////////////////////////////////////////////////////////////////////////////////////////
-	//É¾³ıÊı¾İ¿â
+	//åˆ é™¤æ•°æ®åº“
 	else if(Type=="10")
 	{
 		if(SQL==DB_Name)
 		{
-			//ÊÍ·ÅÊı¾İ¿âµÄÄÚ´æ
+			//é‡Šæ”¾æ•°æ®åº“çš„å†…å­˜
 			Close_Database(DB_Name,false);
 			DB_Name.Empty();
 		}
@@ -80,7 +80,7 @@ void API_Module(CString SQL)
 	}
 
 	/////////////////////////////////////////////////////////////////////////////////////////
-	//É¾³ıÊı¾İ±í
+	//åˆ é™¤æ•°æ®è¡¨
 	else if(Type=="11")
 	{
 		if(DB_Name.IsEmpty())
@@ -88,18 +88,18 @@ void API_Module(CString SQL)
 		else
 		{
 			Table_Name=SQL;
-			//ÊÍ·Å±íµÄÄÚ´æ
+			//é‡Šæ”¾è¡¨çš„å†…å­˜
 			Close_File(DB_Name,Table_Name,0,false);
-			//É¾³ı±íÎÄ¼ş
+			//åˆ é™¤è¡¨æ–‡ä»¶
 			Drop_Table(Table_Name,DB_Name,index_name,count);
-			//ÊÍ·Å±íÖĞËùÓĞË÷ÒıµÄÄÚ´æ
+			//é‡Šæ”¾è¡¨ä¸­æ‰€æœ‰ç´¢å¼•çš„å†…å­˜
 			for(index=0;index<count;index++)
 				Close_File(DB_Name,index_name[index],1,false);
 		}
 	}
 
 	/////////////////////////////////////////////////////////////////////////////////////////
-	//É¾³ıË÷Òı
+	//åˆ é™¤ç´¢å¼•
 	else if(Type=="12")
 	{
 		if(DB_Name.IsEmpty())
@@ -107,32 +107,32 @@ void API_Module(CString SQL)
 		else
 		{
 			Index_Name=SQL;
-			//É¾³ıË÷ÒıµÄÄÚ´æ
+			//åˆ é™¤ç´¢å¼•çš„å†…å­˜
 			Close_File(DB_Name,Index_Name,1,false);
 			Drop_Index(Index_Name,DB_Name);
 		}
 	}
 
 	/////////////////////////////////////////////////////////////////////////////////////////
-	//Ñ¡ÔñÓï¾ä(ÎŞwhere×Ó¾ä)
+	//é€‰æ‹©è¯­å¥(æ— whereå­å¥)
 	else if(Type=="20")
 	{
 		if(DB_Name.IsEmpty())
 			cout<<"error: you have not specified the database to be used!"<<endl;
 		else
 		{
-			//»ñÈ¡Ñ¡ÔñÊôĞÔ×é
+			//è·å–é€‰æ‹©å±æ€§ç»„
 			index=SQL.Find(',');
 			Attr=SQL.Left(index);
 			index++;
-			//»ñÈ¡±íÃû
+			//è·å–è¡¨å
 			Table_Name=SQL.Right(SQL.GetLength()-index);
 			Table_Name=Table_Name.Left(Table_Name.GetLength()-1);
 			if(Table_Name.Find(' ')!=-1)
 				cout<<"error: can not select from more than one table!"<<endl;
 			else
 			{
-				//»ñÈ¡ÏÔÊ¾¼ÇÂ¼¸ñÊ½
+				//è·å–æ˜¾ç¤ºè®°å½•æ ¼å¼
 				if(Attr=="*")
 					Get_Attr_Info_All(DB_Name,Table_Name,print,count);
 				else
@@ -144,10 +144,10 @@ void API_Module(CString SQL)
 	}
 
 	/////////////////////////////////////////////////////////////////////////////////////////
-	//Ñ¡ÔñÓï¾ä(ÓĞwhere×Ó¾ä)
+	//é€‰æ‹©è¯­å¥(æœ‰whereå­å¥)
 	else if(Type=="21")
 	{
 
 
 
-	ºóÃæ³ÌĞòÉ¾³ıÁË¡£
+	åé¢ç¨‹åºåˆ é™¤äº†ã€‚

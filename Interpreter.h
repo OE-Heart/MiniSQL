@@ -12,51 +12,51 @@
 #define _INTERPRETER_H_
 
 #include"MiniSQL.h"
-//»ñÈ¡ÓÃ»§ÊäÈë£¬²¢¶ÔÊäÈë×÷ÓĞĞ§ĞÔ¼ì²é£¬ÈôÕıÈ·£¬·µ»ØÓï¾äµÄÄÚ²¿±íÊ¾ĞÎÊ½
+//è·å–ç”¨æˆ·è¾“å…¥ï¼Œå¹¶å¯¹è¾“å…¥ä½œæœ‰æ•ˆæ€§æ£€æŸ¥ï¼Œè‹¥æ­£ç¡®ï¼Œè¿”å›è¯­å¥çš„å†…éƒ¨è¡¨ç¤ºå½¢å¼
 CString Interpreter(CString statement);
-//¶ÁÈ¡ÓÃ»§ÊäÈë
+//è¯»å–ç”¨æˆ·è¾“å…¥
 CString read_input();
-//ÑéÖ¤createÓï¾äÊÇ·ñÓĞĞ§
+//éªŒè¯createè¯­å¥æ˜¯å¦æœ‰æ•ˆ
 CString create_clause(CString SQL,int start);
-//ÑéÖ¤create databaseÓï¾äÊÇ·ñÓĞĞ§
+//éªŒè¯create databaseè¯­å¥æ˜¯å¦æœ‰æ•ˆ
 CString create_database(CString SQL,int start);
-//ÑéÖ¤create tableÓï¾äÊÇ·ñÓĞĞ§
+//éªŒè¯create tableè¯­å¥æ˜¯å¦æœ‰æ•ˆ
 CString create_table(CString SQL,int start);
-//»ñµÃÊôĞÔ
+//è·å¾—å±æ€§
 CString get_attribute(CString temp,CString sql);
-//ÑéÖ¤create indexÓï¾äÊÇ·ñÓĞĞ§
+//éªŒè¯create indexè¯­å¥æ˜¯å¦æœ‰æ•ˆ
 CString create_index(CString SQL,int start);
-//ÑéÖ¤create index onÓï¾äÊÇ·ñÓĞĞ§
+//éªŒè¯create index onè¯­å¥æ˜¯å¦æœ‰æ•ˆ
 CString create_index_on(CString SQL,int start,CString sql);
-//ÑéÖ¤dropÓï¾äÊÇ·ñÓĞĞ§
+//éªŒè¯dropè¯­å¥æ˜¯å¦æœ‰æ•ˆ
 CString drop_clause(CString SQL,int start);
-//ÑéÖ¤drop databaseÓï¾äÊÇ·ñÓĞĞ§
+//éªŒè¯drop databaseè¯­å¥æ˜¯å¦æœ‰æ•ˆ
 CString drop_database(CString SQL,int start);
-//ÑéÖ¤drop tableÓï¾äÊÇ·ñÓĞĞ§
+//éªŒè¯drop tableè¯­å¥æ˜¯å¦æœ‰æ•ˆ
 CString drop_table(CString SQl,int start);
-//ÑéÖ¤drop indexÓï¾äÊÇ·ñÓĞĞ§
+//éªŒè¯drop indexè¯­å¥æ˜¯å¦æœ‰æ•ˆ
 CString drop_index(CString SQL,int start);
-//ÑéÖ¤select Óï¾äÊÇ·ñÓĞĞ§
+//éªŒè¯select è¯­å¥æ˜¯å¦æœ‰æ•ˆ
 CString select_clause(CString SQL,int start);
-//»ñµÃÊôĞÔ×é»òÎÄ¼ş×éµÄÃ¿Ò»Ïî
+//è·å¾—å±æ€§ç»„æˆ–æ–‡ä»¶ç»„çš„æ¯ä¸€é¡¹
 CString get_part(CString temp,CString sql,CString kind);
-//ÑéÖ¤insert Óï¾äÊÇ·ñÓĞĞ§
+//éªŒè¯insert è¯­å¥æ˜¯å¦æœ‰æ•ˆ
 CString insert_clause(CString SQL,int start);
-//ÑéÖ¤insert into valuesÓï¾äÊÇ·ñÓĞĞ§
+//éªŒè¯insert into valuesè¯­å¥æ˜¯å¦æœ‰æ•ˆ
 CString insert_into_values(CString SQL,int start,CString sql);
-//ÑéÖ¤deleteÓï¾äÊÇ·ñÓĞĞ§
+//éªŒè¯deleteè¯­å¥æ˜¯å¦æœ‰æ•ˆ
 CString delete_clause(CString SQL,int start);
-//ÑéÖ¤ delete from where Óï¾äÊÇ·ñÓĞĞ§
+//éªŒè¯ delete from where è¯­å¥æ˜¯å¦æœ‰æ•ˆ
 CString delete_from_where(CString SQL,int start,CString sql);
-//½«±í´ïÊ½×ª»¯ÎªÄÚ²¿ĞÎÊ½
+//å°†è¡¨è¾¾å¼è½¬åŒ–ä¸ºå†…éƒ¨å½¢å¼
 CString get_expression(CString temp,CString sql);
-//»ñÈ¡±í´ïÊ½×éµÄÃ¿¸ö±í´ïÊ½
+//è·å–è¡¨è¾¾å¼ç»„çš„æ¯ä¸ªè¡¨è¾¾å¼
 CString get_each(CString T,CString sql,CString condition);
-//ÑéÖ¤useÓï¾äÊÇ·ñÓĞĞ§
+//éªŒè¯useè¯­å¥æ˜¯å¦æœ‰æ•ˆ
 CString use_clause(CString SQL,int start);
-//ÑéÖ¤execfileÓï¾äÊÇ·ñÓĞĞ§
+//éªŒè¯execfileè¯­å¥æ˜¯å¦æœ‰æ•ˆ
 CString execfile_clause(CString SQL,int start);
-//ÑéÖ¤quitÓï¾äÊÇ·ñÓĞĞ§
+//éªŒè¯quitè¯­å¥æ˜¯å¦æœ‰æ•ˆ
 CString quit_clause(CString SQL,int start);
 
 #endif

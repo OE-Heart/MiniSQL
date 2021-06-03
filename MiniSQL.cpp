@@ -6,10 +6,10 @@
 void main()
 {
 	CString SQL;
-	//打印软件信息
+	//鎵撳嵃杞欢淇℃伅
 	cout<<endl;
 	cout<<"\t\t***********************************************"<<endl;
-	cout<<"\t\t             欢迎使用 MiniSQL !"<<endl;
+	cout<<"\t\t             娆㈣繋浣跨敤 MiniSQL !"<<endl;
 	cout<<"\t\t               Version (1.0)  "<<endl;
 	cout<<"\t\t            "<<endl;      
 	cout<<"\t\t        copyright(2021) all right reserved !"<<endl;

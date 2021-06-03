@@ -10,7 +10,7 @@
 #include"Interpreter.h"
 
 /////////////////////////////////////////////////////////////////////////////////////////////
-//¶ÁÈ¡ÓÃ»§ÊäÈë
+//è¯»å–ç”¨æˆ·è¾“å…¥
 CString read_input()
 {
 	CString SQL;
@@ -29,26 +29,26 @@ CString read_input()
 			finish=true;
 		}
 	}
-	//½«ÊäÈë´óĞ´×ª»¯ÎªĞ¡Ğ´
+	//å°†è¾“å…¥å¤§å†™è½¬åŒ–ä¸ºå°å†™
 	SQL.MakeLower();
-	//·µ»ØÓÃ»§ÊäÈë
+	//è¿”å›ç”¨æˆ·è¾“å…¥
 	return SQL;
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////////
-//ÑéÖ¤create databaseÓï¾äÊÇ·ñÓĞĞ§
+//éªŒè¯create databaseè¯­å¥æ˜¯å¦æœ‰æ•ˆ
 CString create_database(CString SQL,int start)
 {
 	CString temp;
 	int index,end;
-	//»ñÈ¡µÚÈı¸öµ¥´Ê
+	//è·å–ç¬¬ä¸‰ä¸ªå•è¯
 	while(SQL.GetAt(start)==' ')
 		start++;
 	index=start;
 	end=SQL.Find(' ',start);
 	temp=SQL.Mid(start,end-start);
 	start=end+1;
-	//ÈôÎŞ£¬´òÓ¡³ö´íĞÅÏ¢
+	//è‹¥æ— ï¼Œæ‰“å°å‡ºé”™ä¿¡æ¯
 	if(temp.IsEmpty())
 	{
 		cout<<"error: database name has not been specified!"<<endl;
@@ -58,13 +58,13 @@ CString create_database(CString SQL,int start)
 	{	
 		while(SQL.GetAt(start)==' ')
 			start++;
-		//ÈôÎª·Ç·¨ĞÅÏ¢£¬´òÓ¡³ö´íĞÅÏ¢
+		//è‹¥ä¸ºéæ³•ä¿¡æ¯ï¼Œæ‰“å°å‡ºé”™ä¿¡æ¯
 		if(SQL.GetAt(start)!=';'||start!=SQL.GetLength()-1)
 		{
 			cout<<"error12:"<<SQL.Mid(index,SQL.GetLength()-index-2)<<"---is not a valid database name!"<<endl;
 			SQL="99";
 		}
-		//·µ»Ødrop databaseÓï¾äµÄÄÚ²¿ĞÎÊ½
+		//è¿”å›drop databaseè¯­å¥çš„å†…éƒ¨å½¢å¼
 		else
 			SQL="00"+temp;
 	}
@@ -72,50 +72,50 @@ CString create_database(CString SQL,int start)
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////////
-//»ñµÃÊôĞÔ
+//è·å¾—å±æ€§
 CString get_attribute(CString temp,CString sql)
 {
 	int start=0,end,index;
 	CString T,C;
 	temp+=" ";
-	//»ñµÃÊôĞÔÃû
+	//è·å¾—å±æ€§å
 	end=temp.Find(' ',start);
 	T=temp.Mid(start,end-start);
 	start=end+1;
 	sql+=T+" ";
-	//»ñµÃÊı¾İÀàĞÍ
+	//è·å¾—æ•°æ®ç±»å‹
 	while(temp.GetAt(start)==' ')
 		start++;
 	end=temp.Find(' ',start);
 	T=temp.Mid(start,end-start);
 	start=end+1;
-	//ÈôÎŞ£¬´òÓ¡³ö´íĞÅÏ¢
+	//è‹¥æ— ï¼Œæ‰“å°å‡ºé”™ä¿¡æ¯
 	if(T.IsEmpty())
 	{
 		cout<<"error : error in create table statement!"<<endl;
 		sql="99";
 		return sql;
 	}
-	//ÈôÎªint 
+	//è‹¥ä¸ºint 
 	else if(T=="int")
 		sql+="+";
-	//ÈôÎªfloat
+	//è‹¥ä¸ºfloat
 	else if(T=="float")
 		sql+="-";
-	//ÆäËû
+	//å…¶ä»–
 	else
 	{
 		index=T.Find('(');
 		C=T.Left(index);
 		index++;
-		//ÈôÓĞÎó£¬´òÓ¡³ö´íĞÅÏ¢
+		//è‹¥æœ‰è¯¯ï¼Œæ‰“å°å‡ºé”™ä¿¡æ¯
 		if(C.IsEmpty())
 		{
 			cout<<"error: "<<T<<"---is not a valid data type definition!"<<endl;
 			sql="99";
 			return sql;
 		}
-		//ÈôÎªchar
+		//è‹¥ä¸ºchar
 		else if(C=="char")
 		{
 			C=T.Mid(index,T.GetLength()-index-1);
@@ -128,7 +128,7 @@ CString get_attribute(CString temp,CString sql)
 			else
 				sql+=C;
 		}
-		//ÈôÎª·Ç·¨ĞÅÏ¢£¬´òÓ¡³ö´íĞÅÏ¢
+		//è‹¥ä¸ºéæ³•ä¿¡æ¯ï¼Œæ‰“å°å‡ºé”™ä¿¡æ¯
 		else
 		{
 			cout<<"error: "<<C<<"---is not a valid key word!"<<endl;
@@ -136,19 +136,19 @@ CString get_attribute(CString temp,CString sql)
 			return sql;
 		}
 	}
-	//ÊÇ·ñÓĞ¸½¼ÓĞÅÏ¢
+	//æ˜¯å¦æœ‰é™„åŠ ä¿¡æ¯
 	while(start<temp.GetLength()&&temp.GetAt(start)==' ')
 		start++;
 	if(start<temp.GetLength())
 	{
-		//ÈôÎªunique¶¨Òå£¬±£´æĞÅÏ¢
+		//è‹¥ä¸ºuniqueå®šä¹‰ï¼Œä¿å­˜ä¿¡æ¯
 		end=temp.Find(' ',start);
 		T=temp.Mid(start,end-start);
 		if(T=="unique")
 		{
 			sql+=" 1,";
 		}
-		//ÈôÎª·Ç·¨ĞÅÏ¢£¬´òÓ¡³ö´íĞÅÏ¢
+		//è‹¥ä¸ºéæ³•ä¿¡æ¯ï¼Œæ‰“å°å‡ºé”™ä¿¡æ¯
 		else
 		{
 			cout<<"error: "<<temp<<"---is not a valid key word!"<<endl;
@@ -156,19 +156,19 @@ CString get_attribute(CString temp,CString sql)
 			return sql;
 		}
 	}
-	//ÈôÎŞ¸½¼ÓĞÅÏ¢
+	//è‹¥æ— é™„åŠ ä¿¡æ¯
 	else
 		sql+=" 0,";
 	return sql;
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////////
-//ÑéÖ¤create tableÓï¾äÊÇ·ñÓĞĞ§
+//éªŒè¯create tableè¯­å¥æ˜¯å¦æœ‰æ•ˆ
 CString create_table(CString SQL,int start)
 {
 	CString temp,sql,T;
 	int index,end,length;
-	//»ñÈ¡±íÃû
+	//è·å–è¡¨å
 	while(SQL.GetAt(start)==' ')
 		start++;
 	index=start;
@@ -189,14 +189,14 @@ CString create_table(CString SQL,int start)
 			length--;
 		temp=temp.Left(length+1);
 	}
-	//ÈôÎŞ£¬´òÓ¡³ö´íĞÅÏ¢
+	//è‹¥æ— ï¼Œæ‰“å°å‡ºé”™ä¿¡æ¯
 	if(temp.IsEmpty())
 	{
 		cout<<"error: error in create table statement!"<<endl;
 		SQL="99";
 		return SQL;
 	}
-	//ÈôÎª·Ç·¨ĞÅÏ¢£¬´òÓ¡³ö´íĞÅÏ¢
+	//è‹¥ä¸ºéæ³•ä¿¡æ¯ï¼Œæ‰“å°å‡ºé”™ä¿¡æ¯
 	else if(temp.Find(' ')!=-1)
 	{
 		cout<<"error: "<<temp<<"---is not a valid table name!"<<endl;
@@ -206,19 +206,19 @@ CString create_table(CString SQL,int start)
 	else 
 	{
 		sql=temp+",";
-		//»ñÈ¡Ã¿¸öÊôĞÔ
+		//è·å–æ¯ä¸ªå±æ€§
 		while((end=SQL.Find(',',start))!=-1)
 		{
 			temp=SQL.Mid(start,end-start);
 			start=end+1;
-			//ÈôÓĞ¿ÕÊôĞÔ£¬´òÓ¡³ö´íĞÅÏ¢
+			//è‹¥æœ‰ç©ºå±æ€§ï¼Œæ‰“å°å‡ºé”™ä¿¡æ¯
 			if(temp.IsEmpty())
 			{
 				cout<<"error: error in create table statement!"<<endl;
 				SQL="99";
 				return SQL;
 			}
-			//±£´æÊôĞÔ
+			//ä¿å­˜å±æ€§
 			else
 			{
 				sql=get_attribute(temp,sql);
@@ -228,29 +228,29 @@ CString create_table(CString SQL,int start)
 			while(SQL.GetAt(start)==' ')
 				start++;
 		}
-		//»ñµÃ×îºóÊôĞÔ
+		//è·å¾—æœ€åå±æ€§
 		temp=SQL.Mid(start,SQL.GetLength()-start-1);
 		length=temp.GetLength()-1;
 		while(temp.GetAt(length)!=')'&&length>=0)
 			length--;
-		//ÈôÎŞ£¬´òÓ¡³ö´íĞÅÏ¢
+		//è‹¥æ— ï¼Œæ‰“å°å‡ºé”™ä¿¡æ¯
 		if(length<1)
 		{
 			cout<<"error: error in create table statement!"<<endl;
 			SQL="99";
 			return SQL;
 		}
-		//´æ´¢ÊôĞÔ
+		//å­˜å‚¨å±æ€§
 		else
 		{
 			temp=temp.Left(length);
 			end=SQL.Find(' ',start);
 			T=SQL.Mid(start,end-start);
 			start=end+1;
-			//ÈôÎªÖ÷¼ü¶¨Òå
+			//è‹¥ä¸ºä¸»é”®å®šä¹‰
 			if(T=="primary")
 			{
-				//ÅĞ¶ÏÊÇ·ñÓĞ¹Ø¼ü×Ökey
+				//åˆ¤æ–­æ˜¯å¦æœ‰å…³é”®å­—key
 				temp+=")";
 				while(SQL.GetAt(start)==' ')
 					start++;
@@ -261,7 +261,7 @@ CString create_table(CString SQL,int start)
 				while(T.GetAt(length)==' ')
 					length--;
 				T=T.Left(length+1);
-				//ÈôÎª¿Õ£¬´òÓ¡³ö´íĞÅÏ¢
+				//è‹¥ä¸ºç©ºï¼Œæ‰“å°å‡ºé”™ä¿¡æ¯
 				if(T.IsEmpty())
 				{
 					cout<<"syntax error: syntax error in create table statement!"<<endl;
@@ -269,10 +269,10 @@ CString create_table(CString SQL,int start)
 					SQL="99";
 					return SQL;
 				}
-				//ÈôÓĞ£¬¼ÌĞøÑéÖ¤
+				//è‹¥æœ‰ï¼Œç»§ç»­éªŒè¯
 				else if(T=="key")
 				{
-					//»ñÈ¡Ö÷¼üÊôĞÔÃû
+					//è·å–ä¸»é”®å±æ€§å
 					while(SQL.GetAt(start)==' ')
 						start++;
 					end=SQL.Find(')',start);
@@ -281,28 +281,28 @@ CString create_table(CString SQL,int start)
 					while(T.GetAt(length)==' ')
 						length--;
 					T=T.Left(length+1);
-					//ÈôÎŞ£¬´òÓ¡³ö´íĞÅÏ¢
+					//è‹¥æ— ï¼Œæ‰“å°å‡ºé”™ä¿¡æ¯
 					if(T.IsEmpty())
 					{
 						cout<<"error : missing primary key attribute name!"<<endl;
 						SQL="99";
 						return SQL;
 					}
-					//ÈôÎª·Ç·¨ĞÅÏ¢£¬´òÓ¡³ö´íĞÅÏ¢
+					//è‹¥ä¸ºéæ³•ä¿¡æ¯ï¼Œæ‰“å°å‡ºé”™ä¿¡æ¯
 					else if(T.Find(' ')!=-1)
 					{
 						cout<<"error : "<<T<<"---is not a valid primary key attribute name!"<<endl;
 						SQL="99";
 						return SQL;
 					}
-					//±£´æÖ÷¼ü
+					//ä¿å­˜ä¸»é”®
 					else
 					{
 						sql+=T+" #,";
 						SQL="01"+sql;
 					}
 				}
-				//ÈôÎª·Ç·¨ĞÅÏ¢£¬´òÓ¡³ö´íĞÅÏ¢
+				//è‹¥ä¸ºéæ³•ä¿¡æ¯ï¼Œæ‰“å°å‡ºé”™ä¿¡æ¯
 				else
 				{
 					cout<<"error : "<<T<<"---is not a valid key word!"<<endl;
@@ -310,7 +310,7 @@ CString create_table(CString SQL,int start)
 					return SQL;
 				}				
 			}
-			//ÈôÎªÒ»°ãÊôĞÔ
+			//è‹¥ä¸ºä¸€èˆ¬å±æ€§
 			else
 			{
 				sql=get_attribute(temp,sql);
@@ -328,18 +328,18 @@ CString create_table(CString SQL,int start)
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////////
-//ÑéÖ¤create index onÓï¾äÊÇ·ñÓĞĞ§
+//éªŒè¯create index onè¯­å¥æ˜¯å¦æœ‰æ•ˆ
 CString create_index_on(CString SQL,int start,CString sql)
 {
 	CString temp;
 	int end,length;
-	//»ñÈ¡±íÃû
+	//è·å–è¡¨å
 	while(SQL.GetAt(start)==' ')
 		start++;
 	end=SQL.Find('(',start);
 	temp=SQL.Mid(start,end-start);
 	start=end+1;
-	//ÈôÎŞ£¬´òÓ¡³ö´íĞÅÏ¢
+	//è‹¥æ— ï¼Œæ‰“å°å‡ºé”™ä¿¡æ¯
 	if(temp.IsEmpty())
 	{
 		cout<<"syntax error: syntax error for create index statement!"<<endl;
@@ -349,22 +349,22 @@ CString create_index_on(CString SQL,int start,CString sql)
 	}
 	else
 	{
-		//¼ìÑéÊÇ·ñÎªÓĞĞ§ÎÄ¼şÃû
+		//æ£€éªŒæ˜¯å¦ä¸ºæœ‰æ•ˆæ–‡ä»¶å
 		length=temp.GetLength()-1;
 		while(temp.GetAt(length)==' ')
 			length--;
 		temp=temp.Left(length+1);
-		//ÓĞĞ§
+		//æœ‰æ•ˆ
 		if(temp.Find(' ')==-1)
 		{
 			sql+=" "+temp;
-			//»ñÈ¡ÊôĞÔÃû
+			//è·å–å±æ€§å
 			while(SQL.GetAt(start)==' ')
 				start++;
 			end=SQL.Find(')',start);
 			temp=SQL.Mid(start,end-start);
 			start=end+1;
-			//ÈôÎŞ£¬´òÓ¡³ö´íĞÅÏ¢
+			//è‹¥æ— ï¼Œæ‰“å°å‡ºé”™ä¿¡æ¯
 			if(temp.IsEmpty())
 			{
 				cout<<"syntax error: syntax error for create index statement!"<<endl;
@@ -374,12 +374,12 @@ CString create_index_on(CString SQL,int start,CString sql)
 			}
 			else
 			{
-				//¼ìÑéÊÇ·ñÎªÓĞĞ§ÊôĞÔÃû
+				//æ£€éªŒæ˜¯å¦ä¸ºæœ‰æ•ˆå±æ€§å
 				length=temp.GetLength()-1;
 				while(temp.GetAt(length)==' ')
 					length--;
 				temp=temp.Left(length+1);
-				//ÓĞĞ§
+				//æœ‰æ•ˆ
 				if(temp.Find(' ')==-1)
 				{
 					sql+=" "+temp;
@@ -391,11 +391,11 @@ CString create_index_on(CString SQL,int start,CString sql)
 						SQL="99";
 						return SQL;
 					}
-					//·µ»Øcreate indexÓï¾äµÄÄÚ²¿ĞÎÊ½
+					//è¿”å›create indexè¯­å¥çš„å†…éƒ¨å½¢å¼
 					else
 						SQL="02"+sql;
 				}
-				//ÎŞĞ§,´òÓ¡³ö´íĞÅÏ¢
+				//æ— æ•ˆ,æ‰“å°å‡ºé”™ä¿¡æ¯
 				else
 				{
 					cout<<"error:"<<" "<<temp<<"---is not a valid attribute name!"<<endl;
@@ -404,7 +404,7 @@ CString create_index_on(CString SQL,int start,CString sql)
 				}
 			}
 		}
-		//ÎŞĞ§,´òÓ¡³ö´íĞÅÏ¢
+		//æ— æ•ˆ,æ‰“å°å‡ºé”™ä¿¡æ¯
 		else
 		{
 			cout<<"error:"<<" "<<temp<<"---is not a valid table name!"<<endl;
@@ -416,18 +416,18 @@ CString create_index_on(CString SQL,int start,CString sql)
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////////
-//ÑéÖ¤create indexÓï¾äÊÇ·ñÓĞĞ§
+//éªŒè¯create indexè¯­å¥æ˜¯å¦æœ‰æ•ˆ
 CString create_index(CString SQL,int start)
 {
 	CString temp,sql;
 	int end;
-	//»ñÈ¡µÚÈı¸öµ¥´Ê
+	//è·å–ç¬¬ä¸‰ä¸ªå•è¯
 	while(SQL.GetAt(start)==' ')
 		start++;
 	end=SQL.Find(' ',start);
 	temp=SQL.Mid(start,end-start);
 	start=end+1;
-	//ÈôÎŞ£¬´òÓ¡³ö´íĞÅÏ¢
+	//è‹¥æ— ï¼Œæ‰“å°å‡ºé”™ä¿¡æ¯
 	if(temp.IsEmpty())
 	{
 		cout<<"syntax error: syntax error for create index statement!"<<endl;
@@ -436,22 +436,22 @@ CString create_index(CString SQL,int start)
 	else
 	{
 		sql=temp;
-		//»ñÈ¡µÚËÄ¸öµ¥´Ê
+		//è·å–ç¬¬å››ä¸ªå•è¯
 		while(SQL.GetAt(start)==' ')
 			start++;
 		end=SQL.Find(' ',start);
 		temp=SQL.Mid(start,end-start);
 		start=end+1;
-		//ÈôÎŞ£¬´òÓ¡³ö´íĞÅÏ¢
+		//è‹¥æ— ï¼Œæ‰“å°å‡ºé”™ä¿¡æ¯
 		if(temp.IsEmpty())
 		{
 			cout<<"syntax error: syntax error for create index statement!"<<endl;
 			SQL="99";
 		}
-		//ÈôÎªon,¼ÌĞøÑéÖ¤
+		//è‹¥ä¸ºon,ç»§ç»­éªŒè¯
 		else if(temp=="on")
 			SQL=create_index_on(SQL,start,sql);
-		//ÈôÎª·Ç·¨ĞÅÏ¢£¬´òÓ¡·Ç·¨ĞÅÏ¢
+		//è‹¥ä¸ºéæ³•ä¿¡æ¯ï¼Œæ‰“å°éæ³•ä¿¡æ¯
 		else
 		{
 			cout<<"syntax error:"<<" "<<temp<<"---is not a valid key word!"<<endl;
@@ -462,56 +462,56 @@ CString create_index(CString SQL,int start)
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////////
-//ÑéÖ¤createÓï¾äÊÇ·ñÓĞĞ§
+//éªŒè¯createè¯­å¥æ˜¯å¦æœ‰æ•ˆ
 CString create_clause(CString SQL,int start)
 {
 	CString temp;
 	int end;
-	//»ñÈ¡µÚ¶ş¸öµ¥´Ê
+	//è·å–ç¬¬äºŒä¸ªå•è¯
 	while(SQL.GetAt(start)==' ')
 		start++;
 	end=SQL.Find(' ',start);
 	temp=SQL.Mid(start,end-start);
 	start=end+1;
-	//ÈôÎŞ£¬´òÓ¡³ö´íĞÅÏ¢
+	//è‹¥æ— ï¼Œæ‰“å°å‡ºé”™ä¿¡æ¯
 	if(temp.IsEmpty())
 	{
 		cout<<"syntax error: syntax error for create statement!"<<endl;
 		SQL="99";
 	}
-	//ÈôÎªdatabase,¼ÌĞøÑéÖ¤
+	//è‹¥ä¸ºdatabase,ç»§ç»­éªŒè¯
 	else if(temp=="database")
 		SQL=create_database(SQL,start);
-	//ÈôÎªtable,¼ÌĞøÑéÖ¤
+	//è‹¥ä¸ºtable,ç»§ç»­éªŒè¯
 	else if(temp=="table")
 		SQL=create_table(SQL,start);
-	//ÈôÎªindex,¼ÌĞøÑéÖ¤
+	//è‹¥ä¸ºindex,ç»§ç»­éªŒè¯
 	else if(temp=="index")
 		SQL=create_index(SQL,start);
-	//ÈôÎª´íÎóĞÅÏ¢£¬´òÓ¡³ö´íĞÅÏ¢
+	//è‹¥ä¸ºé”™è¯¯ä¿¡æ¯ï¼Œæ‰“å°å‡ºé”™ä¿¡æ¯
 	else
 	{
 		cout<<"syntax error:"<<" "<<temp<<"---is not a valid key word!"<<endl;
 		SQL="99";
 	}
-	//·µ»ØcreateÓï¾äµÄÄÚ²¿ĞÎÊ½
+	//è¿”å›createè¯­å¥çš„å†…éƒ¨å½¢å¼
 	return SQL;
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////////
-//ÑéÖ¤drop databaseÓï¾äÊÇ·ñÓĞĞ§
+//éªŒè¯drop databaseè¯­å¥æ˜¯å¦æœ‰æ•ˆ
 CString drop_database(CString SQL,int start)
 {
 	CString temp;
 	int index,end;
-	//»ñÈ¡µÚÈı¸öµ¥´Ê
+	//è·å–ç¬¬ä¸‰ä¸ªå•è¯
 	while(SQL.GetAt(start)==' ')
 		start++;
 	index=start;
 	end=SQL.Find(' ',start);
 	temp=SQL.Mid(start,end-start);
 	start=end+1;
-	//ÈôÎŞ£¬´òÓ¡³ö´íĞÅÏ¢
+	//è‹¥æ— ï¼Œæ‰“å°å‡ºé”™ä¿¡æ¯
 	if(temp.IsEmpty())
 	{
 		cout<<"error: database name has not been specified!"<<endl;
@@ -521,13 +521,13 @@ CString drop_database(CString SQL,int start)
 	{
 		while(SQL.GetAt(start)==' ')
 			start++;
-		//ÈôÎª·Ç·¨ĞÅÏ¢£¬´òÓ¡³ö´íĞÅÏ¢
+		//è‹¥ä¸ºéæ³•ä¿¡æ¯ï¼Œæ‰“å°å‡ºé”™ä¿¡æ¯
 		if(SQL.GetAt(start)!=';'||start!=SQL.GetLength()-1)
 		{
 			cout<<"error:"<<SQL.Mid(index,SQL.GetLength()-index-2)<<"---is not a valid database name!"<<endl;
 			SQL="99";
 		}
-		//·µ»Ødrop databaseÓï¾äµÄÄÚ²¿ĞÎÊ½
+		//è¿”å›drop databaseè¯­å¥çš„å†…éƒ¨å½¢å¼
 		else
 			SQL="10"+temp;
 	}
@@ -535,49 +535,49 @@ CString drop_database(CString SQL,int start)
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////////
-//ÑéÖ¤drop tableÓï¾äÊÇ·ñÓĞĞ§
+//éªŒè¯drop tableè¯­å¥æ˜¯å¦æœ‰æ•ˆ
 CString drop_table(CString SQL,int start)
 {
 	CString temp;
 	int index,end;
-	//»ñÈ¡µÚÈı¸öµ¥´Ê
+	//è·å–ç¬¬ä¸‰ä¸ªå•è¯
 	while(SQL.GetAt(start)==' ')
 		start++;
 	index=start;
 	end=SQL.Find(' ',start);
 	temp=SQL.Mid(start,end-start);
 	start=end+1;
-	//ÈôÎŞ£¬´òÓ¡³ö´íĞÅÏ¢
+	//è‹¥æ— ï¼Œæ‰“å°å‡ºé”™ä¿¡æ¯
 	
 
 
-¡­//ÕâÀïÉ¾È¥Ò»¶Î³ÌĞò
+â€¦//è¿™é‡Œåˆ å»ä¸€æ®µç¨‹åº
 	
   return SQL;
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////////
-//ÑéÖ¤drop indexÓï¾äÊÇ·ñÓĞĞ§
+//éªŒè¯drop indexè¯­å¥æ˜¯å¦æœ‰æ•ˆ
 CString drop_index(CString SQL,int start)
 {
 	CString temp;
 	int index,end;
-	//»ñÈ¡µÚÈı¸öµ¥´Ê
+	//è·å–ç¬¬ä¸‰ä¸ªå•è¯
 	while(SQL.GetAt(start)==' ')
 		start++;
 	index=start;
 	end=SQL.Find(' ',start);
 	temp=SQL.Mid(start,end-start);
 	start=end+1;
-	//ÈôÎŞ£¬´òÓ¡³ö´íĞÅÏ¢
+	//è‹¥æ— ï¼Œæ‰“å°å‡ºé”™ä¿¡æ¯
 	
 
 
-¡­
-ÕâÀïÉ¾È¥ÁË¼¸Ê®¸öº¯Êı£¡£¡£¡
-¡£¡£¡£
+â€¦
+è¿™é‡Œåˆ å»äº†å‡ åä¸ªå‡½æ•°ï¼ï¼ï¼
+ã€‚ã€‚ã€‚
 /////////////////////////////////////////////////////////////////////////////////////////////
-//»ñÈ¡ÓÃ»§ÊäÈë£¬²¢¶ÔÊäÈë×÷ÓĞĞ§ĞÔ¼ì²é£¬ÈôÕıÈ·£¬·µ»ØÓï¾äµÄÄÚ²¿±íÊ¾ĞÎÊ½
+//è·å–ç”¨æˆ·è¾“å…¥ï¼Œå¹¶å¯¹è¾“å…¥ä½œæœ‰æ•ˆæ€§æ£€æŸ¥ï¼Œè‹¥æ­£ç¡®ï¼Œè¿”å›è¯­å¥çš„å†…éƒ¨è¡¨ç¤ºå½¢å¼
 CString Interpreter(CString statement)
 {
 	CString SQL;
@@ -585,55 +585,55 @@ CString Interpreter(CString statement)
 	CString sql;
 	int start=0,end;
 	if(statement.IsEmpty())
-		//»ñÈ¡ÓÃ»§ÊäÈë
+		//è·å–ç”¨æˆ·è¾“å…¥
 		SQL=read_input();
 	else
 		SQL=statement;
-	//»ñÈ¡ÊäÈëµÄµÚÒ»¸öµ¥´Ê
+	//è·å–è¾“å…¥çš„ç¬¬ä¸€ä¸ªå•è¯
 	while(SQL.GetAt(start)==' ')
 		start++;
 	end=SQL.Find(' ',start);
 	temp=SQL.Mid(start,end-start);
 	start=end+1;
-	//ÈôÎŞÊäÈë£¬´òÓ¡³ö´íĞÅÏ¢
+	//è‹¥æ— è¾“å…¥ï¼Œæ‰“å°å‡ºé”™ä¿¡æ¯
 	if(temp.IsEmpty())
 	{
 		cout<<"syntax error: empty statement!"<<endl;
 		SQL="99";
 	}
-	//ÈôÎªcreateÓï¾ä
+	//è‹¥ä¸ºcreateè¯­å¥
 	else if(temp=="create")
 		SQL=create_clause(SQL,start);
-	//ÈôÎªdropÓï¾ä
+	//è‹¥ä¸ºdropè¯­å¥
 	else if(temp=="drop")
 		SQL=drop_clause(SQL,start);
-	//ÈôÎªselectÓï¾ä
+	//è‹¥ä¸ºselectè¯­å¥
 	else if(temp=="select")
 		SQL=select_clause(SQL,start);
-	//ÈôÎªinsertÓï¾ä
+	//è‹¥ä¸ºinsertè¯­å¥
 	else if(temp=="insert")
 		SQL=insert_clause(SQL,start);
-	//ÈôÎªdeleteÓï¾ä
+	//è‹¥ä¸ºdeleteè¯­å¥
 	else if(temp=="delete")
 		SQL=delete_clause(SQL,start);
-	//ÈôÎªuseÓï¾ä
+	//è‹¥ä¸ºuseè¯­å¥
 	else if(temp=="use")
 		SQL=use_clause(SQL,start);
-	//ÈôÎªexecfileÓï¾ä
+	//è‹¥ä¸ºexecfileè¯­å¥
 	else if(temp=="execfile")
 		SQL=execfile_clause(SQL,start);
-	//ÈôÎªquitÓï¾ä
+	//è‹¥ä¸ºquitè¯­å¥
 	else if(temp=="quit")
 		SQL=quit_clause(SQL,start);
-	//»ñÈ¡°ïÖú
+	//è·å–å¸®åŠ©
 	else if(temp=="help")
 		SQL="80";
-	//ÈôÎª·Ç·¨Óï¾ä
+	//è‹¥ä¸ºéæ³•è¯­å¥
 	else
 	{
 		cout<<"syntax error:"<<" "<<temp<<"---is not a valid key word!"<<endl;
 		SQL="99";
 	}
-	//·µ»ØÊäÈëÓï¾äµÄÄÚ²¿ĞÎÊ½
+	//è¿”å›è¾“å…¥è¯­å¥çš„å†…éƒ¨å½¢å¼
 	return SQL;
 }
