@@ -2,7 +2,7 @@
  * @Author: Ou Yixin
  * @Date: 2021-06-09 23:19:04
  * @LastEditors: Ou Yixin
- * @LastEditTime: 2021-06-10 15:00:13
+ * @LastEditTime: 2021-06-10 15:41:55
  * @Description: 
  * @FilePath: /MiniSQL/Interpreter/Interpreter.cpp
  */
@@ -29,16 +29,16 @@ void Interpreter::mainLoop()
         {
             std::string str = getCmdString();
             // std::cout << str << std::endl;
-            std::vector<std::string> m = Tokenizer(str);
+            std::vector<std::string> cmd = Tokenizer(str);
             // for (int i = 0; i < m.size(); i++)
             // {
             //     std::cout << m.at(i) << std::endl;
             // }
-            //TODO: parse
+            Parse(cmd);
         }
         catch (std::runtime_error &error)
         {
-            std::cout << "[Error] " << error.what() << std::endl;
+            std::cout << "ERROR : " << error.what() << std::endl;
         }
     }
 }
@@ -47,18 +47,10 @@ std::string Interpreter::getCmdString()
 {
     std::string cmd;
     std::cout << "MiniSQL> ";
-    bool first = true;
     while (true)
     {
         std::string line;
         std::getline(std::cin, line);
-
-        if (first && !line.empty() && (line == "quit" || line == "quit;" || line == "exit" || line == "exit;"))
-        {
-            std::cout << "Bye" << std::endl;
-            exit(0);
-        }
-        else first = false;
 
         for (int i = 0; i < line.length(); i++) 
         {
@@ -75,7 +67,7 @@ std::string Interpreter::getCmdString()
             line.pop_back();
         if (line.back() == ';') return cmd;
         cmd.push_back(' ');
-        std::cout << "       > ";
+        std::cout << "      —> ";
     }
 }
 
@@ -96,4 +88,64 @@ std::vector<std::string> Interpreter::Tokenizer(const std::string &str)
 	}
  
 	return res;
+}
+
+void Interpreter::Parse(const std::vector<std::string> &strvec)
+{
+    if (strvec.at(0) == "create")
+    {
+        if (strvec.at(1) == "table") parseCreateTable(strvec);
+        else if (strvec.at(1) == "index") parseCreateIndex(strvec);
+        else std::cout << "ERROR : You have an error in your SQL syntax; check the manual that corresponds to your MiniSQL server version for the right syntax to use near '" << strvec.at(1) << "'" << std::endl;
+    }
+    else if (strvec.at(0) == "drop")
+    {
+        if (strvec.at(1) == "table") parseDropTable(strvec);
+        else if (strvec.at(1) == "index") parseDropIndex(strvec);
+        else std::cout << "ERROR : You have an error in your SQL syntax; check the manual that corresponds to your MiniSQL server version for the right syntax to use near '" << strvec.at(1) << "'" << std::endl;
+    }
+    else if (strvec.at(0) == "insert") parseInsert(strvec);
+    else if (strvec.at(0) == "delete") parseDelete(strvec);
+    else if (strvec.at(0) == "select") parseSelect(strvec);
+    else if (strvec.at(0) == "quit" || strvec.at(0) == "exit")
+    {
+        std::cout << "Bye" << std::endl;
+        exit(0);
+    }
+    else std::cout << "ERROR : You have an error in your SQL syntax; check the manual that corresponds to your MiniSQL server version for the right syntax to use near '" << strvec.at(0) << "'\n";
+}
+
+void Interpreter::parseCreateTable(const std::vector<std::string> &strvec)
+{
+
+}
+
+void Interpreter::parseCreateIndex(const std::vector<std::string> &strvec)
+{
+
+}
+
+void Interpreter::parseDropTable(const std::vector<std::string> &strvec)
+{
+
+}
+
+void Interpreter::parseDropIndex(const std::vector<std::string> &strvec)
+{
+
+}
+
+void Interpreter::parseInsert(const std::vector<std::string> &strvec)
+{
+
+}
+
+void Interpreter::parseDelete(const std::vector<std::string> &strvec)
+{
+
+}
+
+void Interpreter::parseSelect(const std::vector<std::string> &strvec)
+{
+    
 }
