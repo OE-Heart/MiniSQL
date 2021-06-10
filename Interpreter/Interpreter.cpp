@@ -1,5 +1,12 @@
+/*
+ * @Author: Ou Yixin
+ * @Date: 2021-06-09 23:19:04
+ * @LastEditors: Ou Yixin
+ * @LastEditTime: 2021-06-10 15:00:13
+ * @Description: 
+ * @FilePath: /MiniSQL/Interpreter/Interpreter.cpp
+ */
 #include "Interpreter.hpp"
-#include <string>
 
 void Interpreter::mainLoop()
 {
@@ -22,6 +29,11 @@ void Interpreter::mainLoop()
         {
             std::string str = getCmdString();
             // std::cout << str << std::endl;
+            std::vector<std::string> m = Tokenizer(str);
+            // for (int i = 0; i < m.size(); i++)
+            // {
+            //     std::cout << m.at(i) << std::endl;
+            // }
             //TODO: parse
         }
         catch (std::runtime_error &error)
@@ -35,14 +47,53 @@ std::string Interpreter::getCmdString()
 {
     std::string cmd;
     std::cout << "MiniSQL> ";
+    bool first = true;
     while (true)
     {
         std::string line;
         std::getline(std::cin, line);
+
+        if (first && !line.empty() && (line == "quit" || line == "quit;" || line == "exit" || line == "exit;"))
+        {
+            std::cout << "Bye" << std::endl;
+            exit(0);
+        }
+        else first = false;
+
+        for (int i = 0; i < line.length(); i++) 
+        {
+            if (line[i] == '*' || line[i] == '=' || line[i] == ',' || line[i] == '(' || line[i] == ')' || line[i] == '<' || line[i] == '>' || line[i] == ';') 
+                {
+                    if (line[i-1] != ' ') line.insert(i++, " ");
+                    if (line[i+1] != ' ') line.insert(++i, " ");
+                }
+        }
+
         cmd += line;
+
         while (!line.empty() && isspace(line.back()))  
             line.pop_back();
         if (line.back() == ';') return cmd;
+        cmd.push_back(' ');
         std::cout << "       > ";
     }
+}
+
+std::vector<std::string> Interpreter::Tokenizer(const std::string &str)
+{
+    std::vector<std::string> res;
+	if("" == str) return res;
+	//先将要切割的字符串从string类型转换为char*类型
+	char * strs = new char[str.length() + 1];
+	strcpy(strs, str.c_str()); 
+ 
+	char *p = strtok(strs, " ");
+	while(p) 
+    {
+		std::string s = p; //分割得到的字符串转换为string类型
+		res.push_back(s); //存入结果数组
+		p = strtok(NULL, " ");
+	}
+ 
+	return res;
 }
