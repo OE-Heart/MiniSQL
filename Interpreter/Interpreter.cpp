@@ -2,7 +2,7 @@
  * @Author: Ou Yixin
  * @Date: 2021-06-09 23:19:04
  * @LastEditors: Ou Yixin
- * @LastEditTime: 2021-06-10 15:41:55
+ * @LastEditTime: 2021-06-10 15:56:22
  * @Description: 
  * @FilePath: /MiniSQL/Interpreter/Interpreter.cpp
  */
@@ -10,16 +10,16 @@
 
 void Interpreter::mainLoop()
 {
-    std::cout << R"( __  __ _       _ ____   ___  _     )" << std::endl;
-    std::cout << R"(|  \/  (_)_ __ (_) ___| / _ \| |    )" << std::endl;
-    std::cout << R"(| |\/| | | '_ \| \___ \| | | | |    )" << std::endl;
-    std::cout << R"(| |  | | | | | | |___) | |_| | |___ )" << std::endl;
-    std::cout << R"(|_|  |_|_|_| |_|_|____/ \__\_\_____|)" << std::endl;
-    std::cout << std::endl;
-    std::cout << "Welcome to the MiniSQL monitor. Commands end with ;." << std::endl;
-    std::cout << std::endl;
-    std::cout << "Copyright (c) 2021, 2021, OE-Heart, TLBZero and Chenxi Gao."<< std::endl;
-    std::cout << std::endl;
+    std::cout << R"( __  __ _       _ ____   ___  _     \n)";
+    std::cout << R"(|  \/  (_)_ __ (_) ___| / _ \| |    \n)";
+    std::cout << R"(| |\/| | | '_ \| \___ \| | | | |    \n)";
+    std::cout << R"(| |  | | | | | | |___) | |_| | |___ \n)";
+    std::cout << R"(|_|  |_|_|_| |_|_|____/ \__\_\_____|\n)";
+    std::cout << "\n";
+    std::cout << "Welcome to the MiniSQL monitor. Commands end with ;.\n";
+    std::cout << "\n";
+    std::cout << "Copyright (c) 2021, 2021, OE-Heart, TLBZero and Chenxi Gao.\n";
+    std::cout << "\n";
     std::string str;
     std::string input;
     bool exitState = false;
@@ -28,17 +28,17 @@ void Interpreter::mainLoop()
         try
         {
             std::string str = getCmdString();
-            // std::cout << str << std::endl;
+            // std::cout << str << "\n";
             std::vector<std::string> cmd = Tokenizer(str);
             // for (int i = 0; i < m.size(); i++)
             // {
-            //     std::cout << m.at(i) << std::endl;
+            //     std::cout << m.at(i) << "\n";
             // }
             Parse(cmd);
         }
         catch (std::runtime_error &error)
         {
-            std::cout << "ERROR : " << error.what() << std::endl;
+            std::cout << "ERROR : " << error.what() << "\n";
         }
     }
 }
@@ -96,20 +96,20 @@ void Interpreter::Parse(const std::vector<std::string> &strvec)
     {
         if (strvec.at(1) == "table") parseCreateTable(strvec);
         else if (strvec.at(1) == "index") parseCreateIndex(strvec);
-        else std::cout << "ERROR : You have an error in your SQL syntax; check the manual that corresponds to your MiniSQL server version for the right syntax to use near '" << strvec.at(1) << "'" << std::endl;
+        else std::cout << "ERROR : You have an error in your SQL syntax; check the manual that corresponds to your MiniSQL server version for the right syntax to use near '" << strvec.at(1) << "'\n";
     }
     else if (strvec.at(0) == "drop")
     {
         if (strvec.at(1) == "table") parseDropTable(strvec);
         else if (strvec.at(1) == "index") parseDropIndex(strvec);
-        else std::cout << "ERROR : You have an error in your SQL syntax; check the manual that corresponds to your MiniSQL server version for the right syntax to use near '" << strvec.at(1) << "'" << std::endl;
+        else std::cout << "ERROR : You have an error in your SQL syntax; check the manual that corresponds to your MiniSQL server version for the right syntax to use near '" << strvec.at(1) << "'\n";
     }
     else if (strvec.at(0) == "insert") parseInsert(strvec);
     else if (strvec.at(0) == "delete") parseDelete(strvec);
     else if (strvec.at(0) == "select") parseSelect(strvec);
     else if (strvec.at(0) == "quit" || strvec.at(0) == "exit")
     {
-        std::cout << "Bye" << std::endl;
+        std::cout << "Bye\n";
         exit(0);
     }
     else std::cout << "ERROR : You have an error in your SQL syntax; check the manual that corresponds to your MiniSQL server version for the right syntax to use near '" << strvec.at(0) << "'\n";
