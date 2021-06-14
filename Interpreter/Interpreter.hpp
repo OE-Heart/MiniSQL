@@ -2,7 +2,7 @@
  * @Author: Ou Yixin
  * @Date: 2021-06-10 10:04:37
  * @LastEditors: Ou Yixin
- * @LastEditTime: 2021-06-10 15:36:47
+ * @LastEditTime: 2021-06-14 16:56:04
  * @Description: 
  * @FilePath: /MiniSQL/Interpreter/Interpreter.hpp
  */
@@ -13,6 +13,7 @@
 #include <cstring>
 #include <vector>
 #include <deque>
+#include <chrono>
 // #include "MiniSQLcmd.hpp"
 
 class Interpreter{
@@ -31,3 +32,5 @@ private:
     static void parseDelete(const std::vector<std::string> &strvec);
     static void parseSelect(const std::vector<std::string> &strvec);
 };
+
+const std::string ErrorMsg = "ERROR : You have an error in your SQL syntax; check the manual that corresponds to your MiniSQL server version for the right syntax.\n";
