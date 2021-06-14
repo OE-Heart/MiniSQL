@@ -2,19 +2,21 @@
  * @Author: Ou Yixin
  * @Date: 2021-06-09 23:19:04
  * @LastEditors: Ou Yixin
- * @LastEditTime: 2021-06-10 15:56:22
+ * @LastEditTime: 2021-06-14 17:36:22
  * @Description: 
  * @FilePath: /MiniSQL/Interpreter/Interpreter.cpp
  */
 #include "Interpreter.hpp"
+#include "../API/API.hpp"
+
 
 void Interpreter::mainLoop()
 {
-    std::cout << R"( __  __ _       _ ____   ___  _     \n)";
-    std::cout << R"(|  \/  (_)_ __ (_) ___| / _ \| |    \n)";
-    std::cout << R"(| |\/| | | '_ \| \___ \| | | | |    \n)";
-    std::cout << R"(| |  | | | | | | |___) | |_| | |___ \n)";
-    std::cout << R"(|_|  |_|_|_| |_|_|____/ \__\_\_____|\n)";
+    std::cout << R"( __  __ _       _ ____   ___  _     )" << "\n";
+    std::cout << R"(|  \/  (_)_ __ (_) ___| / _ \| |    )" << "\n";
+    std::cout << R"(| |\/| | | '_ \| \___ \| | | | |    )" << "\n";
+    std::cout << R"(| |  | | | | | | |___) | |_| | |___ )" << "\n";
+    std::cout << R"(|_|  |_|_|_| |_|_|____/ \__\_\_____|)" << "\n";
     std::cout << "\n";
     std::cout << "Welcome to the MiniSQL monitor. Commands end with ;.\n";
     std::cout << "\n";
@@ -30,9 +32,9 @@ void Interpreter::mainLoop()
             std::string str = getCmdString();
             // std::cout << str << "\n";
             std::vector<std::string> cmd = Tokenizer(str);
-            // for (int i = 0; i < m.size(); i++)
+            // for (int i = 0; i < cmd.size(); i++)
             // {
-            //     std::cout << m.at(i) << "\n";
+            //     std::cout << cmd.at(i) << "\n";
             // }
             Parse(cmd);
         }
@@ -117,35 +119,121 @@ void Interpreter::Parse(const std::vector<std::string> &strvec)
 
 void Interpreter::parseCreateTable(const std::vector<std::string> &strvec)
 {
-
+    
 }
 
 void Interpreter::parseCreateIndex(const std::vector<std::string> &strvec)
 {
+    if (strvec.at(3) != "on" || strvec.at(5) != "(" || strvec.at(7) != ")")
+    {
+        std::cout << ErrorMsg;
+        return ;
+    }
 
+    std::string indexName = strvec.at(2);
+    std::string tableName = strvec.at(4);
+    std::string columnName = strvec.at(6);
+    try
+    {
+        auto start_time = std::chrono::high_resolution_clock::now();
+        API::createIndex(indexName, tableName, columnName);
+        auto finish_time = std::chrono::high_resolution_clock::now();
+    }
+    catch (std::out_of_range)
+    {
+        throw std::runtime_error(ErrorMsg);
+    }
 }
 
 void Interpreter::parseDropTable(const std::vector<std::string> &strvec)
 {
-
+    std::string tableName = strvec.at(2);
+    try
+    {
+        auto start_time = std::chrono::high_resolution_clock::now();
+        API::dropTable(tableName);
+        auto finish_time = std::chrono::high_resolution_clock::now();
+    }
+    catch (std::out_of_range)
+    {
+        throw std::runtime_error(ErrorMsg);
+    }
 }
 
 void Interpreter::parseDropIndex(const std::vector<std::string> &strvec)
 {
-
+    std::string indexName = strvec.at(2);
+    try
+    {
+        auto start_time = std::chrono::high_resolution_clock::now();
+        API::dropIndex(indexName);
+        auto finish_time = std::chrono::high_resolution_clock::now();
+    }
+    catch (std::out_of_range)
+    {
+        throw std::runtime_error(ErrorMsg);
+    }
 }
 
 void Interpreter::parseInsert(const std::vector<std::string> &strvec)
 {
+    if (strvec.at(1) != "into" || strvec.at(3) != "values"  || strvec.at(4) != "(")
+    {
+        std::cout << ErrorMsg;
+        return ;
+    }
 
+    std::string tableName = strvec.at(2);
+
+    
 }
 
 void Interpreter::parseDelete(const std::vector<std::string> &strvec)
 {
+    if (strvec.at(1) != "from")
+    {
+        std::cout << ErrorMsg;
+        return ;
+    }
 
+    std::string tableName = strvec.at(2);
+
+    if (strvec.at(3) == ";")
+    {
+
+    }
+    else if (strvec.at(3) == "where")
+    {
+
+    }
+    else
+    {
+        std::cout << ErrorMsg;
+        return ;
+    }
 }
 
 void Interpreter::parseSelect(const std::vector<std::string> &strvec)
 {
-    
+    if (strvec.at(1) != "*" || strvec.at(2) != "from")
+    {
+        std::cout << ErrorMsg;
+        return ;
+    }
+
+    std::string tableName = strvec.at(2);
+
+    if (strvec.at(3) == ";")
+    {
+
+    }
+    else if (strvec.at(3) == "where")
+    {
+
+    }
+    else
+    {
+        std::cout << ErrorMsg;
+        return ;
+    }
 }
