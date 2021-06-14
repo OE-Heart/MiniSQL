@@ -2,7 +2,7 @@
  * @Author: Ou Yixin
  * @Date: 2021-06-09 23:25:26
  * @LastEditors: Ou Yixin
- * @LastEditTime: 2021-06-14 17:16:21
+ * @LastEditTime: 2021-06-14 17:42:52
  * @Description: 
  * @FilePath: /MiniSQL/API/API.hpp
  */
@@ -18,7 +18,7 @@ public:
 private:
 };
 
-namespace API {
+namespace API{
     bool createIndex(const std::string &indexName, const std::string &tableName, const std::string &columnName);
     bool dropTable(const std::string &tableName);
     bool dropIndex(const std::string &indexName);
