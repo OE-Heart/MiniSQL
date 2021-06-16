@@ -2,7 +2,7 @@
  * @Author: Ou Yixin
  * @Date: 2021-06-10 10:43:05
  * @LastEditors: Ou Yixin
- * @LastEditTime: 2021-06-14 19:50:56
+ * @LastEditTime: 2021-06-14 20:32:40
  * @Description: 
  * @FilePath: /MiniSQL/CatalogManager/Column.hpp
  */
@@ -31,4 +31,7 @@ int Column::size() const
     
 }
 
-std::string Column::toString() const;
+std::string Column::toString() const
+{
+    
+}
