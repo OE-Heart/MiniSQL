@@ -17,6 +17,7 @@ Block::Block(){
     memset(data, 0, BLOCK_SIZE);
     isPinned = false;
     isDirty = false;
+    uptodate = false;
     filename = "";
     offset = 0;
     refcnt = 0;

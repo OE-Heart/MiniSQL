@@ -31,9 +31,9 @@ BID BufferManager::getblk(std::string &str, int off){
         Bpanic("No free blocks!");
     bp = blocks + empty;
     bp->filename = str;
-    bp->isDirty = bp->isPinned = 0;
     bp->offset = off;
     bp->refcnt = 1;
+    bp->isDirty = bp->isPinned = bp->uptodate = false;
     return empty;
 }
 
@@ -56,6 +56,8 @@ void BufferManager::undirtBlock(BID bid){
 BID BufferManager::bread(std::string &str, int off){
     BID bid = getblk(str, off);
     Block * bp = blocks + bid;
+    if(bp->uptodate) return bid;
+
     FILE *fp = fopen((str + ".data").c_str(), "rb+");
 
     if (fp == NULL) // If not exist, create one
@@ -71,7 +73,7 @@ BID BufferManager::bread(std::string &str, int off){
         }
         else if(feof(fp)) fwrite("\0", 1, 1, fp);
     }
-
+    bp->uptodate = true;
     fclose(fp);
     return bid;
 }
@@ -98,13 +100,24 @@ void BufferManager::brelease(BID bid){
         bp->isDirty = false;
     }
 
-    if(--bp->refcnt == 0){
-        bp->filename = "";
-        bp->offset = 0;
-    }
+    --bp->refcnt;
     return;
 }
 
 char *BufferManager::baddr(BID bid){
     return blocks[bid].data;
+}
+
+void BufferManager::bflush(std::string &filename){
+    for (int i = 0; i < BLOCK_NUM; i++)
+        if (blocks[i].filename == filename){
+            if(blocks[i].refcnt != 0)
+                Bpanic("Trying to flush referred blocks!");
+            blocks[i].filename = "";
+            blocks[i].offset = -1;
+            blocks[i].refcnt = 0;
+            blocks[i].uptodate = false;
+            blocks[i].isDirty = blocks[i].isPinned = false;
+        }
+    return;
 }

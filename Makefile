@@ -17,6 +17,7 @@ LKOBJS = $(wildcard ./Build/*.o)
 all:
 	-@mkdir ./Build
 	$(MAKE) -C ./BufferManager all
+	$(GXX) $(CFLAGS) -c main.cpp -o ./Build/main.o
 	$(GXX) -o MiniSQL ./Build/*.o
 	./MiniSQL
 

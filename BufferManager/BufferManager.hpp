@@ -19,7 +19,7 @@ const int BLOCK_NUM = 0x1000;
 class BufferManager{
 private:
     Block *blocks;
-    BID getblk(std::string&, int);
+    BID getblk(std::string &, int);
     void Bpanic(const char *)const;
 public:
     BufferManager();
@@ -32,4 +32,5 @@ public:
     bool bwrite(BID bid);
     void brelease(BID bid);
     char*baddr(BID bid);
+    void bflush(std::string &str);
 };

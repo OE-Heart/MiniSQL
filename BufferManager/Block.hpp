@@ -15,11 +15,11 @@
 /* Page size */
 const int BLOCK_SIZE = 0x1000;
 
-class Block {
-public:
+struct Block {
     char data[BLOCK_SIZE];  // Store data
     bool isPinned;          // Is pinned?
     bool isDirty;           // Is dirty?
+    bool uptodate;          // uptodated?
     std::string filename;
     int offset;             // Offset is similar to file pointer in files
     int refcnt;             // Number of reference
