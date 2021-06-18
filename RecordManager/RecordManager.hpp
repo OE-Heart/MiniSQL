@@ -14,9 +14,7 @@
 #include <variant>
 #include "buffermanager.hpp"
 #include "Table.hpp"
-#include "MiniSQLcmd.hpp"
-
-using Value = std::variant<int, double, std::string>;
+#include "Column.hpp"
 
 namespace RM{
     class RecordError : public std::exception{

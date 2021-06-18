@@ -2,7 +2,7 @@
  * @Author: Ou Yixin
  * @Date: 2021-06-14 17:42:22
  * @LastEditors: Ou Yixin
- * @LastEditTime: 2021-06-14 20:49:24
+ * @LastEditTime: 2021-06-18 14:03:25
  * @Description: 
  * @FilePath: /MiniSQL/CatalogManager/CatalogManager.hpp
  */
@@ -24,7 +24,12 @@ public:
     void newIndex(const std::string &indexName, const std::string &tableName, const std::string &columnName);
     void dropTable(const std::string &tableName);
     void dropIndex(const std::string &indexName);
+    bool existTable(const std::string &tableName) const;
+    bool existIndex(const std::string &indexName) const;
     bool validName(const std::string &name) const;
+
+    Table getTable(const std::string &tableName);
+    Index getIndex(const std::string &indexName);
     
     void load();
     void save();

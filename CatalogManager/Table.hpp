@@ -2,7 +2,7 @@
  * @Author: Ou Yixin
  * @Date: 2021-06-14 19:24:50
  * @LastEditors: Ou Yixin
- * @LastEditTime: 2021-06-14 19:52:38
+ * @LastEditTime: 2021-06-18 14:59:44
  * @Description: 
  * @FilePath: /MiniSQL/CatalogManager/Table.hpp
  */
@@ -10,7 +10,8 @@
 #include <vector>
 #include "Column.hpp"
 
-struct Table{
+struct Table 
+{
     std::string tableName;
     std::vector<Column> columns;
     int recordCnt;
