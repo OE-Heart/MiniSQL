@@ -38,6 +38,7 @@ public:
     int add(const T &key, int offset);
     void removeAt(int index);
     bool isRoot() const { return parent == nullptr; }
+    bool binarySearch(const T &key, int &index) const;
 };
 
 template<typename T>
@@ -63,13 +64,22 @@ bool BPTreeNode<T>::search(const T &key, int &index) const {
         index = cnt;
         return false;
     }
-    for(int pos=0;pos<cnt;pos++){
-    	if(keys[pos]==key){
-    		index=pos;
-    		return true; //找着了
-		}	
-	}
-    return false;
+    return binarySearch(key, index);
+}
+
+template<typename T>
+bool BPTreeNode<T>::binarySearch(const T &key, int &index) const {
+    int left = 0, right = cnt - 1, pos;
+    while (left <= right) {
+        pos = left + (right - left) / 2;
+        if (keys[pos] < key) {
+            left = pos + 1;
+        } else {
+            right = pos - 1;
+        }
+    }
+    index = left;
+    return keys[index] == key;
 }
 
 template<typename T>
