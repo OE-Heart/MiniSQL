@@ -2,7 +2,7 @@
  * @Author: Ou Yixin
  * @Date: 2021-06-09 23:25:26
  * @LastEditors: Ou Yixin
- * @LastEditTime: 2021-06-18 15:47:50
+ * @LastEditTime: 2021-06-19 09:44:36
  * @Description: 
  * @FilePath: /MiniSQL/API/API.hpp
  */
@@ -11,6 +11,7 @@
 #include "../Interpreter/Interpreter.hpp"
 #include "../CatalogManager/CatalogManager.hpp"
 #include "../Interpreter/Condition.hpp"
+#include "../BufferManager/BufferManager.hpp"
 
 class MiniSQL{
 public:
@@ -31,5 +32,6 @@ namespace API{
 
     static CatalogManager *cm;
     CatalogManager *getCatalogManager();
-    
+    static BufferManager *bm;
+    BufferManager * getBufferManager();
 }

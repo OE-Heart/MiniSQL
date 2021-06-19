@@ -2,12 +2,13 @@
  * @Author: Ou Yixin
  * @Date: 2021-06-14 17:42:22
  * @LastEditors: Ou Yixin
- * @LastEditTime: 2021-06-18 14:03:25
+ * @LastEditTime: 2021-06-19 10:00:25
  * @Description: 
  * @FilePath: /MiniSQL/CatalogManager/CatalogManager.hpp
  */
 #pragma once
 
+#include <fstream>
 #include <string>
 #include <vector>
 #include <unordered_map>
@@ -37,4 +38,5 @@ public:
 private:
     std::unordered_map<std::string, Table> tables;
     std::unordered_map<std::string, Index> indices;
+    inline static const std::string catalogFile = ".Catalog";
 };

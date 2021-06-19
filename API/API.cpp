@@ -2,7 +2,7 @@
  * @Author: Ou Yixin
  * @Date: 2021-06-09 23:25:37
  * @LastEditors: Ou Yixin
- * @LastEditTime: 2021-06-18 15:48:37
+ * @LastEditTime: 2021-06-19 09:45:35
  * @Description: 
  * @FilePath: /MiniSQL/API/API.cpp
  */
@@ -14,6 +14,11 @@ MiniSQL::MiniSQL()
 }
 
 MiniSQL::~MiniSQL()
+{
+
+}
+
+bool API::createTable(const std::string &tableName, const std::vector<Column> &columns, const std::string &primaryKey)
 {
 
 }
@@ -41,7 +46,11 @@ bool API::insertOn(const std::string &tableName, std::vector<Value> &valueList)
 
 }
 
-bool select(const std::string &tableName, std::vector<Condition> &conditionList)
+bool API::deleteFrom(const std::string &tableName, std::vector<Condition> &conditionList)
+{}
+
+
+bool API::select(const std::string &tableName, std::vector<Condition> &conditionList)
 {
     
 }
@@ -50,4 +59,10 @@ CatalogManager *API::getCatalogManager()
 {
     if (cm == NULL) cm = new CatalogManager();
     return cm;
+}
+
+BufferManager * API::getBufferManager()
+{
+    if (bm == NULL) bm = new BufferManager();
+    return bm;
 }

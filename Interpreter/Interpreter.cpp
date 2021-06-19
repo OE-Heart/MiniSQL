@@ -2,7 +2,7 @@
  * @Author: Ou Yixin
  * @Date: 2021-06-09 23:19:04
  * @LastEditors: Ou Yixin
- * @LastEditTime: 2021-06-18 15:47:38
+ * @LastEditTime: 2021-06-19 09:35:49
  * @Description: 
  * @FilePath: /MiniSQL/Interpreter/Interpreter.cpp
  */
@@ -31,12 +31,7 @@ void Interpreter::mainLoop()
         try
         {
             std::string str = getCmdString();
-            // std::cout << str << "\n";
             std::vector<std::string> cmd = Tokenizer(str);
-            // for (int i = 0; i < cmd.size(); i++)
-            // {
-            //     std::cout << cmd.at(i) << "\n";
-            // }
             Parse(cmd);
         }
         catch (std::runtime_error &error)
