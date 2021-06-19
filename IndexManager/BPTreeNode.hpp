@@ -22,13 +22,13 @@ class BPTreeNode;
 template<typename T>
 class BPTreeNode{
 public:
-	bool isLeaf;
+	bool isLeaf;//是否为叶子结点
     int degree;//结点的度数
     int cnt;//结点中当前的key的数量
     BPTreeNode *parent, *sibling;
     vector<T> keys;//叶子和非叶子结点都有的搜索码的值 
     vector<int> keyOffset;//叶子结点的搜索码对应的记录的序号
-    vector<BPTreeNode<T> *> children;
+    vector<BPTreeNode<T> *> children;//非叶子结点的子结点
 	BPTreeNode() = default;
     BPTreeNode(int degree, bool isLeaf);
 	~BPTreeNode() {}
@@ -86,9 +86,10 @@ template<typename T>
 BPTreeNode<T> *BPTreeNode<T>::split(T &key) {
     //key用来往上层传
     BPTreeNode<T> *newNode = new BPTreeNode<T>(degree, isLeaf);
-    int minimal = (degree - 1) / 2;
-    if (isLeaf) {//叶子结点分keys
+    int minimal = (degree - 1) / 2;//[n/2]-1
+    if (isLeaf) {//叶子结点分keys,叶子的元素数量为[n/2]~n-1
         key = keys[minimal + 1];
+        //把从[n/2]开始的key赋值给新的
         for (int i = minimal + 1; i < degree; i++) {
             newNode->keys[i - minimal - 1] = keys[i];
             newNode->keyOffset[i - minimal - 1] = keyOffset[i];
@@ -96,7 +97,8 @@ BPTreeNode<T> *BPTreeNode<T>::split(T &key) {
         newNode->sibling = this->sibling;
         this->sibling = newNode;
         this->cnt = minimal + 1;
-    } else {//非叶子结点分children和keys
+    }
+    else {//非叶子结点分children和keys，非叶子的元素数量为[n/2]~n
         key = keys[minimal];
         for (int i = minimal + 1; i <= degree; i++) {
             newNode->children[i - minimal - 1] = this->children[i];
