@@ -1,8 +1,8 @@
 /*
  * @Author: Yinwhe
  * @Date: 2021-06-19 13:50:11
- * @LastEditors: Yinwhe
- * @LastEditTime: 2021-06-19 13:50:27
+ * @LastEditors: Ou Yixin
+ * @LastEditTime: 2021-06-19 15:52:07
  * @Description: file information
  * @Copyright: Copyright (c) 2021
  */
@@ -53,6 +53,9 @@ std::string Table::toString() const
 {
     std::string s;
     int nameSize = tableName.size();
+    #ifdef DEBUG
+    std::cout << "nameSize: " << nameSize << "\n";
+    #endif // DEBUG
     std::copy_n(reinterpret_cast<char *>(&nameSize), sizeof(int), std::back_inserter(s));
     s += tableName;
 
@@ -65,6 +68,10 @@ std::string Table::toString() const
     {
         s += column.toString();
     }
+
+    #ifdef DEBUG
+    std::cout << "tableString(in): " << s << "\n";
+    #endif
 
     return s;
 }

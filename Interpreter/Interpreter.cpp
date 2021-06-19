@@ -2,7 +2,7 @@
  * @Author: Ou Yixin
  * @Date: 2021-06-09 23:19:04
  * @LastEditors: Ou Yixin
- * @LastEditTime: 2021-06-19 09:35:49
+ * @LastEditTime: 2021-06-19 19:43:38
  * @Description: 
  * @FilePath: /MiniSQL/Interpreter/Interpreter.cpp
  */
@@ -31,7 +31,12 @@ void Interpreter::mainLoop()
         try
         {
             std::string str = getCmdString();
+            // std::cout << str << std::endl;
             std::vector<std::string> cmd = Tokenizer(str);
+            // for (int i = 0; i < cmd.size(); i++)
+            // {
+            //     std::cout << cmd.at(i) << std::endl;
+            // }
             Parse(cmd);
         }
         catch (std::runtime_error &error)
@@ -441,15 +446,11 @@ void Interpreter::parseSelect(const std::vector<std::string> &strvec)
     try
     {
         CatalogManager *cm = API::getCatalogManager();
-        if (!cm->existTable(tableName))
-        {
-            std::cout << "ERROR : You have an error in your SQL syntax; tabel named " << tableName << " doesn't exist.\n";
-            return ;
-        }
         Table table = cm->getTable(tableName);
 
         for (int i = 6; i < vecSize; )
         {
+            if (strvec.at(i) == ";") break;
             std::string columnName = strvec.at(i++);
             OP op;
             if (strvec.at(i) == "=")
@@ -525,7 +526,6 @@ void Interpreter::parseSelect(const std::vector<std::string> &strvec)
             conditions.push_back(condition);
             i += 2; // pass "and"
         }
-
         auto begin = std::chrono::high_resolution_clock::now();
         API::select(tableName, conditions);
         auto end = std::chrono::high_resolution_clock::now();

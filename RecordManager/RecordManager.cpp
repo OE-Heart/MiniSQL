@@ -1,8 +1,8 @@
 /*
  * @Author: Yinwhe
  * @Date: 2021-06-16 09:50:16
- * @LastEditors: Yinwhe
- * @LastEditTime: 2021-06-19 17:16:10
+ * @LastEditors: Ou Yixin
+ * @LastEditTime: 2021-06-19 17:44:22
  * @Description: file information
  * @Copyright: Copyright (c) 2021
  */
@@ -166,6 +166,7 @@ Piece RecordManager::InsertRecord(Table &t, const std::vector<Value> &vals){
     for (int offset = 0; offset < BLOCK_SIZE; offset += size){
         if (data[offset] == 0){ // found free record
             PutRecord(t, vals, data + offset);
+            bm->bwrite(bid);
             bm->brelease(bid);
             #ifdef DEBUG
             printf("InsertRecord Success, bid:%d, off:%d\n", bid, offset);
@@ -183,6 +184,7 @@ Piece RecordManager::InsertRecord(Table &t, const std::vector<Value> &vals){
     printf("InsertRecord, new block created:%d\n", bid);
     #endif
     PutRecord(t, vals, data);
+    bm->bwrite(bid);
     bm->brelease(bid);
 
     return std::make_pair(bid, 0);

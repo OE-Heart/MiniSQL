@@ -1,0 +1,3 @@
+create table stu(id char(5), name char(8) unique, primary key(id));
+insert into stu values('123','bob');
+select * from stu where(name='bob');

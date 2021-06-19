@@ -2,13 +2,13 @@
  * @Author: Ou Yixin
  * @Date: 2021-06-14 17:41:38
  * @LastEditors: Ou Yixin
- * @LastEditTime: 2021-06-19 16:06:40
+ * @LastEditTime: 2021-06-19 19:44:54
  * @Description: 
  * @FilePath: /MiniSQL/CatalogManager/CatalogManager.cpp
  */
 #include "CatalogManager.hpp"
 
-#define DEBUG
+// #define DEBUG
 
 CatalogManager::CatalogManager()
 {

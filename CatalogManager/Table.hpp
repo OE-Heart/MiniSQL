@@ -1,13 +1,16 @@
 /*
  * @Author: Ou Yixin
  * @Date: 2021-06-14 19:24:50
- * @LastEditors: Yinwhe
- * @LastEditTime: 2021-06-19 13:50:18
+ * @LastEditors: Ou Yixin
+ * @LastEditTime: 2021-06-19 15:49:32
  * @Description: 
  * @FilePath: /MiniSQL/CatalogManager/Table.hpp
  */
 #pragma once
 
+#define DEBUG
+
+#include <iostream>
 #include <string>
 #include <vector>
 #include <algorithm>
