@@ -38,4 +38,5 @@ clean:
 	-@rm -rf ./Build
 	-@rm ./MiniSQL
 	-@rm ./*.data
+	-@rm ./*.minisql
 	@echo "Clean Done!"
