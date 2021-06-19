@@ -2,7 +2,7 @@
  * @Author: Yinwhe
  * @Date: 2021-06-16 09:50:16
  * @LastEditors: Yinwhe
- * @LastEditTime: 2021-06-19 15:03:49
+ * @LastEditTime: 2021-06-19 17:16:10
  * @Description: file information
  * @Copyright: Copyright (c) 2021
  */
@@ -104,6 +104,7 @@ void RecordManager::PutRecord(Table &t, const std::vector<Value> v, char *data){
         }
         offset += attr[i].size();
     }
+    t.recordCnt+=1;
 }
 
 bool RecordManager::CheckUnique(Table &t, int ColumnID, const Value &v){
@@ -131,13 +132,32 @@ bool RecordManager::CheckUnique(Table &t, int ColumnID, const Value &v){
     return true;
 }
 
+bool RecordManager::CheckType(Column &col, const Value &v){
+    switch(col.field){
+        case Field::INT:    return (std::get_if<int>(&v) != nullptr);
+        case Field::FLOAT:  return (std::get_if<double>(&v) != nullptr);
+        case Field::CHAR:   return (std::get_if<std::string>(&v) != nullptr);
+    }
+}
+
 Piece RecordManager::InsertRecord(Table &t, const std::vector<Value> &vals){
-    // Check uniqueness first
-    for (int i=0;i<t.columns.size();i++){
-        if (t.columns[i].isUnique && !CheckUnique(t, i, vals[i]))
-            printf("Insert fails, attribute %s not unique!", t.columns[i].columnName.c_str());
+    // Check Type
+    auto &attr=t.columns;
+    for(int i=0;i<attr.size();i++){
+        if(!CheckType(attr[i], vals[i])){
+            printf("Insert fails, attribute %s type error!\n", attr[i].columnName.c_str());
+            return std::make_pair(-1, -1);
+        }       
     }
 
+    // Check uniqueness
+    for (int i=0;i<attr.size();i++){
+        if (attr[i].isUnique && !CheckUnique(t, i, vals[i])){
+            printf("Insert fails, attribute %s not unique!", attr[i].columnName.c_str());
+            return std::make_pair(-1, -1);
+        }
+    }
+    
     int blockcount = t.blockCnt;
     BID bid = bm->bread(t.tableName, blockcount - 1); // Trying to insert into the last page
     char *data = bm->baddr(bid);
@@ -245,6 +265,7 @@ void RecordManager::DeleteRecord(Table &t, const std::vector<Condition> con){
         BID bid = bm->bread(t.tableName, piece.first);
         char *data = bm->baddr(bid);
         data[piece.second] = 0;
+        t.recordCnt-=1;
         bm->bwrite(bid);
         bm->brelease(bid);
     }

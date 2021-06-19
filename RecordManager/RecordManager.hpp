@@ -1,7 +1,7 @@
 /*
  * @Author: Yinwhe
  * @Date: 2021-06-18 21:53:58
- * @LastEditTime: 2021-06-19 14:37:54
+ * @LastEditTime: 2021-06-19 17:13:12
  * @LastEditors: Yinwhe
  * @Description: Doc
  * @FilePath: /MiniSQL/RecordManager/RecordManager.hpp
@@ -35,6 +35,7 @@ private:
     ValueVec&   GetRecord(Table &, char *);
     void        PutRecord(Table &, const std::vector<Value>, char *);
     bool        CheckUnique(Table &, int, const Value &);
+    bool        CheckType(Column &, const Value &);
     PieceVec    Intersect(PieceVec , PieceVec );
     PieceVec    SelectPos(Table &, const std::vector<Condition>);
 public:
