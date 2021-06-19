@@ -1,8 +1,8 @@
 /*
  * @Author: Ou Yixin
  * @Date: 2021-06-09 23:25:37
- * @LastEditors: Ou Yixin
- * @LastEditTime: 2021-06-19 09:45:35
+ * @LastEditors: Yinwhe
+ * @LastEditTime: 2021-06-19 13:55:58
  * @Description: 
  * @FilePath: /MiniSQL/API/API.cpp
  */
@@ -10,7 +10,7 @@
 
 MiniSQL::MiniSQL()
 {
-
+    
 }
 
 MiniSQL::~MiniSQL()
@@ -47,7 +47,9 @@ bool API::insertOn(const std::string &tableName, std::vector<Value> &valueList)
 }
 
 bool API::deleteFrom(const std::string &tableName, std::vector<Condition> &conditionList)
-{}
+{
+    
+}
 
 
 bool API::select(const std::string &tableName, std::vector<Condition> &conditionList)

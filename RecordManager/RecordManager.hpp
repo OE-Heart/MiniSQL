@@ -1,7 +1,7 @@
 /*
  * @Author: Yinwhe
  * @Date: 2021-06-18 21:53:58
- * @LastEditTime: 2021-06-19 12:22:45
+ * @LastEditTime: 2021-06-19 14:09:23
  * @LastEditors: Yinwhe
  * @Description: Doc
  * @FilePath: /MiniSQL/RecordManager/RecordManager.hpp
@@ -10,11 +10,15 @@
 #include <string>
 #include <vector>
 #include <variant>
-#include "buffermanager.hpp"
+#include "BufferManager.hpp"
 #include "Table.hpp"
 #include "Condition.hpp"
 
 namespace RM{
+
+typedef std::pair<int, int> Piece;
+typedef std::vector<Piece> PieceVec;
+typedef std::vector<Value> ValueVec;
 
 class RecordError : public std::exception{
     std::string msg;
@@ -27,17 +31,23 @@ public:
     }
 };
 
+class RecordManager{
+private:
+    void        Rpanic(const char *);
+    ValueVec&   GetRecord(Table &, char *);
+    void        PutRecord(Table &, const std::vector<Value>, char *);
+    bool        CheckUnique(Table &, int, const Value &);
+    PieceVec    Intersect(PieceVec , PieceVec );
+    PieceVec    SelectPos(Table &, const std::vector<Condition>);
+public:
+    BufferManager *bm;
 
-typedef std::pair<int, int> Piece;
-typedef std::vector<Piece> PieceVec;
-typedef std::vector<Value> ValueVec;
+    RecordManager();
+    void    CreateTable(Table &t);
+    void    DropTable(Table &t);
+    Piece   InsertRecord(Table &t, const std::vector<Value> &vals);
+    void    DeleteRecord(Table &t, const std::vector<Condition> conds);
+    std::vector<ValueVec> SelectRecord(Table &t, const std::vector<Condition> conds);
+};
 
-BufferManager *bm;
-void Rpanic(const char *);
-void CreateTable(Table &t);
-void DropTable(Table &t);
-Piece InsertRecord(Table &t, const std::vector<Value> &vals);
-void DeleteRecord(Table &t, const std::vector<Condition> conds);
-std::vector<ValueVec> SelectRecord(Table &t, const std::vector<Condition> conds);
-
-}
+} // namespace RM

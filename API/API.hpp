@@ -1,17 +1,17 @@
 /*
  * @Author: Ou Yixin
  * @Date: 2021-06-09 23:25:26
- * @LastEditors: Ou Yixin
- * @LastEditTime: 2021-06-19 09:44:36
+ * @LastEditors: Yinwhe
+ * @LastEditTime: 2021-06-19 13:16:40
  * @Description: 
  * @FilePath: /MiniSQL/API/API.hpp
  */
 #pragma once
 
-#include "../Interpreter/Interpreter.hpp"
-#include "../CatalogManager/CatalogManager.hpp"
-#include "../Interpreter/Condition.hpp"
-#include "../BufferManager/BufferManager.hpp"
+#include "Interpreter.hpp"
+#include "CatalogManager.hpp"
+#include "Condition.hpp"
+#include "BufferManager.hpp"
 
 class MiniSQL{
 public:
@@ -22,16 +22,18 @@ private:
 };
 
 namespace API{
-    bool createTable(const std::string &tableName, const std::vector<Column> &columns, const std::string &primaryKey);
-    bool createIndex(const std::string &indexName, const std::string &tableName, const std::string &columnName);
-    bool dropTable(const std::string &tableName);
-    bool dropIndex(const std::string &indexName);
-    bool insertOn(const std::string &tableName, std::vector<Value> &valueList);
-    bool deleteFrom(const std::string &tableName, std::vector<Condition> &conditionList);
-    bool select(const std::string &tableName, std::vector<Condition> &conditionList);
 
-    static CatalogManager *cm;
-    CatalogManager *getCatalogManager();
-    static BufferManager *bm;
-    BufferManager * getBufferManager();
-}
+bool createTable(const std::string &tableName, const std::vector<Column> &columns, const std::string &primaryKey);
+bool createIndex(const std::string &indexName, const std::string &tableName, const std::string &columnName);
+bool dropTable(const std::string &tableName);
+bool dropIndex(const std::string &indexName);
+bool insertOn(const std::string &tableName, std::vector<Value> &valueList);
+bool deleteFrom(const std::string &tableName, std::vector<Condition> &conditionList);
+bool select(const std::string &tableName, std::vector<Condition> &conditionList);
+
+static CatalogManager *cm;
+CatalogManager *getCatalogManager();
+static BufferManager *bm;
+BufferManager * getBufferManager();
+
+} // namespace API
