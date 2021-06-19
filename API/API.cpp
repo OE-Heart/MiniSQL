@@ -2,7 +2,7 @@
  * @Author: Ou Yixin
  * @Date: 2021-06-09 23:25:37
  * @LastEditors: Ou Yixin
- * @LastEditTime: 2021-06-19 20:08:54
+ * @LastEditTime: 2021-06-19 23:27:00
  * @Description: 
  * @FilePath: /MiniSQL/API/API.cpp
  */
@@ -32,12 +32,23 @@ void API::createTable(const std::string &tableName, const std::vector<Column> &c
     CM->newTable(tableName, columns);
     Table &table = CM->getTable(tableName);
     RM->CreateTable(table);
-    CM->save();
 }
 
 void API::createIndex(const std::string &indexName, const std::string &tableName, const std::string &columnName)
 {
+    auto CM = API::getCatalogManager();
+    auto RM = API::getRecordManager();
     
+    if (CM->existIndex(indexName))
+    {
+        std::cout << "ERROR : You have an error in your SQL syntax; index named " << indexName << " already exists.\n";
+        return ;
+    }
+
+    CM->newIndex(indexName, tableName, columnName);
+    Index &index = CM->getIndex(indexName);
+    
+    //TODO
 }
 
 void API::dropTable(const std::string &tableName)
@@ -58,7 +69,19 @@ void API::dropTable(const std::string &tableName)
 
 void API::dropIndex(const std::string &indexName)
 {
+    auto CM = API::getCatalogManager();
+    auto RM = API::getRecordManager();
 
+    if (!CM->existIndex(indexName))
+    {
+        std::cout << "ERROR : You have an error in your SQL syntax; index named " << indexName << " doesn't exist.\n";
+        return ;
+    }
+
+    Index &index = CM->getIndex(indexName);
+    CM->dropIndex(indexName);
+
+    //TODO
 }
 
 void API::insertOn(const std::string &tableName, std::vector<Value> &valueList)

@@ -2,7 +2,7 @@
  * @Author: Ou Yixin
  * @Date: 2021-06-14 17:41:38
  * @LastEditors: Ou Yixin
- * @LastEditTime: 2021-06-19 20:09:43
+ * @LastEditTime: 2021-06-19 22:36:29
  * @Description: 
  * @FilePath: /MiniSQL/CatalogManager/CatalogManager.cpp
  */
@@ -145,7 +145,7 @@ void CatalogManager::save()
     for (auto iter = tables.begin(); iter != tables.end(); iter++) 
     {
         #ifdef DEBUG
-        std::cout << i++ << "\n";
+        std::cout << "i=" << i++ << "\n";
         #endif // DEBUG
         s += char(1);
         #ifdef DEBUG
@@ -157,15 +157,18 @@ void CatalogManager::save()
         #endif
         int len = tableString.size();
         std::copy_n(reinterpret_cast<char *>(&len), sizeof(int), std::back_inserter(s));
-        s + tableString;
+        s += tableString;
     }
     
     for (auto iter = indices.begin(); iter != indices.end(); iter++)
     {
         #ifdef DEBUG
-        std::cout << i++ << "\n";
+        std::cout << "ii=" << i++ << "\n";
         #endif // DEBUG
         s += char(0);
+        #ifdef DEBUG
+        std::cout << "s: " << s << "\n";
+        #endif
         Index index = iter->second;
         int indexNameSize = index.indexName.size();
         std::copy_n(reinterpret_cast<char *>(&indexNameSize), sizeof(int), std::back_inserter(s));

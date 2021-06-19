@@ -2,7 +2,7 @@
  * @Author: Yinwhe
  * @Date: 2021-06-19 13:50:11
  * @LastEditors: Ou Yixin
- * @LastEditTime: 2021-06-19 15:52:07
+ * @LastEditTime: 2021-06-19 21:53:57
  * @Description: file information
  * @Copyright: Copyright (c) 2021
  */
@@ -58,7 +58,6 @@ std::string Table::toString() const
     #endif // DEBUG
     std::copy_n(reinterpret_cast<char *>(&nameSize), sizeof(int), std::back_inserter(s));
     s += tableName;
-
     int columnsSize = columns.size();
     std::copy_n(reinterpret_cast<char *>(&columnsSize), sizeof(int), std::back_inserter(s));
     std::copy_n(reinterpret_cast<const char*>(&recordCnt), sizeof(int), std::back_inserter(s));
