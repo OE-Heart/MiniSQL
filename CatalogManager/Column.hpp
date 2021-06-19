@@ -1,8 +1,8 @@
 /*
  * @Author: Ou Yixin
  * @Date: 2021-06-10 10:43:05
- * @LastEditors: Ou Yixin
- * @LastEditTime: 2021-06-18 15:00:09
+ * @LastEditors: Yinwhe
+ * @LastEditTime: 2021-06-19 10:55:05
  * @Description: 
  * @FilePath: /MiniSQL/CatalogManager/Column.hpp
  */
@@ -26,7 +26,7 @@ struct Column
     Field field;
     bool isPrimaryKey = false;
     bool isUnique = false;
-    size_t charSize;
+    int charSize;
     std::string index = "";
     int size() const;
     std::string toString() const;
@@ -34,7 +34,12 @@ struct Column
 
 int Column::size() const
 {
-    
+    if (field == Field::INT)
+        return sizeof(int);
+    else if (field == Field::FLOAT)
+        return sizeof(double);
+    else
+        return (charSize+1)*sizeof(char);
 }
 
 std::string Column::toString() const

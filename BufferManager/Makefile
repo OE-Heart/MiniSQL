@@ -1,4 +1,3 @@
-BUILD = ../Build
 OBJS = \
 	Block.o \
 	BufferManager.o \
