@@ -2,7 +2,7 @@
  * @Author: Ou Yixin
  * @Date: 2021-06-09 23:25:37
  * @LastEditors: Ou Yixin
- * @LastEditTime: 2021-06-19 09:45:35
+ * @LastEditTime: 2021-06-19 14:24:08
  * @Description: 
  * @FilePath: /MiniSQL/API/API.cpp
  */
@@ -18,39 +18,56 @@ MiniSQL::~MiniSQL()
 
 }
 
-bool API::createTable(const std::string &tableName, const std::vector<Column> &columns, const std::string &primaryKey)
+void API::createTable(const std::string &tableName, const std::vector<Column> &columns, const std::string &primaryKey)
 {
+    auto CM = API::getCatalogManager();
 
+    if (CM->existTable(tableName))
+    {
+        std::cout << "ERROR : You have an error in your SQL syntax; tabel named " << tableName << " already exists.\n";
+        return ;
+    }
+
+    CM->newTable(tableName, columns);
+    Table &table = CM->getTable(tableName);
+    RM::CreateTable(table);
 }
 
-bool API::createIndex(const std::string &indexName, const std::string &tableName, const std::string &columnName)
+void API::createIndex(const std::string &indexName, const std::string &tableName, const std::string &columnName)
 {
     
-    return true;
 }
 
-bool API::dropTable(const std::string &tableName)
+void API::dropTable(const std::string &tableName)
+{    
+    auto CM = API::getCatalogManager();
+
+    if (CM->existTable(tableName))
+    {
+        std::cout << "ERROR : You have an error in your SQL syntax; tabel named " << tableName << " doesn't exist.\n";
+        return ;
+    }
+
+    Table &table = CM->getTable(tableName);
+    RM::DropTable(table);
+    CM->dropTable(tableName);
+}
+
+void API::dropIndex(const std::string &indexName)
 {
-    
-    return true;
+
 }
 
-bool API::dropIndex(const std::string &indexName)
-{
-
-    return true;
-}
-
-bool API::insertOn(const std::string &tableName, std::vector<Value> &valueList)
+void API::insertOn(const std::string &tableName, std::vector<Value> &valueList)
 {
 
 }
 
-bool API::deleteFrom(const std::string &tableName, std::vector<Condition> &conditionList)
+void API::deleteFrom(const std::string &tableName, std::vector<Condition> &conditionList)
 {}
 
 
-bool API::select(const std::string &tableName, std::vector<Condition> &conditionList)
+void API::select(const std::string &tableName, std::vector<Condition> &conditionList)
 {
     
 }
@@ -59,10 +76,4 @@ CatalogManager *API::getCatalogManager()
 {
     if (cm == NULL) cm = new CatalogManager();
     return cm;
-}
-
-BufferManager * API::getBufferManager()
-{
-    if (bm == NULL) bm = new BufferManager();
-    return bm;
 }
