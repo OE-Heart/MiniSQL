@@ -2,7 +2,7 @@
  * @Author: Yinwhe
  * @Date: 2021-06-16 09:50:16
  * @LastEditors: Yinwhe
- * @LastEditTime: 2021-06-19 23:47:07
+ * @LastEditTime: 2021-06-20 00:09:58
  * @Description: file information
  * @Copyright: Copyright (c) 2021
  */
@@ -10,6 +10,8 @@
 #include <iostream>
 #include <algorithm>
 #include "RecordManager.hpp"
+
+#define DEBUG
 
 RecordManager::RecordManager(){
     bm = new BufferManager();

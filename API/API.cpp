@@ -2,7 +2,7 @@
  * @Author: Ou Yixin
  * @Date: 2021-06-09 23:25:37
  * @LastEditors: Ou Yixin
- * @LastEditTime: 2021-06-19 23:27:00
+ * @LastEditTime: 2021-06-19 23:36:40
  * @Description: 
  * @FilePath: /MiniSQL/API/API.cpp
  */
@@ -47,7 +47,7 @@ void API::createIndex(const std::string &indexName, const std::string &tableName
 
     CM->newIndex(indexName, tableName, columnName);
     Index &index = CM->getIndex(indexName);
-    
+
     //TODO
 }
 
@@ -167,6 +167,7 @@ void API::select(const std::string &tableName, std::vector<Condition> &condition
     {
         std::cout << std::setw(10) << column.columnName;
     }
+    std::cout << "\n";
 
     for (int i = 0; i < result.size(); ++i)
     {
@@ -179,6 +180,7 @@ void API::select(const std::string &tableName, std::vector<Condition> &condition
                 case Field::CHAR:   std::cout << std::setw(10) << std::get<std::string>(result[i][j]);break;
             }
         }
+        std::cout << "\n";
     }
 }
 

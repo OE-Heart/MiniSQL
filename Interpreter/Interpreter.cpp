@@ -2,7 +2,7 @@
  * @Author: Ou Yixin
  * @Date: 2021-06-09 23:19:04
  * @LastEditors: Ou Yixin
- * @LastEditTime: 2021-06-19 20:04:54
+ * @LastEditTime: 2021-06-19 23:58:53
  * @Description: 
  * @FilePath: /MiniSQL/Interpreter/Interpreter.cpp
  */
@@ -464,21 +464,32 @@ void Interpreter::parseSelect(const std::vector<std::string> &strvec)
             }
             else if (strvec.at(i) == "<")
             {
-                op = OP::L;
-            }
-            else if (strvec.at(i) == "<" && strvec.at(i+1) == "=")
-            {
-                op = OP::LEQ;
-                i++;
+                if (strvec.at(i+1) == ">")
+                {
+                    op = OP::NEQ;
+                    i++;
+                }
+                else if (strvec.at(i+1) == "=")
+                {
+                    op = OP::LEQ;
+                    i++;
+                }
+                else
+                {
+                    op = OP::L;
+                }
             }
             else if (strvec.at(i) == ">")
             {
-                op = OP::G;
-            }
-            else if (strvec.at(i) == ">" && strvec.at(i+1) == "=")
-            {
-                op = OP::GEQ;
-                i++;
+                if (strvec.at(i+1) == "=")
+                {
+                    op = OP::GEQ;
+                    i++;
+                }
+                else
+                {
+                    op = OP::G;
+                }
             }
             else
             {
@@ -501,6 +512,9 @@ void Interpreter::parseSelect(const std::vector<std::string> &strvec)
                     return ;
                 }
                 Column column = table.columns.at(j);
+
+                std::cout << strvec.at(i) <<"\n";
+
                 switch (column.field)
                 {
                     case Field::INT:
