@@ -3,10 +3,12 @@ MAKE := make
 MODE := debug
 #MODE := release
 
+BUILD = ../Build
+
 GXX = g++
 LD = ld
 
-CFLAGS = -std=c++11
+CFLAGS = -std=c++17
 
 ifeq ($(MODE), debug)
 CLFLAGS += -DDEBUG -g

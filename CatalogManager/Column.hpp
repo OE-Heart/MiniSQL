@@ -2,7 +2,7 @@
  * @Author: Ou Yixin
  * @Date: 2021-06-10 10:43:05
  * @LastEditors: Ou Yixin
- * @LastEditTime: 2021-06-19 10:23:04
+ * @LastEditTime: 2021-06-19 11:13:19
  * @Description: 
  * @FilePath: /MiniSQL/CatalogManager/Column.hpp
  */
@@ -35,7 +35,12 @@ struct Column
 
 int Column::size() const
 {
-    
+    if (field == Field::INT)
+        return sizeof(int);
+    else if (field == Field::FLOAT)
+        return sizeof(double);
+    else
+        return (charSize+1)*sizeof(char);
 }
 
 std::string Column::toString() const
