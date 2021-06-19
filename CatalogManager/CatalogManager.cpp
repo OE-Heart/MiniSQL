@@ -33,6 +33,7 @@ void CatalogManager::newIndex(const std::string &indexName, const std::string &t
     {
         if (column.columnName == columnName) 
         {
+            //column.index是个字符串
             column.index = columnName;
             break;
         }
