@@ -2,15 +2,17 @@
  * @Author: Ou Yixin
  * @Date: 2021-06-14 17:41:38
  * @LastEditors: Ou Yixin
- * @LastEditTime: 2021-06-19 14:22:00
+ * @LastEditTime: 2021-06-19 16:06:40
  * @Description: 
  * @FilePath: /MiniSQL/CatalogManager/CatalogManager.cpp
  */
 #include "CatalogManager.hpp"
 
+#define DEBUG
+
 CatalogManager::CatalogManager()
 {
-
+    load();
 }
 
 CatalogManager::~CatalogManager()
@@ -132,12 +134,26 @@ void CatalogManager::save()
 {
     std::ofstream fout(catalogFile, std::ios::binary);
 
+    #ifdef DEBUG
+    if(!fout) std::cout << "no file!\n";
+    int i = 0;
+    #endif
+
     std::string s;
 
     for (auto iter = tables.begin(); iter != tables.end(); iter++) 
     {
+        #ifdef DEBUG
+        std::cout << i++ << "\n";
+        #endif // DEBUG
         s += char(1);
+        #ifdef DEBUG
+        std::cout << "s: " << s << "\n";
+        #endif
         std::string tableString = (iter->second).toString();
+        #ifdef DEBUG
+        std::cout << "tableString: " << tableString << "\n";
+        #endif
         int len = tableString.size();
         std::copy_n(reinterpret_cast<char *>(&len), sizeof(int), std::back_inserter(s));
         s + tableString;
@@ -145,6 +161,9 @@ void CatalogManager::save()
     
     for (auto iter = indices.begin(); iter != indices.end(); iter++)
     {
+        #ifdef DEBUG
+        std::cout << i++ << "\n";
+        #endif // DEBUG
         s += char(0);
         Index index = iter->second;
         int indexNameSize = index.indexName.size();
@@ -157,6 +176,10 @@ void CatalogManager::save()
         std::copy_n(reinterpret_cast<char *>(&columnNameSize), sizeof(int), std::back_inserter(s));
         std::copy_n(index.columnName.c_str(), columnNameSize, std::back_inserter(s));
     }
+
+    #ifdef DEBUG
+    std::cout << "s: " << s << "\n";
+    #endif
 
     fout.write(s.c_str(), s.size());
 }
