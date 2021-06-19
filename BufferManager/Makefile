@@ -1,7 +1,6 @@
 OBJS = \
 	Block.o \
 	BufferManager.o \
-	BufferTest.o \
 
 all: $(OBJS)
 

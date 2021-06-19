@@ -2,7 +2,7 @@
  * @Author: Ou Yixin
  * @Date: 2021-06-09 23:25:37
  * @LastEditors: Ou Yixin
- * @LastEditTime: 2021-06-19 14:24:08
+ * @LastEditTime: 2021-06-19 14:34:30
  * @Description: 
  * @FilePath: /MiniSQL/API/API.cpp
  */
@@ -10,7 +10,7 @@
 
 MiniSQL::MiniSQL()
 {
-
+    
 }
 
 MiniSQL::~MiniSQL()
@@ -21,6 +21,7 @@ MiniSQL::~MiniSQL()
 void API::createTable(const std::string &tableName, const std::vector<Column> &columns, const std::string &primaryKey)
 {
     auto CM = API::getCatalogManager();
+    auto RM = API::getRecordManager();
 
     if (CM->existTable(tableName))
     {
@@ -30,7 +31,7 @@ void API::createTable(const std::string &tableName, const std::vector<Column> &c
 
     CM->newTable(tableName, columns);
     Table &table = CM->getTable(tableName);
-    RM::CreateTable(table);
+    RM->CreateTable(table);
 }
 
 void API::createIndex(const std::string &indexName, const std::string &tableName, const std::string &columnName)
@@ -41,6 +42,7 @@ void API::createIndex(const std::string &indexName, const std::string &tableName
 void API::dropTable(const std::string &tableName)
 {    
     auto CM = API::getCatalogManager();
+    auto RM = API::getRecordManager();
 
     if (CM->existTable(tableName))
     {
@@ -49,7 +51,7 @@ void API::dropTable(const std::string &tableName)
     }
 
     Table &table = CM->getTable(tableName);
-    RM::DropTable(table);
+    RM->DropTable(table);
     CM->dropTable(tableName);
 }
 
@@ -64,7 +66,9 @@ void API::insertOn(const std::string &tableName, std::vector<Value> &valueList)
 }
 
 void API::deleteFrom(const std::string &tableName, std::vector<Condition> &conditionList)
-{}
+{
+    
+}
 
 
 void API::select(const std::string &tableName, std::vector<Condition> &conditionList)
@@ -76,4 +80,10 @@ CatalogManager *API::getCatalogManager()
 {
     if (cm == NULL) cm = new CatalogManager();
     return cm;
+}
+
+RecordManager *API::getRecordManager()
+{
+    if (rm == NULL) rm = new RecordManager();
+    return rm;
 }

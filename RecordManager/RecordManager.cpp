@@ -1,8 +1,8 @@
 /*
  * @Author: Yinwhe
  * @Date: 2021-06-16 09:50:16
- * @LastEditors: Yinwhe
- * @LastEditTime: 2021-06-19 12:22:57
+ * @LastEditors: Ou Yixin
+ * @LastEditTime: 2021-06-19 14:32:08
  * @Description: file information
  * @Copyright: Copyright (c) 2021
  */
@@ -11,14 +11,16 @@
 #include <algorithm>
 #include "RecordManager.hpp"
 
-namespace RM{
+RecordManager::RecordManager(){
+    bm = new BufferManager();
+}
 
-void Rpanic(const char* s){
+void RecordManager::Rpanic(const char* s){
     printf("[RecordManager Panic] %s", s);
     while(1);
 }
 
-void createTable(Table &t){
+void RecordManager::CreateTable(Table &t){
     BID bid = bm->bread(t.tableName, 0);
     char* data = bm->baddr(bid);
     memset(data,0, BLOCK_SIZE);
@@ -26,14 +28,21 @@ void createTable(Table &t){
     bm->brelease(bid);
     t.blockCnt = 1;
     t.recordCnt = 0;
+    #ifdef DEBUG
+    printf("RM CreateTable Done\n");
+    #endif
 }
 
-void dropTable(Table &t){
+
+void RecordManager::DropTable(Table &t){
     bm->bflush(t.tableName);
     remove((t.tableName + ".data").c_str());
+    #ifdef DEBUG
+    printf("RM DropTable Done\n");
+    #endif
 }
 
-static ValueVec &getRecord(Table &t, char *data){
+ValueVec& RecordManager::GetRecord(Table &t, char *data){
     const std::vector<Column> &attr = t.columns;
     std::vector<Value> res;
     int size = attr.size();
@@ -41,25 +50,31 @@ static ValueVec &getRecord(Table &t, char *data){
     for (int offset = 0, i = 0; i < size; i++){
         if (attr[i].field == Field::FLOAT){
             double val = *(double *)(data + offset);
-            // std::cerr << "DVAL " << val << std::endl;
             res.push_back(val);
+            #ifdef DEBUG
+            printf("RM GetRecord Double %f\n", val);
+            #endif
         }
         else if (attr[i].field == Field::INT){
             int val = *(int *)(data + offset);
-            // std::cerr << "IVAL " << val << std::endl;
             res.push_back(val);
+            #ifdef DEBUG
+            printf("RM GetRecord Int %d\n", val);
+            #endif
         }
         else{ // string
             std::string val = std::string((char *)(data + offset));
-            // std::cerr << "SVAL " << val << std::endl;
             res.push_back(val);
+            #ifdef DEBUG
+            printf("RM GetRecord String %s\n", val.c_str());
+            #endif
         }
         offset += attr[i].size();
     }
     return res;
 }
 
-static void putRecord(Table &t, const std::vector<Value> v, char *data){
+void RecordManager::PutRecord(Table &t, const std::vector<Value> v, char *data){
     *data++ = 1; // set as taken
     const std::vector<Column> &attr = t.columns;
     int size = attr.size();
@@ -68,22 +83,31 @@ static void putRecord(Table &t, const std::vector<Value> v, char *data){
         {
             double val = std::get<double>(v[i]);
             memcpy(data + offset, &val, attr[i].size());
+            #ifdef DEBUG
+            printf("RM PutRecord Double %f\n", val);
+            #endif
         }
         else if (attr[i].field == Field::INT)
         {
             int val = std::get<int>(v[i]);
             memcpy(data + offset, &val, attr[i].size());
+            #ifdef DEBUG
+            printf("RM PutRecord Int %d\n", val);
+            #endif
         }
         else // string
         {
             std::string val = std::get<std::string>(v[i]);
             memcpy(data + offset, val.c_str(), attr[i].size());
+            #ifdef DEBUG
+            printf("RM PutRecord String %s\n", val.c_str());
+            #endif
         }
         offset += attr[i].size();
     }
 }
 
-static bool checkUnique(Table &t, int ColumnID, Value &v){
+bool RecordManager::CheckUnique(Table &t, int ColumnID, const Value &v){
     // if (t.columns[ColumnID].index != "")
     // { // use index to check uniqueness
     //     PieceVec vec = IndexSelect(t, t.attrbs[id], Condition(t.attrbs[id].name, v, CondType::EQUAL));
@@ -96,7 +120,7 @@ static bool checkUnique(Table &t, int ColumnID, Value &v){
         int size = t.size()+1;
         for (int offset = 0; offset < BLOCK_SIZE; offset += size){
             if (data[offset] == 1){
-                std::vector<Value> &vals = getRecord(t, data + offset);
+                std::vector<Value> &vals = GetRecord(t, data + offset);
                 if (vals[ColumnID] == v){
                     bm->brelease(bid);
                     return false;
@@ -108,10 +132,10 @@ static bool checkUnique(Table &t, int ColumnID, Value &v){
     return true;
 }
 
-Piece InsertRecord(Table &t, const std::vector<Value> &vals){
+Piece RecordManager::InsertRecord(Table &t, const std::vector<Value> &vals){
     // Check uniqueness first
     for (int i=0;i<t.columns.size();i++){
-        if (t.columns[i].isUnique && !checkUnique(t, i, vals[i]))
+        if (t.columns[i].isUnique && !CheckUnique(t, i, vals[i]))
             throw RecordError("Insert fails, attribute " + t.columns[i].columnName + " not unique!");
     }
 
@@ -122,7 +146,7 @@ Piece InsertRecord(Table &t, const std::vector<Value> &vals){
 
     for (int offset = 0; offset < BLOCK_SIZE; offset += size){
         if (data[offset] == 0){ // found free record
-            putRecord(t, vals, data + offset);
+            PutRecord(t, vals, data + offset);
             bm->brelease(bid);
             return std::make_pair(bid, offset);
         }
@@ -133,13 +157,13 @@ Piece InsertRecord(Table &t, const std::vector<Value> &vals){
     t.blockCnt += 1;
     bid = bm->bread(t.tableName, t.blockCnt -  1);
     data = bm->baddr(bid);
-    putRecord(t, vals, data);
+    PutRecord(t, vals, data);
     bm->brelease(bid);
 
     return std::make_pair(bid, 0);
 }
 
-static PieceVec Intersect(PieceVec p, PieceVec q){
+PieceVec RecordManager::Intersect(PieceVec p, PieceVec q){
     std::sort(p.begin(), p.end());
     std::sort(q.begin(), q.end());
     PieceVec::iterator ip = p.begin(), iq = q.begin();
@@ -164,7 +188,7 @@ static PieceVec Intersect(PieceVec p, PieceVec q){
     return res;
 }
 
-static PieceVec SelectPos(Table &t, const std::vector<Condition> con)
+PieceVec RecordManager::SelectPos(Table &t, const std::vector<Condition> con)
 {
     PieceVec v;
     bool flag = false;
@@ -192,7 +216,7 @@ static PieceVec SelectPos(Table &t, const std::vector<Condition> con)
             for (int offset = 0; offset < BLOCK_SIZE; offset += size){
                 if(!data[offset]) continue; // Empty skip
                 
-                std::vector<Value> res = getRecord(t, data + offset);
+                std::vector<Value> res = GetRecord(t, data + offset);
                 bool good = true;
                 for (Condition c : con){
                     int index = t.indexOfCol(c.columnName);
@@ -210,7 +234,7 @@ static PieceVec SelectPos(Table &t, const std::vector<Condition> con)
     return v;
 }
 
-void DeleteRecord(Table &t, const std::vector<Condition> con){
+void RecordManager::DeleteRecord(Table &t, const std::vector<Condition> con){
     PieceVec v = SelectPos(t, con);
     for (auto piece : v){
         BID bid = bm->bread(t.tableName, piece.first);
@@ -221,17 +245,15 @@ void DeleteRecord(Table &t, const std::vector<Condition> con){
     }
 }
 
-std::vector<ValueVec> SelectRecord(Table &t, const std::vector<Condition> con)
+std::vector<ValueVec> RecordManager::SelectRecord(Table &t, const std::vector<Condition> con)
 {
     std::vector<std::vector<Value> > res;
     PieceVec v = SelectPos(t, con);
     for (auto piece : v){
         BID bid = bm->bread(t.tableName, piece.first);
         char *data = bm->baddr(bid);
-        res.push_back(getRecord(t, data + piece.second));
+        res.push_back(GetRecord(t, data + piece.second));
         bm->brelease(bid);
     }
     return res;
 }
-
-} // namespace RM
