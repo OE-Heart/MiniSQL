@@ -1,7 +1,7 @@
 /*
  * @Author: Yinwhe
  * @Date: 2021-06-18 21:53:58
- * @LastEditTime: 2021-06-19 14:09:23
+ * @LastEditTime: 2021-06-19 14:28:54
  * @LastEditors: Yinwhe
  * @Description: Doc
  * @FilePath: /MiniSQL/RecordManager/RecordManager.hpp
@@ -13,8 +13,6 @@
 #include "BufferManager.hpp"
 #include "Table.hpp"
 #include "Condition.hpp"
-
-namespace RM{
 
 typedef std::pair<int, int> Piece;
 typedef std::vector<Piece> PieceVec;
@@ -49,5 +47,3 @@ public:
     void    DeleteRecord(Table &t, const std::vector<Condition> conds);
     std::vector<ValueVec> SelectRecord(Table &t, const std::vector<Condition> conds);
 };
-
-} // namespace RM
