@@ -2,7 +2,7 @@
  * @Author: Ou Yixin
  * @Date: 2021-06-09 23:19:04
  * @LastEditors: Ou Yixin
- * @LastEditTime: 2021-06-19 23:58:53
+ * @LastEditTime: 2021-06-20 00:54:02
  * @Description: 
  * @FilePath: /MiniSQL/Interpreter/Interpreter.cpp
  */
@@ -343,6 +343,7 @@ void Interpreter::parseDelete(const std::vector<std::string> &strvec)
 
         for (int i = 5; i < vecSize; )
         {
+            if (strvec.at(i) == ";") break;
             std::string columnName = strvec.at(i++);
             OP op;
             if (strvec.at(i) == "=")
@@ -356,21 +357,32 @@ void Interpreter::parseDelete(const std::vector<std::string> &strvec)
             }
             else if (strvec.at(i) == "<")
             {
-                op = OP::L;
-            }
-            else if (strvec.at(i) == "<" && strvec.at(i+1) == "=")
-            {
-                op = OP::LEQ;
-                i++;
+                if (strvec.at(i+1) == ">")
+                {
+                    op = OP::NEQ;
+                    i++;
+                }
+                else if (strvec.at(i+1) == "=")
+                {
+                    op = OP::LEQ;
+                    i++;
+                }
+                else
+                {
+                    op = OP::L;
+                }
             }
             else if (strvec.at(i) == ">")
             {
-                op = OP::G;
-            }
-            else if (strvec.at(i) == ">" && strvec.at(i+1) == "=")
-            {
-                op = OP::GEQ;
-                i++;
+                if (strvec.at(i+1) == "=")
+                {
+                    op = OP::GEQ;
+                    i++;
+                }
+                else
+                {
+                    op = OP::G;
+                }
             }
             else
             {
@@ -378,7 +390,7 @@ void Interpreter::parseDelete(const std::vector<std::string> &strvec)
                 return ;
             }
             i++;
-
+            
             Value v;
             try
             {
