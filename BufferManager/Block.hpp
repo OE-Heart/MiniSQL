@@ -1,15 +1,14 @@
-/**
- * @file Block.hpp
- * @author Yinwhe
- * @brief Implementation of the Block
- * @version 0.1
- * @date 2021-06-10
- * 
- * @copyright Copyright (c) 2021
- * 
+/*
+ * @Author: Yinwhe
+ * @Date: 2021-06-16 09:50:16
+ * @LastEditors: Yinwhe
+ * @LastEditTime: 2021-06-19 14:44:27
+ * @Description: file information
+ * @Copyright: Copyright (c) 2021
  */
 #pragma once
 
+#include <cstring>
 #include <string>
 
 /* Page size */

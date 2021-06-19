@@ -20,8 +20,6 @@ ifeq ($(MODE), debug)
 CLFLAGS += -DDEBUG -g
 endif
 
-LKOBJS = $(wildcard ./Build/*.o)
-
 all:
 	-@mkdir ./Build
 	$(MAKE) -C ./API all
@@ -32,7 +30,12 @@ all:
 	$(GXX) $(CFLAGS) -c main.cpp -o ./Build/main.o
 	$(GXX) -o MiniSQL ./Build/*.o
 
+run:
+	make all
+	./MiniSQL
+
 clean:
 	-@rm -rf ./Build
 	-@rm ./MiniSQL
+	-@rm ./*.data
 	@echo "Clean Done!"

@@ -2,7 +2,7 @@
  * @Author: Ou Yixin
  * @Date: 2021-06-14 17:41:38
  * @LastEditors: Ou Yixin
- * @LastEditTime: 2021-06-19 12:10:00
+ * @LastEditTime: 2021-06-19 14:22:00
  * @Description: 
  * @FilePath: /MiniSQL/CatalogManager/CatalogManager.cpp
  */
@@ -80,12 +80,12 @@ bool CatalogManager::validName(const std::string &name) const
     return tables.count(name) == 0 && indices.count(name) == 0;
 }
 
-Table CatalogManager::getTable(const std::string &tableName)
+Table &CatalogManager::getTable(const std::string &tableName)
 {
     return tables.at(tableName);
 }
 
-Index CatalogManager::getIndex(const std::string &indexName)
+Index &CatalogManager::getIndex(const std::string &indexName)
 {
     return indices.at(indexName);
 }

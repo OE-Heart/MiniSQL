@@ -2,7 +2,7 @@
  * @Author: Yinwhe
  * @Date: 2021-06-16 09:50:16
  * @LastEditors: Yinwhe
- * @LastEditTime: 2021-06-19 14:28:47
+ * @LastEditTime: 2021-06-19 15:03:49
  * @Description: file information
  * @Copyright: Copyright (c) 2021
  */
@@ -32,7 +32,6 @@ void RecordManager::CreateTable(Table &t){
     printf("RM CreateTable Done\n");
     #endif
 }
-
 
 void RecordManager::DropTable(Table &t){
     bm->bflush(t.tableName);
@@ -136,7 +135,7 @@ Piece RecordManager::InsertRecord(Table &t, const std::vector<Value> &vals){
     // Check uniqueness first
     for (int i=0;i<t.columns.size();i++){
         if (t.columns[i].isUnique && !CheckUnique(t, i, vals[i]))
-            throw RecordError("Insert fails, attribute " + t.columns[i].columnName + " not unique!");
+            printf("Insert fails, attribute %s not unique!", t.columns[i].columnName.c_str());
     }
 
     int blockcount = t.blockCnt;
@@ -148,6 +147,9 @@ Piece RecordManager::InsertRecord(Table &t, const std::vector<Value> &vals){
         if (data[offset] == 0){ // found free record
             PutRecord(t, vals, data + offset);
             bm->brelease(bid);
+            #ifdef DEBUG
+            printf("InsertRecord Success, bid:%d, off:%d\n", bid, offset);
+            #endif
             return std::make_pair(bid, offset);
         }
     }
@@ -157,6 +159,9 @@ Piece RecordManager::InsertRecord(Table &t, const std::vector<Value> &vals){
     t.blockCnt += 1;
     bid = bm->bread(t.tableName, t.blockCnt -  1);
     data = bm->baddr(bid);
+    #ifdef DEBUG
+    printf("InsertRecord, new block created:%d\n", bid);
+    #endif
     PutRecord(t, vals, data);
     bm->brelease(bid);
 
