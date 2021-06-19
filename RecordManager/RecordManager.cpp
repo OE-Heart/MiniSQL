@@ -1,8 +1,8 @@
 /*
  * @Author: Yinwhe
  * @Date: 2021-06-16 09:50:16
- * @LastEditors: Ou Yixin
- * @LastEditTime: 2021-06-19 17:44:22
+ * @LastEditors: Yinwhe
+ * @LastEditTime: 2021-06-19 23:26:57
  * @Description: file information
  * @Copyright: Copyright (c) 2021
  */
@@ -41,7 +41,7 @@ void RecordManager::DropTable(Table &t){
     #endif
 }
 
-ValueVec& RecordManager::GetRecord(Table &t, char *data){
+ValueVec RecordManager::GetRecord(Table &t, char *data){
     const std::vector<Column> &attr = t.columns;
     std::vector<Value> res;
     int size = attr.size();
@@ -49,21 +49,21 @@ ValueVec& RecordManager::GetRecord(Table &t, char *data){
     for (int offset = 0, i = 0; i < size; i++){
         if (attr[i].field == Field::FLOAT){
             double val = *(double *)(data + offset);
-            res.push_back(val);
+            res.push_back(Value(val));
             #ifdef DEBUG
             printf("RM GetRecord Double %f\n", val);
             #endif
         }
         else if (attr[i].field == Field::INT){
             int val = *(int *)(data + offset);
-            res.push_back(val);
+            res.push_back(Value(val));
             #ifdef DEBUG
             printf("RM GetRecord Int %d\n", val);
             #endif
         }
         else{ // string
             std::string val = std::string((char *)(data + offset));
-            res.push_back(val);
+            res.push_back(Value(val));
             #ifdef DEBUG
             printf("RM GetRecord String %s\n", val.c_str());
             #endif
@@ -120,7 +120,7 @@ bool RecordManager::CheckUnique(Table &t, int ColumnID, const Value &v){
         int size = t.size()+1;
         for (int offset = 0; offset < BLOCK_SIZE; offset += size){
             if (data[offset] == 1){
-                std::vector<Value> &vals = GetRecord(t, data + offset);
+                std::vector<Value> vals = GetRecord(t, data + offset);
                 if (vals[ColumnID] == v){
                     bm->brelease(bid);
                     return false;
@@ -278,6 +278,9 @@ std::vector<ValueVec> RecordManager::SelectRecord(Table &t, const std::vector<Co
     std::vector<std::vector<Value> > res;
     PieceVec v = SelectPos(t, con);
     for (auto piece : v){
+        #ifdef DEBUG
+        printf("SelectRecord firsr:%d, second:%d\n", piece.first, piece.second);
+        #endif
         BID bid = bm->bread(t.tableName, piece.first);
         char *data = bm->baddr(bid);
         res.push_back(GetRecord(t, data + piece.second));

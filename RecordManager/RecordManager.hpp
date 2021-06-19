@@ -1,7 +1,7 @@
 /*
  * @Author: Yinwhe
  * @Date: 2021-06-18 21:53:58
- * @LastEditTime: 2021-06-19 17:13:12
+ * @LastEditTime: 2021-06-19 23:24:51
  * @LastEditors: Yinwhe
  * @Description: Doc
  * @FilePath: /MiniSQL/RecordManager/RecordManager.hpp
@@ -32,7 +32,7 @@ public:
 class RecordManager{
 private:
     void        Rpanic(const char *);
-    ValueVec&   GetRecord(Table &, char *);
+    ValueVec    GetRecord(Table &, char *);
     void        PutRecord(Table &, const std::vector<Value>, char *);
     bool        CheckUnique(Table &, int, const Value &);
     bool        CheckType(Column &, const Value &);
