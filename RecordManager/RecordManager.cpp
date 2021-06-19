@@ -2,7 +2,7 @@
  * @Author: Yinwhe
  * @Date: 2021-06-16 09:50:16
  * @LastEditors: Yinwhe
- * @LastEditTime: 2021-06-19 23:26:57
+ * @LastEditTime: 2021-06-19 23:47:07
  * @Description: file information
  * @Copyright: Copyright (c) 2021
  */
@@ -111,7 +111,7 @@ bool RecordManager::CheckUnique(Table &t, int ColumnID, const Value &v){
     // if (t.columns[ColumnID].index != "")
     // { // use index to check uniqueness
     //     PieceVec vec = IndexSelect(t, t.attrbs[id], Condition(t.attrbs[id].name, v, CondType::EQUAL));
-    //     return not vec.empty();
+    //     return ! vec.empty();
     // }
     int blockcount = t.blockCnt;
     for (int i = 0; i < blockcount; i++){
@@ -163,9 +163,9 @@ Piece RecordManager::InsertRecord(Table &t, const std::vector<Value> &vals){
     char *data = bm->baddr(bid);
     int size = t.size() + 1;
 
-    for (int offset = 0; offset < BLOCK_SIZE; offset += size){
-        if (data[offset] == 0){ // found free record
-            PutRecord(t, vals, data + offset);
+    for (int offset=0;offset<BLOCK_SIZE;offset+=size){
+        if (data[offset] == 0 && offset+size<BLOCK_SIZE){ // found free record
+            PutRecord(t, vals, data+offset);
             bm->bwrite(bid);
             bm->brelease(bid);
             #ifdef DEBUG
@@ -178,7 +178,7 @@ Piece RecordManager::InsertRecord(Table &t, const std::vector<Value> &vals){
 
     // Or we need to allocate a new page
     t.blockCnt += 1;
-    bid = bm->bread(t.tableName, t.blockCnt -  1);
+    bid = bm->bread(t.tableName, t.blockCnt-1);
     data = bm->baddr(bid);
     #ifdef DEBUG
     printf("InsertRecord, new block created:%d\n", bid);
@@ -261,7 +261,7 @@ PieceVec RecordManager::SelectPos(Table &t, const std::vector<Condition> con)
     return v;
 }
 
-void RecordManager::DeleteRecord(Table &t, const std::vector<Condition> con){
+void RecordManager::DeleteRecord(Table &t, const std::vector<Condition> &con){
     PieceVec v = SelectPos(t, con);
     for (auto piece : v){
         BID bid = bm->bread(t.tableName, piece.first);
@@ -273,7 +273,7 @@ void RecordManager::DeleteRecord(Table &t, const std::vector<Condition> con){
     }
 }
 
-std::vector<ValueVec> RecordManager::SelectRecord(Table &t, const std::vector<Condition> con)
+std::vector<ValueVec> RecordManager::SelectRecord(Table &t, const std::vector<Condition> &con)
 {
     std::vector<std::vector<Value> > res;
     PieceVec v = SelectPos(t, con);

@@ -1,7 +1,7 @@
 /*
  * @Author: Yinwhe
  * @Date: 2021-06-18 21:53:58
- * @LastEditTime: 2021-06-19 23:24:51
+ * @LastEditTime: 2021-06-19 23:35:33
  * @LastEditors: Yinwhe
  * @Description: Doc
  * @FilePath: /MiniSQL/RecordManager/RecordManager.hpp
@@ -45,6 +45,6 @@ public:
     void    CreateTable(Table &t);
     void    DropTable(Table &t);
     Piece   InsertRecord(Table &t, const std::vector<Value> &vals);
-    void    DeleteRecord(Table &t, const std::vector<Condition> conds);
-    std::vector<ValueVec> SelectRecord(Table &t, const std::vector<Condition> conds);
+    void    DeleteRecord(Table &t, const std::vector<Condition> &con);
+    std::vector<ValueVec> SelectRecord(Table &t, const std::vector<Condition> &con);
 };
