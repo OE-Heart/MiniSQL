@@ -2,7 +2,7 @@
  * @Author: Ou Yixin
  * @Date: 2021-06-14 17:41:38
  * @LastEditors: Ou Yixin
- * @LastEditTime: 2021-06-19 10:50:49
+ * @LastEditTime: 2021-06-19 12:10:00
  * @Description: 
  * @FilePath: /MiniSQL/CatalogManager/CatalogManager.cpp
  */
@@ -90,6 +90,18 @@ Index CatalogManager::getIndex(const std::string &indexName)
     return indices.at(indexName);
 }
 
+static std::string loadString(std::ifstream &fin) {
+    int len;
+    fin.read(reinterpret_cast<char *>(&len), sizeof(int));
+    char *cstr = new char[len + 1];
+    fin.read(cstr, len);
+    cstr[len] = 0;
+    std::string str;
+    std::copy_n(cstr, len, std::back_inserter(str));
+    delete[] cstr;
+    return str;
+}
+
 void CatalogManager::load()
 {
     std::ifstream fin(catalogFile, std::ios::binary);
@@ -97,7 +109,22 @@ void CatalogManager::load()
 
     while (fin)
     {
-        
+        auto c = fin.get();
+        if (fin.eof()) break;
+        if (c) //table
+        {
+            std::string s = loadString(fin);
+            const char *p = s.data();
+            Table table = Table::fromString(p);
+            tables[table.tableName] = table;
+        }
+        else  //index
+        {
+            std::string indexName = loadString(fin);
+            std::string tableName = loadString(fin);
+            std::string columnName = loadString(fin);
+            indices[indexName] = {indexName, tableName, columnName};
+        }
     }
 }
 

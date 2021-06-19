@@ -2,7 +2,7 @@
  * @Author: Ou Yixin
  * @Date: 2021-06-14 19:24:50
  * @LastEditors: Ou Yixin
- * @LastEditTime: 2021-06-19 11:13:00
+ * @LastEditTime: 2021-06-19 12:13:42
  * @Description: 
  * @FilePath: /MiniSQL/CatalogManager/Table.hpp
  */
@@ -26,6 +26,7 @@ struct Table
     int indexOfCol(const std::string& columnName);
     int size();
     std::string toString() const;
+    static Table fromString(const char *&p);
 };
 
 bool Table::hasColumn(const std::string& columnName) const
@@ -79,6 +80,7 @@ std::string Table::toString() const
     int columnsSize = columns.size();
     std::copy_n(reinterpret_cast<char *>(&columnsSize), sizeof(int), std::back_inserter(s));
     std::copy_n(reinterpret_cast<const char*>(&recordCnt), sizeof(int), std::back_inserter(s));
+    std::copy_n(reinterpret_cast<const char*>(&blockCnt), sizeof(int), std::back_inserter(s));
 
     for (const auto &column : columns)
     {
@@ -86,4 +88,27 @@ std::string Table::toString() const
     }
 
     return s;
+}
+
+Table Table::fromString(const char *&p)
+{
+    Table table;
+    int nameSize = *reinterpret_cast<const int *>(p);
+    p += sizeof(int);
+    std::copy_n(p, nameSize, std::back_inserter(table.tableName));
+    p += nameSize;
+    int columnsSize = *reinterpret_cast<const int *>(p);
+    p += sizeof(int);
+    table.recordCnt = *reinterpret_cast<const int *>(p);
+    p += sizeof(int);
+    table.blockCnt = *reinterpret_cast<const int *>(p);
+    p += sizeof(int);
+
+    for (int i = 0; i < columnsSize; i++)
+    {
+        Column column = Column::fromString(p);
+        table.columns.emplace_back(column);
+    }
+
+    return table;
 }
