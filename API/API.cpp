@@ -2,7 +2,7 @@
  * @Author: Ou Yixin
  * @Date: 2021-06-09 23:25:37
  * @LastEditors: Ou Yixin
- * @LastEditTime: 2021-06-19 19:39:17
+ * @LastEditTime: 2021-06-19 20:08:54
  * @Description: 
  * @FilePath: /MiniSQL/API/API.cpp
  */
@@ -157,6 +157,13 @@ void API::select(const std::string &tableName, std::vector<Condition> &condition
             }
         }
     }
+}
+
+void API::endLoop()
+{
+    delete rm;
+    delete cm;
+    exit(0);
 }
 
 CatalogManager *API::getCatalogManager()

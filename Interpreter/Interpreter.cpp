@@ -2,7 +2,7 @@
  * @Author: Ou Yixin
  * @Date: 2021-06-09 23:19:04
  * @LastEditors: Ou Yixin
- * @LastEditTime: 2021-06-19 19:43:38
+ * @LastEditTime: 2021-06-19 20:04:54
  * @Description: 
  * @FilePath: /MiniSQL/Interpreter/Interpreter.cpp
  */
@@ -113,7 +113,7 @@ void Interpreter::Parse(const std::vector<std::string> &strvec)
     else if (strvec.at(0) == "quit" || strvec.at(0) == "exit")
     {
         std::cout << "Bye\n";
-        exit(0);
+        API::endLoop();
     }
     else std::cout << "ERROR : You have an error in your SQL syntax; check the manual that corresponds to your MiniSQL server version for the right syntax to use near '" << strvec.at(0) << "'\n";
 }

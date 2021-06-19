@@ -2,7 +2,7 @@
  * @Author: Ou Yixin
  * @Date: 2021-06-09 23:25:26
  * @LastEditors: Ou Yixin
- * @LastEditTime: 2021-06-19 17:23:42
+ * @LastEditTime: 2021-06-19 20:03:37
  * @Description: 
  * @FilePath: /MiniSQL/API/API.hpp
  */
@@ -32,6 +32,8 @@ void dropIndex(const std::string &indexName);
 void insertOn(const std::string &tableName, std::vector<Value> &valueList);
 void deleteFrom(const std::string &tableName, std::vector<Condition> &conditionList);
 void select(const std::string &tableName, std::vector<Condition> &conditionList);
+
+void endLoop();
 
 static CatalogManager *cm;
 CatalogManager *getCatalogManager();
