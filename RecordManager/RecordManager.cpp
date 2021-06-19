@@ -2,7 +2,7 @@
  * @Author: Yinwhe
  * @Date: 2021-06-16 09:50:16
  * @LastEditors: Yinwhe
- * @LastEditTime: 2021-06-19 11:05:47
+ * @LastEditTime: 2021-06-19 12:22:57
  * @Description: file information
  * @Copyright: Copyright (c) 2021
  */
@@ -12,9 +12,6 @@
 #include "RecordManager.hpp"
 
 namespace RM{
-
-typedef std::pair<int, int> Piece;
-typedef std::vector<Piece> PieceVec;
 
 void Rpanic(const char* s){
     printf("[RecordManager Panic] %s", s);
@@ -36,7 +33,7 @@ void dropTable(Table &t){
     remove((t.tableName + ".data").c_str());
 }
 
-static std::vector<Value> &getRecord(Table &t, char *data){
+static ValueVec &getRecord(Table &t, char *data){
     const std::vector<Column> &attr = t.columns;
     std::vector<Value> res;
     int size = attr.size();
@@ -193,23 +190,19 @@ static PieceVec SelectPos(Table &t, const std::vector<Condition> con)
             char *data = bm->baddr(bid);
             int size = t.size()+1;
             for (int offset = 0; offset < BLOCK_SIZE; offset += size){
-                if (data[offset] == 1){
-                    std::vector<Value> res = getRecord(t, data + offset);
-                    bool good = true;
-                    for (Condition c : con){
-                        for (int j = 0; j < t.columns.size(); j++){
-                            if (c.columnName == t.columns[j].columnName && ! c.isTrue(res[j]))
-                            {
-                                good = false;
-                                break;
-                            }
-                        }
-                        if (! good)
-                            break;
+                if(!data[offset]) continue; // Empty skip
+                
+                std::vector<Value> res = getRecord(t, data + offset);
+                bool good = true;
+                for (Condition c : con){
+                    int index = t.indexOfCol(c.columnName);
+                    if (!c.isTrue(res[index])){
+                        good = false;
+                        break;
                     }
-                    if (good)
-                        v.push_back(std::make_pair(i, offset));
                 }
+                if (good)
+                    v.push_back(std::make_pair(i, offset));
             }
             bm->brelease(bid);
         }
@@ -228,7 +221,7 @@ void DeleteRecord(Table &t, const std::vector<Condition> con){
     }
 }
 
-std::vector<std::vector<Value> > SelectRecord(Table &t, const std::vector<Condition> con)
+std::vector<ValueVec> SelectRecord(Table &t, const std::vector<Condition> con)
 {
     std::vector<std::vector<Value> > res;
     PieceVec v = SelectPos(t, con);
