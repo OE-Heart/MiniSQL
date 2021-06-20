@@ -26,8 +26,10 @@ select * from t1 where (id<>6);
 
 select * from t1 where salary<1850.00;
 select * from t1 where (salary>=4000.00);
-select * from t1 where salary=3000.00;
-select * from t1 where salary<>3000.00;
+select * from t1 where (salary=3000.00);
+select * from t1 where (salary<>3000.00);
+select * from t1 where (salary<>3000.00 and id>4);
+delete from t1 where (salary<>3000.00 and id>4);
 
 select * from t1 where (id>4 and salary >=2000.00);
 select * from t1 where age>25 and age <30;
