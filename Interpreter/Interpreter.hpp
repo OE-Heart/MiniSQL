@@ -2,7 +2,7 @@
  * @Author: Ou Yixin
  * @Date: 2021-06-10 10:04:37
  * @LastEditors: Ou Yixin
- * @LastEditTime: 2021-06-19 19:43:18
+ * @LastEditTime: 2021-06-20 10:44:48
  * @Description: 
  * @FilePath: /MiniSQL/Interpreter/Interpreter.hpp
  */
@@ -22,7 +22,7 @@ public:
     Interpreter() = default;
 private:
     static std::string getCmdString();
-    std::vector<std::string> Tokenizer(const std::string &str);
+    static std::vector<std::string> Tokenizer(const std::string &str);
     static void Parse(const std::vector<std::string> &strvec);
     static void parseCreateTable(const std::vector<std::string> &strvec);
     static void parseCreateIndex(const std::vector<std::string> &strvec);
@@ -31,6 +31,7 @@ private:
     static void parseInsert(const std::vector<std::string> &strvec);
     static void parseDelete(const std::vector<std::string> &strvec);
     static void parseSelect(const std::vector<std::string> &strvec);
+    static void parseExec(const std::vector<std::string> &strvec);
 };
 
 const std::string ErrorMsg = "ERROR : You have an error in your SQL syntax; check the manual that corresponds to your MiniSQL server version for the right syntax.\n";

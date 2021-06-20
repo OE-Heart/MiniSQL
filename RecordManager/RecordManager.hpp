@@ -1,8 +1,8 @@
 /*
  * @Author: Yinwhe
  * @Date: 2021-06-18 21:53:58
- * @LastEditTime: 2021-06-19 23:35:33
- * @LastEditors: Yinwhe
+ * @LastEditTime: 2021-06-20 10:59:56
+ * @LastEditors: Ou Yixin
  * @Description: Doc
  * @FilePath: /MiniSQL/RecordManager/RecordManager.hpp
  */
@@ -46,5 +46,7 @@ public:
     void    DropTable(Table &t);
     Piece   InsertRecord(Table &t, const std::vector<Value> &vals);
     void    DeleteRecord(Table &t, const std::vector<Condition> &con);
+    void    DeleteAllRecord(Table &t);
     std::vector<ValueVec> SelectRecord(Table &t, const std::vector<Condition> &con);
+    std::vector<ValueVec> SelectAllRecord(Table &t);
 };
