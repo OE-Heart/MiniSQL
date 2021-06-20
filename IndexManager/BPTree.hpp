@@ -362,8 +362,6 @@ bool BPTree<T>::deleteBranchLL(BPTree::TreeNode node, BPTree::TreeNode parent, B
     node->keys[0] = parent->keys[index];
     parent->keys[index] = sibling->keys[sibling->cnt - 1];
     node->cnt++;
-//                !!!! fix this
-//                if(sibling->children[sibling->cnt])
     sibling->children[sibling->cnt]->parent = node;
     sibling->removeAt(sibling->cnt - 1);
     return true;
