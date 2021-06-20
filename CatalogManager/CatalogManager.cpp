@@ -1,8 +1,8 @@
 /*
  * @Author: Ou Yixin
  * @Date: 2021-06-14 17:41:38
- * @LastEditors: Ou Yixin
- * @LastEditTime: 2021-06-19 22:36:29
+ * @LastEditors: Yinwhe
+ * @LastEditTime: 2021-06-20 18:05:47
  * @Description: 
  * @FilePath: /MiniSQL/CatalogManager/CatalogManager.cpp
  */
@@ -32,7 +32,7 @@ void CatalogManager::newIndex(const std::string &indexName, const std::string &t
     int index = table.indexOfCol(columnName);
     Column &column = table.columns[index];
     //column.index是个字符串
-    column.index = columnName;
+    column.index = indexName;
 }
 
 void CatalogManager::dropTable(const std::string &tableName) 

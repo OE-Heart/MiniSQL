@@ -98,9 +98,9 @@ bool BPTree<T>::findKeyFromNode(TreeNode node, const T &key, Nodemap<T> &res) {
 template<typename T>
 int BPTree<T>::find(const T &key) {//返回的是key所对应的keyoffset
     Nodemap<T> res;
-    if (root==nullptr) { return -1; }
+    if (root==nullptr) { std::cout<<"root null\n"; return -1; }
     if (findKeyFromNode(root, key, res)) { return res.node->keyOffset[res.index]; }
-    else { return -1; }
+    else { std::cout<<"not found\n"; return -1; }
 }
 
 template<typename T>
@@ -362,8 +362,6 @@ bool BPTree<T>::deleteBranchLL(BPTree::TreeNode node, BPTree::TreeNode parent, B
     node->keys[0] = parent->keys[index];
     parent->keys[index] = sibling->keys[sibling->cnt - 1];
     node->cnt++;
-//                !!!! fix this
-//                if(sibling->children[sibling->cnt])
     sibling->children[sibling->cnt]->parent = node;
     sibling->removeAt(sibling->cnt - 1);
     return true;

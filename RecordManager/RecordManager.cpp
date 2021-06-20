@@ -2,7 +2,7 @@
  * @Author: Yinwhe
  * @Date: 2021-06-16 09:50:16
  * @LastEditors: Yinwhe
- * @LastEditTime: 2021-06-20 16:54:22
+ * @LastEditTime: 2021-06-20 18:03:02
  * @Description: file information
  * @Copyright: Copyright (c) 2021
  */
@@ -14,7 +14,7 @@
 #include "RecordManager.hpp"
 #include "IndexManager.hpp"
 
-// #define DEBUG
+#define DEBUG
 
 BufferManager *bm;
 
@@ -49,6 +49,11 @@ void RecordManager::CreateTable(Table &t){
 void RecordManager::DropTable(Table &t){
     bm->bflush(t.tableName);
     remove((t.tableName + ".data").c_str());
+    for(const Column &col : t.columns){
+        if(!col.index.empty()){
+            im->DropIndex(col.index, t, col.columnName);
+        }
+    }
     #ifdef DEBUG
     printf("RM DropTable Done\n");
     #endif
@@ -236,9 +241,12 @@ PieceVec RecordManager::SelectPos(Table &t, const std::vector<Condition> con)
     PieceVec v;
     bool flag = false;
     for (const Condition &c : con){
-        if(c.op != OP::EQ) break; // Not supported
         int index = t.indexOfCol(c.columnName);
         if (t.columns[index].index != ""){
+            #ifdef DEBUG
+            printf("SelectPos Use index, indexname:%s, on:%s\n", t.columns[index].index.c_str(), t.columns[index].columnName.c_str());
+            #endif
+            if(c.op != OP::EQ) break; // Not supported
             if (!flag)
             {
                 flag = true;
@@ -297,7 +305,7 @@ void RecordManager::DeleteAllRecord(Table &t){
 std::vector<ValueVec> RecordManager::SelectRecord(Table &t, const std::vector<Condition> &con)
 {
     std::vector<std::vector<Value> > res;
-
+    
     PieceVec v = SelectPos(t, con);
     for (auto piece : v){
         #ifdef DEBUG
@@ -327,6 +335,9 @@ PieceVec RecordManager::IndexSelect(Table &t, int ColumnID, const Condition &con
         Rpanic("IndexSelect error, range select not supported!");
 
     int off = im->FindIndex(attr.index, t, attr.columnName, con.value);
+    #ifdef DEBUG
+    printf("IndexSelect off:%d\n", off);
+    #endif
     res.emplace_back(std::make_pair(off/BLOCK_SIZE, off%BLOCK_SIZE));
     return res;
 }
