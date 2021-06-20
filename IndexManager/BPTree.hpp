@@ -156,7 +156,7 @@ void BPTree<T>::cascadeInsert(BPTree::TreeNode node) {//需要分裂的插入情
 
 template<typename T>
 bool BPTree<T>::remove(const T &key) {
-    NodeSearchParse<T> res;
+    Nodemap<T> res;
     if (!root) {
         cerr << "Dequeuing empty BPTree!" << endl;
         return false;
