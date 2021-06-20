@@ -81,7 +81,7 @@ void API::dropIndex(const std::string &indexName)
     
     Index &index = CM->getIndex(indexName);
     Table &table = CM->getTable(index.tableName);
-
+    
     CM->dropIndex(indexName);
     RM->im->DropIndex(indexName, table, index.columnName);
 }

@@ -348,7 +348,7 @@ void Interpreter::parseDelete(const std::vector<std::string> &strvec)
         }
     }
 
-    if (strvec.at(3) != "where" || strvec.at(4) != "(")
+    if (strvec.at(3) != "where")
     {
         std::cout << ErrorMsg;
         return ;
@@ -364,9 +364,8 @@ void Interpreter::parseDelete(const std::vector<std::string> &strvec)
         }
         Table table = cm->getTable(tableName);
 
-        for (int i = 5; i < vecSize; )
+        for (int i = 4; i < vecSize; )
         {
-            if (strvec.at(i) == ";") break;
             std::string columnName = strvec.at(i++);
             OP op;
             if (strvec.at(i) == "=")
@@ -495,7 +494,7 @@ void Interpreter::parseSelect(const std::vector<std::string> &strvec)
         }
     }
 
-    if (strvec.at(4) != "where" || strvec.at(5) != "(")
+    if (strvec.at(4) != "where")
     {
         std::cout << ErrorMsg;
         return ;
@@ -506,9 +505,8 @@ void Interpreter::parseSelect(const std::vector<std::string> &strvec)
         CatalogManager *cm = API::getCatalogManager();
         Table table = cm->getTable(tableName);
 
-        for (int i = 6; i < vecSize; )
+        for (int i = 5; i < vecSize; )
         {
-            if (strvec.at(i) == ";") break;
             std::string columnName = strvec.at(i++);
             OP op;
             if (strvec.at(i) == "=")
