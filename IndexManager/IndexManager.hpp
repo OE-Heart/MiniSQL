@@ -1,8 +1,8 @@
 /*
  * @Author: Gcx
  * @Date: 2021-06-19 18:28:23
- * @LastEditors: Yinwhe
- * @LastEditTime: 2021-06-20 19:52:41
+ * @LastEditors: Please set LastEditors
+ * @LastEditTime: 2021-06-20 20:33:12
  * @Description: file information
  * @Copyright: Copyright (c) 2021
  */
@@ -44,7 +44,6 @@ void _index_manager<T>::create_index(const std::string index_name, Table & table
     }
     
     BPTree<T> *tree = new BPTree<T>(index_name, size, 4096/(size + sizeof(int)));
-
     std::pair<typename std::map<std::string, BPTree<T>* >::iterator, bool> ret;
     ret=tree_map.insert(std::pair<std::string, BPTree<T>* >(index_name, tree));
     if(ret.second==false){

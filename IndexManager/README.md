@@ -417,26 +417,37 @@ bool BPTree<T>::cascadeDelete(BPTree::TreeNode node) {
 
 ## IndexManager
 
-利用`BPTree`中的函数实现index的创建、查找、插入、删除、修改
+利用`BPTree`中的函数实现`index`的`创建`、`查找`、`插入`、`删除`和`修改`
 
 ### IndexManager的定义
 
-其中包含了`BPTree`属性的`tree`
+其中包含了`int`、`double`和`string`变量类型的`_index_manager`具体化，并对index的`创建`、`查找`、`插入`、`删除`和`修改`进行了实现
 
 ```c++
-template<typename T>
 class IndexManager{
+private:
+    _index_manager<int> *int_im;
+    _index_manager<double> *float_im;
+    _index_manager<std::string> *char_im;
 public:
-    BPTree<T> tree;
+    void CreateIndex(const std::string index_name, Table & table, const std::string & column_name);
+    int  FindIndex(const std::string index_name, Table & table, const std::string & column_name, const Value &val);
+    void InsertIndex(const std::string index_name, Table & table, const std::string & column_name, const Value &val, int offset);
+    void DeleteIndex(const std::string index_name, Table & table, const std::string & column_name, const Value &val);
+    void AlterIndex(const std::string index_name, Table & table, const std::string & column_name, const Value &val_before, const Value &val_after, int offset);
+    void DropIndex(const std::string index_name, Table & table, const std::string & column_name);
 };
 ```
 
 ### index的创建
 
+**对于`int`和`double`类型的变量使用统一的模板类型，对于`string`类型的变量进行模板具体化**
+
+#### `int`和`double`类型的变量
+
 ```c++
 template<typename T>
 void IndexManager<T>::create_index(BPTree<T> &tree,Table & table,std::string & column_name){
-    //对tree进行初始化
     //计算每个block中record的条数
     //利用table.hpp中提供的indexOfCol获取该属性的序号index_col
     //利用table.hpp中提供的blockCnt，遍历blockCnt个block
@@ -448,6 +459,32 @@ void IndexManager<T>::create_index(BPTree<T> &tree,Table & table,std::string & c
           //如果record的首位为0，则代表该record不可用，跳到下一条record并continue
           //否则根据每个columns的size，找到column_name对应的那个地址起始值
           //读取需求column_name的那个搜索码值
+          //调用BPTree的insert函数插入该record即可
+            }
+        }
+    }
+}
+```
+
+#### `string`类型的变量
+
+**进行模板具体化**
+
+```c++
+template<>
+inline void _index_manager<std::string>::create_index(const std::string index_name, Table & table,const std::string & column_name){
+    //计算每个block中record的条数
+    //利用table.hpp中提供的indexOfCol获取该属性的序号index_col
+    //利用table.hpp中提供的blockCnt，遍历blockCnt个block
+    for(int i=0;i<table.blockCnt;i++){//找blockcnt个block 
+        //对于每个block，利用table.hpp中提供的bread函数读取table文件的第i个块
+    	//利用table.hpp中提供的baddr函数读取block中存储的数据        
+        for(int j=0;j<num_record;j++){
+          //对于每一条record
+          //如果record的首位为0，则代表该record不可用，跳到下一条record并continue
+          //否则根据每个columns的size，找到column_name对应的那个地址起始值
+          //读取需求column_name的那个搜索码值
+          std::string key = std::string((char *)data);
           //调用BPTree的insert函数插入该record即可
             }
         }
