@@ -2,7 +2,7 @@
  * @Author: Ou Yixin
  * @Date: 2021-06-09 23:19:04
  * @LastEditors: Ou Yixin
- * @LastEditTime: 2021-06-19 23:58:53
+ * @LastEditTime: 2021-06-20 11:04:10
  * @Description: 
  * @FilePath: /MiniSQL/Interpreter/Interpreter.cpp
  */
@@ -24,9 +24,7 @@ void Interpreter::mainLoop()
     std::cout << "Copyright (c) 2021, 2021, OE-Heart, TLBZero and Chenxi Gao.\n";
     std::cout << "\n";
     std::string str;
-    std::string input;
-    bool exitState = false;
-    while (!exitState)
+    while (true)
     {
         try
         {
@@ -110,6 +108,7 @@ void Interpreter::Parse(const std::vector<std::string> &strvec)
     else if (strvec.at(0) == "insert") parseInsert(strvec);
     else if (strvec.at(0) == "delete") parseDelete(strvec);
     else if (strvec.at(0) == "select") parseSelect(strvec);
+    else if (strvec.at(0) == "execfile") parseExec(strvec);
     else if (strvec.at(0) == "quit" || strvec.at(0) == "exit")
     {
         std::cout << "Bye\n";
@@ -187,11 +186,11 @@ void Interpreter::parseCreateTable(const std::vector<std::string> &strvec)
             return ;
         }
 
-        auto begin = std::chrono::high_resolution_clock::now();
+        auto start = std::chrono::high_resolution_clock::now();
         API::createTable(tableName, Columns, primaryKey);
         auto end = std::chrono::high_resolution_clock::now();
-        auto time = begin-end;
-        std::cout << "Command was successfully executed and took " << time.count() << "s.\n";
+        auto duration = std::chrono::duration_cast<std::chrono::microseconds>(end - start);
+        std::cout << "Command was successfully executed and took " << double(duration.count()) * std::chrono::microseconds::period::num / std::chrono::microseconds::period::den << "s.\n";
     }
     catch (std::out_of_range)
     {
@@ -212,11 +211,11 @@ void Interpreter::parseCreateIndex(const std::vector<std::string> &strvec)
     std::string columnName = strvec.at(6);
     try
     {
-        auto begin = std::chrono::high_resolution_clock::now();
+        auto start = std::chrono::high_resolution_clock::now();
         API::createIndex(indexName, tableName, columnName);
         auto end = std::chrono::high_resolution_clock::now();
-        auto time = begin-end;
-        std::cout << "Command was successfully executed and took " << time.count() << "s.\n";
+        auto duration = std::chrono::duration_cast<std::chrono::microseconds>(end - start);
+        std::cout << "Command was successfully executed and took " << double(duration.count()) * std::chrono::microseconds::period::num / std::chrono::microseconds::period::den << "s.\n";
     }
     catch (std::out_of_range)
     {
@@ -229,11 +228,11 @@ void Interpreter::parseDropTable(const std::vector<std::string> &strvec)
     std::string tableName = strvec.at(2);
     try
     {
-        auto begin = std::chrono::high_resolution_clock::now();
+        auto start = std::chrono::high_resolution_clock::now();
         API::dropTable(tableName);
         auto end = std::chrono::high_resolution_clock::now();
-        auto time = begin-end;
-        std::cout << "Command was successfully executed and took " << time.count() << "s.\n";
+        auto duration = std::chrono::duration_cast<std::chrono::microseconds>(end - start);
+        std::cout << "Command was successfully executed and took " << double(duration.count()) * std::chrono::microseconds::period::num / std::chrono::microseconds::period::den << "s.\n";
     }
     catch (std::out_of_range)
     {
@@ -246,11 +245,11 @@ void Interpreter::parseDropIndex(const std::vector<std::string> &strvec)
     std::string indexName = strvec.at(2);
     try
     {
-        auto begin = std::chrono::high_resolution_clock::now();
+        auto start = std::chrono::high_resolution_clock::now();
         API::dropIndex(indexName);
         auto end = std::chrono::high_resolution_clock::now();
-        auto time = begin-end;
-        std::cout << "Command was successfully executed and took " << time.count() << "s.\n";
+        auto duration = std::chrono::duration_cast<std::chrono::microseconds>(end - start);
+        std::cout << "Command was successfully executed and took " << double(duration.count()) * std::chrono::microseconds::period::num / std::chrono::microseconds::period::den << "s.\n";
     }
     catch (std::out_of_range)
     {
@@ -260,7 +259,7 @@ void Interpreter::parseDropIndex(const std::vector<std::string> &strvec)
 
 void Interpreter::parseInsert(const std::vector<std::string> &strvec)
 {
-    if (strvec.at(1) != "into" || strvec.at(3) != "values"  || strvec.at(4) != "(")
+    if (strvec.at(1) != "into" || strvec.at(3) != "values" || strvec.at(4) != "(")
     {
         std::cout << ErrorMsg;
         return ;
@@ -307,11 +306,11 @@ void Interpreter::parseInsert(const std::vector<std::string> &strvec)
             valueList.push_back(v);
         }
 
-        auto begin = std::chrono::high_resolution_clock::now();
+        auto start = std::chrono::high_resolution_clock::now();
         API::insertOn(tableName, valueList);
         auto end = std::chrono::high_resolution_clock::now();
-        auto time = begin-end;
-        std::cout << "Command was successfully executed and took " << time.count() << "s.\n";
+        auto duration = std::chrono::duration_cast<std::chrono::microseconds>(end - start);
+        std::cout << "Command was successfully executed and took " << double(duration.count()) * std::chrono::microseconds::period::num / std::chrono::microseconds::period::den << "s.\n";
     }
     catch (std::out_of_range)
     {
@@ -321,7 +320,8 @@ void Interpreter::parseInsert(const std::vector<std::string> &strvec)
 
 void Interpreter::parseDelete(const std::vector<std::string> &strvec)
 {
-    if (strvec.at(1) != "from" || strvec.at(3) != "where" || strvec.at(4) != "(")
+
+    if (strvec.at(1) != "from")
     {
         std::cout << ErrorMsg;
         return ;
@@ -330,6 +330,29 @@ void Interpreter::parseDelete(const std::vector<std::string> &strvec)
     std::string tableName = strvec.at(2);
     std::vector<Condition> conditions;
     int vecSize = strvec.size();
+
+    if (strvec.at(3) == ";")
+    {
+        try
+        {
+            auto start = std::chrono::high_resolution_clock::now();
+            API::deleteAll(tableName);
+            auto end = std::chrono::high_resolution_clock::now();
+            auto duration = std::chrono::duration_cast<std::chrono::microseconds>(end - start);
+            std::cout << "Command was successfully executed and took " << double(duration.count()) * std::chrono::microseconds::period::num / std::chrono::microseconds::period::den << "s.\n";
+            return ;
+        }
+        catch (std::out_of_range)
+        {
+            throw std::runtime_error(ErrorMsg);
+        }
+    }
+
+    if (strvec.at(3) != "where" || strvec.at(4) != "(")
+    {
+        std::cout << ErrorMsg;
+        return ;
+    }
 
     try
     {
@@ -343,6 +366,7 @@ void Interpreter::parseDelete(const std::vector<std::string> &strvec)
 
         for (int i = 5; i < vecSize; )
         {
+            if (strvec.at(i) == ";") break;
             std::string columnName = strvec.at(i++);
             OP op;
             if (strvec.at(i) == "=")
@@ -356,21 +380,32 @@ void Interpreter::parseDelete(const std::vector<std::string> &strvec)
             }
             else if (strvec.at(i) == "<")
             {
-                op = OP::L;
-            }
-            else if (strvec.at(i) == "<" && strvec.at(i+1) == "=")
-            {
-                op = OP::LEQ;
-                i++;
+                if (strvec.at(i+1) == ">")
+                {
+                    op = OP::NEQ;
+                    i++;
+                }
+                else if (strvec.at(i+1) == "=")
+                {
+                    op = OP::LEQ;
+                    i++;
+                }
+                else
+                {
+                    op = OP::L;
+                }
             }
             else if (strvec.at(i) == ">")
             {
-                op = OP::G;
-            }
-            else if (strvec.at(i) == ">" && strvec.at(i+1) == "=")
-            {
-                op = OP::GEQ;
-                i++;
+                if (strvec.at(i+1) == "=")
+                {
+                    op = OP::GEQ;
+                    i++;
+                }
+                else
+                {
+                    op = OP::G;
+                }
             }
             else
             {
@@ -378,7 +413,7 @@ void Interpreter::parseDelete(const std::vector<std::string> &strvec)
                 return ;
             }
             i++;
-
+            
             Value v;
             try
             {
@@ -419,11 +454,11 @@ void Interpreter::parseDelete(const std::vector<std::string> &strvec)
             i += 2; // pass "and"
         }
 
-        auto begin = std::chrono::high_resolution_clock::now();
+        auto start = std::chrono::high_resolution_clock::now();
         API::deleteFrom(tableName, conditions);
         auto end = std::chrono::high_resolution_clock::now();
-        auto time = begin-end;
-        std::cout << "Command was successfully executed and took " << time.count() << "s.\n";
+        auto duration = std::chrono::duration_cast<std::chrono::microseconds>(end - start);
+        std::cout << "Command was successfully executed and took " << double(duration.count()) * std::chrono::microseconds::period::num / std::chrono::microseconds::period::den << "s.\n";
     }
     catch (std::out_of_range)
     {
@@ -433,7 +468,7 @@ void Interpreter::parseDelete(const std::vector<std::string> &strvec)
 
 void Interpreter::parseSelect(const std::vector<std::string> &strvec)
 {
-    if (strvec.at(1) != "*" || strvec.at(2) != "from" || strvec.at(4) != "where" || strvec.at(5) != "(")
+    if (strvec.at(1) != "*" || strvec.at(2) != "from")
     {
         std::cout << ErrorMsg;
         return ;
@@ -442,6 +477,29 @@ void Interpreter::parseSelect(const std::vector<std::string> &strvec)
     std::string tableName = strvec.at(3);
     std::vector<Condition> conditions;
     int vecSize = strvec.size();
+
+    if (strvec.at(4) == ";")
+    {
+        try
+        {
+            auto start = std::chrono::high_resolution_clock::now();
+            API::selectAll(tableName);
+            auto end = std::chrono::high_resolution_clock::now();
+            auto duration = std::chrono::duration_cast<std::chrono::microseconds>(end - start);
+            std::cout << "Command was successfully executed and took " << double(duration.count()) * std::chrono::microseconds::period::num / std::chrono::microseconds::period::den << "s.\n";
+            return ;
+        }
+        catch (std::out_of_range)
+        {
+            throw std::runtime_error(ErrorMsg);
+        }
+    }
+
+    if (strvec.at(4) != "where" || strvec.at(5) != "(")
+    {
+        std::cout << ErrorMsg;
+        return ;
+    }
 
     try
     {
@@ -540,14 +598,59 @@ void Interpreter::parseSelect(const std::vector<std::string> &strvec)
             conditions.push_back(condition);
             i += 2; // pass "and"
         }
-        auto begin = std::chrono::high_resolution_clock::now();
+        auto start = std::chrono::high_resolution_clock::now();
         API::select(tableName, conditions);
         auto end = std::chrono::high_resolution_clock::now();
-        auto time = begin-end;
-        std::cout << "Command was successfully executed and took " << time.count() << "s.\n";
+        auto duration = std::chrono::duration_cast<std::chrono::microseconds>(end - start);
+        std::cout << "Command was successfully executed and took " << double(duration.count()) * std::chrono::microseconds::period::num / std::chrono::microseconds::period::den << "s.\n";
     }
     catch (std::out_of_range)
     {
         throw std::runtime_error(ErrorMsg);
+    }
+}
+
+void Interpreter::parseExec(const std::vector<std::string> &strvec)
+{
+    if (strvec.at(2) != ";")
+    {
+        std::cout << ErrorMsg;
+        return ;
+    }
+
+    std::string fileName = strvec.at(1);
+    std::ifstream infile(fileName);
+
+    if (!infile)
+    {
+        std::cout << "ERROR : You have an error in your SQL syntax; file named " << fileName << " doesn't exist.\n";
+        return ;
+    }
+
+    std::string str;
+    std::string line;
+    while (std::getline(infile, line))
+    {
+        for (int i = 0; i < line.length(); i++) 
+        {
+            if (line[i] == '*' || line[i] == '=' || line[i] == ',' || line[i] == '(' || line[i] == ')' || line[i] == '<' || line[i] == '>' || line[i] == ';') 
+                {
+                    if (line[i-1] != ' ') line.insert(i++, " ");
+                    if (line[i+1] != ' ') line.insert(++i, " ");
+                }
+        }
+
+        str += line;
+
+        while (!line.empty() && isspace(line.back()))  
+            line.pop_back();
+        if (line.back() == ';')
+        {
+            std::vector<std::string> cmd = Tokenizer(str);
+            Parse(cmd);
+            str.clear();
+            continue;
+        }
+        str.push_back(' ');
     }
 }

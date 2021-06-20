@@ -2,7 +2,7 @@
  * @Author: Yinwhe
  * @Date: 2021-06-19 13:50:11
  * @LastEditors: Ou Yixin
- * @LastEditTime: 2021-06-19 21:53:57
+ * @LastEditTime: 2021-06-20 00:34:46
  * @Description: file information
  * @Copyright: Copyright (c) 2021
  */
@@ -44,6 +44,7 @@ int Table::size()
         recordSize = 0;
         for (const auto &col : columns) {
             recordSize += col.size();
+            std::cout << "Table::size() " << col.size() << "\n";
         }
         return recordSize;
     }
@@ -94,6 +95,8 @@ Table Table::fromString(const char *&p)
         Column column = Column::fromString(p);
         table.columns.emplace_back(column);
     }
+
+    table.recordSize = 0;
 
     return table;
 }

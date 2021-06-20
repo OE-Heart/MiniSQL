@@ -2,7 +2,7 @@
  * @Author: Ou Yixin
  * @Date: 2021-06-09 23:25:37
  * @LastEditors: Ou Yixin
- * @LastEditTime: 2021-06-19 23:36:40
+ * @LastEditTime: 2021-06-20 11:05:21
  * @Description: 
  * @FilePath: /MiniSQL/API/API.cpp
  */
@@ -132,6 +132,21 @@ void API::deleteFrom(const std::string &tableName, std::vector<Condition> &condi
     RM->DeleteRecord(table, conditionList);
 }
 
+void API::deleteAll(const std::string &tableName)
+{
+    auto CM = API::getCatalogManager();
+    auto RM = API::getRecordManager();
+
+    if (!CM->existTable(tableName))
+    {
+        std::cout << "ERROR : You have an error in your SQL syntax; tabel named " << tableName << " doesn't exist.\n";
+        return ;
+    }
+
+    Table &table = CM->getTable(tableName);
+
+    RM->DeleteAllRecord(table);
+}
 
 void API::select(const std::string &tableName, std::vector<Condition> &conditionList)
 {
@@ -154,11 +169,46 @@ void API::select(const std::string &tableName, std::vector<Condition> &condition
         }
     }
 
-    
-
     std::vector<ValueVec> result = RM->SelectRecord(table, conditionList);
+    
+    std::cout << std::left;  //设置对齐方式为左对齐，默认为右对齐
+    //std::cout << setfill(' ');  //设置空位置填充符号为空格，默认即为空格
 
-    std::cout << "here\n";
+    for (const auto &column : table.columns)
+    {
+        std::cout << std::setw(10) << column.columnName;
+    }
+    std::cout << "\n";
+
+    for (int i = 0; i < result.size(); ++i)
+    {
+        for (int j = 0; j < result.at(i).size(); ++j)
+        {
+            switch (table.columns[j].field)
+            {
+                case Field::INT:    std::cout << std::setw(10) << std::get<int>(result[i][j]);break;
+                case Field::FLOAT:  std::cout << std::setw(10) << std::get<double>(result[i][j]);break;
+                case Field::CHAR:   std::cout << std::setw(10) << std::get<std::string>(result[i][j]);break;
+            }
+        }
+        std::cout << "\n";
+    }
+}
+
+void API::selectAll(const std::string &tableName)
+{
+    auto CM = API::getCatalogManager();
+    auto RM = API::getRecordManager();
+
+    if (!CM->existTable(tableName))
+    {
+        std::cout << "ERROR : You have an error in your SQL syntax; tabel named " << tableName << " doesn't exist.\n";
+        return ;
+    }
+
+    Table &table = CM->getTable(tableName);
+
+    std::vector<ValueVec> result = RM->SelectAllRecord(table);
     
     std::cout << std::left;  //设置对齐方式为左对齐，默认为右对齐
     //std::cout << setfill(' ');  //设置空位置填充符号为空格，默认即为空格

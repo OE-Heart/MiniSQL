@@ -2,7 +2,7 @@
  * @Author: Yinwhe
  * @Date: 2021-06-16 09:50:16
  * @LastEditors: Yinwhe
- * @LastEditTime: 2021-06-20 00:25:21
+ * @LastEditTime: 2021-06-20 11:13:49
  * @Description: file information
  * @Copyright: Copyright (c) 2021
  */
@@ -11,7 +11,7 @@
 #include <algorithm>
 #include "RecordManager.hpp"
 
-#define DEBUG
+// #define DEBUG
 
 RecordManager::RecordManager(){
     bm = new BufferManager();
@@ -278,6 +278,11 @@ void RecordManager::DeleteRecord(Table &t, const std::vector<Condition> &con){
     }
 }
 
+void RecordManager::DeleteAllRecord(Table &t){
+    std::vector<Condition> con; // Con is empty
+    DeleteRecord(t, con);
+}
+
 std::vector<ValueVec> RecordManager::SelectRecord(Table &t, const std::vector<Condition> &con)
 {
     std::vector<std::vector<Value> > res;
@@ -292,4 +297,9 @@ std::vector<ValueVec> RecordManager::SelectRecord(Table &t, const std::vector<Co
         bm->brelease(bid);
     }
     return res;
+}
+
+std::vector<ValueVec> RecordManager::SelectAllRecord(Table &t){
+    std::vector<Condition> con; // Con is empty
+    return SelectRecord(t, con);
 }

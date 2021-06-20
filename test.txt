@@ -31,6 +31,7 @@ select * from t1 where salary<>3000.00;
 
 select * from t1 where (id>4 and salary >=2000.00);
 select * from t1 where age>25 and age <30;
+select * from t1 where (id<=4 and salary <=3000.00 and name = 'Jim');
 
 select * from t1 where name='Jim';
 select * from t1 where name<>'Jim';
@@ -45,8 +46,8 @@ select * from t1 where name>='Queen';
 select * from t1 where name<='Jim';
 
 delete from t1 where id>7;
-delete from t1 where id<=2;
-delete from t1 where id<4 and salary >3000.00;
+delete from t1 where (id<=2);
+delete from t1 where (id<=4 and salary <=3000.00);
 select * from t1;
 
 drop index iname;
