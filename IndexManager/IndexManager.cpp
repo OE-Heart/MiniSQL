@@ -2,16 +2,16 @@
  * @Author: Yinwhe
  * @Date: 2021-06-20 13:54:07
  * @LastEditors: Yinwhe
- * @LastEditTime: 2021-06-20 15:10:44
+ * @LastEditTime: 2021-06-20 16:22:28
  * @Description: file information
  * @Copyright: Copyright (c) 2021
  */
 
 #include "IndexManager.hpp"
 IndexManager::IndexManager(){
-    int_im = new _index_manager<int>;
-    float_im = new _index_manager<double>;
-    char_im = new _index_manager<std::string>;
+    int_im = new _index_manager<int>();
+    float_im = new _index_manager<double>();
+    char_im = new _index_manager<std::string>();
 }
 
 IndexManager::~IndexManager(){

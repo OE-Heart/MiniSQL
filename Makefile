@@ -25,6 +25,7 @@ all:
 	$(MAKE) -C ./API all
 	$(MAKE) -C ./BufferManager all
 	$(MAKE) -C ./CatalogManager all
+	$(MAKE) -C ./IndexManager all
 	$(MAKE) -C ./Interpreter all
 	$(MAKE) -C ./RecordManager all
 	$(GXX) $(CFLAGS) -c main.cpp -o ./Build/main.o
