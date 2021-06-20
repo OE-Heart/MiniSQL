@@ -1,8 +1,8 @@
 /*
  * @Author: Gcx
  * @Date: 2021-06-19 18:28:23
- * @LastEditors: Please set LastEditors
- * @LastEditTime: 2021-06-20 19:07:12
+ * @LastEditors: Yinwhe
+ * @LastEditTime: 2021-06-20 19:18:36
  * @Description: file information
  * @Copyright: Copyright (c) 2021
  */
@@ -35,21 +35,21 @@ public:
 
 template<typename T>
 void _index_manager<T>::create_index(const std::string index_name, Table & table,const std::string & column_name){
-    BPTree<T> tree(index_name, sizeof(T), 4096/(sizeof(T) + sizeof(int)));
+    BPTree<T> *tree = new BPTree<T>(index_name, sizeof(T), 4096/(sizeof(T) + sizeof(int)));
     // TODO: Error to fix, sizeof(T) can be wrong!
 
     std::pair<typename std::map<std::string, BPTree<T>* >::iterator, bool> ret;
-    ret=tree_map.insert(std::pair<std::string, BPTree<T>* >(index_name, &tree));
+    ret=tree_map.insert(std::pair<std::string, BPTree<T>* >(index_name, tree));
     if(ret.second==false){
         std::cout<<"This table already had an index";
         return;
     }
 
-    tree.keyCount = 0;
-    tree.level = 1;
-    tree.nodeCount = 1;
-    tree.root = new BPTreeNode<T>(tree.degree, true);
-    tree.head = tree.root;
+    tree->keyCount = 0;
+    tree->level = 1;
+    tree->nodeCount = 1;
+    tree->root = new BPTreeNode<T>(tree->degree, true);
+    tree->head = tree->root;
 
     int num_record=4096/(table.size()+1);//每个block里有这么多条record
     int index_col= table.indexOfCol(column_name);
@@ -68,8 +68,10 @@ void _index_manager<T>::create_index(const std::string index_name, Table & table
             else{
                 data+=sum;
                 T key = *(T*)data;
+                #ifdef DEBUG
                 std::cout<<"BTree insert:"<<key<<"-"<<i*num_record+j<<std::endl;
-                tree.insert(key,i*num_record+j);   
+                #endif
+                tree->insert(key,i*num_record+j);   
                 data=data+table.size()+1-sum;//下一条record             
             }
         }
@@ -78,7 +80,6 @@ void _index_manager<T>::create_index(const std::string index_name, Table & table
 
 template<typename T>
 int _index_manager<T>::find_index(const std::string index_name, Table & table,const T &key){
-    std::cout<<"find_index:"<<index_name<<" "<<key<<std::endl;
     typename std::map<std::string, BPTree<T>* >::iterator ret;
     ret=tree_map.find(index_name);
     std::cout<<ret->first<<std::endl;
@@ -88,7 +89,7 @@ int _index_manager<T>::find_index(const std::string index_name, Table & table,co
 
 template<typename T>
 void _index_manager<T>::insert_index(const std::string index_name, Table & table,const T &key,int offset){
-    typename std::map<std::string,BPTree<T>>::iterator ret;
+    typename std::map<std::string,BPTree<T>* >::iterator ret;
     ret=tree_map.find(index_name);
     BPTree<T> *tree=ret->second;
     tree->insert(key,offset);
@@ -96,7 +97,7 @@ void _index_manager<T>::insert_index(const std::string index_name, Table & table
 
 template<typename T>
 void _index_manager<T>::delete_index(const std::string index_name, Table & table,const T &key){
-    typename std::map<std::string,BPTree<T>>::iterator ret;
+    typename std::map<std::string,BPTree<T>* >::iterator ret;
     ret=tree_map.find(index_name);
     BPTree<T> *tree=ret->second;
     tree->remove(key);
@@ -104,7 +105,7 @@ void _index_manager<T>::delete_index(const std::string index_name, Table & table
 
 template<typename T>
 void _index_manager<T>::alter_index(const std::string index_name, Table & table,const T &key_before,const T &key_after,int offset){
-    typename std::map<std::string,BPTree<T>>::iterator ret;
+    typename std::map<std::string,BPTree<T>* >::iterator ret;
     ret=tree_map.find(index_name);
     BPTree<T> *tree=ret->second;
     tree->remove(key_before);
@@ -113,11 +114,11 @@ void _index_manager<T>::alter_index(const std::string index_name, Table & table,
 
 template<typename T>
 void _index_manager<T>::drop_index(const std::string index_name, Table & table){
-    typename std::map<std::string,BPTree<T>>::iterator ret;
+    typename std::map<std::string,BPTree<T>* >::iterator ret;
     ret=tree_map.find(index_name);
     BPTree<T> *tree=ret->second;
-    tree->cascadeDelete(tree.root);
-    tree_map->erase(ret);
+    tree->cascadeDelete(tree->root);
+    tree_map.erase(ret);
 }
 
 class IndexManager{
