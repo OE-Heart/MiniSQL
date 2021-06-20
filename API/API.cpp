@@ -32,6 +32,8 @@ void API::createTable(const std::string &tableName, const std::vector<Column> &c
     CM->newTable(tableName, columns);
     Table &table = CM->getTable(tableName);
     RM->CreateTable(table);
+
+    API::createIndex(tableName+"_Primary", tableName, primaryKey);
 }
 
 void API::createIndex(const std::string &indexName, const std::string &tableName, const std::string &columnName)
@@ -66,6 +68,8 @@ void API::dropTable(const std::string &tableName)
     Table &table = CM->getTable(tableName);
     RM->DropTable(table);
     CM->dropTable(tableName);
+
+    API::dropIndex(tableName+"_Primary");
 }
 
 void API::dropIndex(const std::string &indexName)
@@ -81,7 +85,7 @@ void API::dropIndex(const std::string &indexName)
     
     Index &index = CM->getIndex(indexName);
     Table &table = CM->getTable(index.tableName);
-    
+
     CM->dropIndex(indexName);
     RM->im->DropIndex(indexName, table, index.columnName);
 }
