@@ -1,7 +1,7 @@
 /*
  * @Author: Yinwhe
  * @Date: 2021-06-18 21:53:58
- * @LastEditTime: 2021-06-20 11:22:44
+ * @LastEditTime: 2021-06-20 15:21:03
  * @LastEditors: Yinwhe
  * @Description: Doc
  * @FilePath: /MiniSQL/RecordManager/RecordManager.hpp
@@ -13,6 +13,7 @@
 #include "BufferManager.hpp"
 #include "Table.hpp"
 #include "Condition.hpp"
+#include "IndexManager.hpp"
 
 typedef std::pair<int, int> Piece;
 typedef std::vector<Piece> PieceVec;
@@ -38,10 +39,13 @@ private:
     bool        CheckType(Column &, const Value &);
     PieceVec    Intersect(PieceVec , PieceVec );
     PieceVec    SelectPos(Table &, const std::vector<Condition>);
+    PieceVec    IndexSelect(Table &t, int ColumnID, const Condition &con);
 public:
     BufferManager *bm;
+    IndexManager *im;
 
     RecordManager();
+    ~RecordManager();
     void    CreateTable(Table &t);
     void    DropTable(Table &t);
     Piece   InsertRecord(Table &t, const std::vector<Value> &vals);
@@ -49,5 +53,4 @@ public:
     void    DeleteAllRecord(Table &t);
     std::vector<ValueVec> SelectRecord(Table &t, const std::vector<Condition> &con);
     std::vector<ValueVec> SelectAllRecord(Table &t);
-    PieceVec IndexSelect(Table &t, int ColumnID, const std::vector<Condition> &con);
 };

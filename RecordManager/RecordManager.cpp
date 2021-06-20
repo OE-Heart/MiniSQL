@@ -2,7 +2,7 @@
  * @Author: Yinwhe
  * @Date: 2021-06-16 09:50:16
  * @LastEditors: Yinwhe
- * @LastEditTime: 2021-06-20 12:20:27
+ * @LastEditTime: 2021-06-20 15:19:39
  * @Description: file information
  * @Copyright: Copyright (c) 2021
  */
@@ -12,11 +12,18 @@
 #include <iostream>
 #include <iomanip>
 #include "RecordManager.hpp"
+#include "IndexManager.hpp"
 
 // #define DEBUG
 
 RecordManager::RecordManager(){
     bm = new BufferManager();
+    im = new IndexManager();
+}
+
+RecordManager::~RecordManager(){
+    delete bm;
+    delete im;
 }
 
 void RecordManager::Rpanic(const char* s){
@@ -117,9 +124,7 @@ void RecordManager::PutRecord(Table &t, const std::vector<Value> v, char *data){
 bool RecordManager::CheckUnique(Table &t, int ColumnID, const Value &v){
     if (t.columns[ColumnID].index != "")
     { // use index to check uniqueness
-        std::vector<Condition> con;
-        con.emplace_back(Condition(t.columns[ColumnID].columnName, OP::EQ, v));
-        PieceVec vec = IndexSelect(t, ColumnID, con);
+        PieceVec vec = IndexSelect(t, ColumnID, Condition(t.columns[ColumnID].columnName, OP::EQ, v));
         return !vec.empty();
     }
     int blockcount = t.blockCnt;
@@ -228,21 +233,21 @@ PieceVec RecordManager::SelectPos(Table &t, const std::vector<Condition> con)
 {
     PieceVec v;
     bool flag = false;
-    // for (Condition c : con)
-    // {
-    //     if (t.getColumn(c.columnName).index != "")
-    //     {
-    //         if (!flag)
-    //         {
-    //             flag = true;
-    //             v = IndexSelect(t, t.GetAttrb(c.attrb), c);
-    //         }
-    //         else
-    //         {
-    //             v = Intersect(v, IndexSelect(t, t.GetAttrb(c.attrb), c));
-    //         }
-    //     }
-    // }
+    for (const Condition &c : con){
+        if(c.op != OP::EQ) break; // Not supported
+        int index = t.indexOfCol(c.columnName);
+        if (t.columns[index].index != ""){
+            if (!flag)
+            {
+                flag = true;
+                v = IndexSelect(t, index, c);
+            }
+            else
+            {
+                v = Intersect(v, IndexSelect(t, t.indexOfCol(c.columnName), c));
+            }
+        }
+    }
     if (!flag){ // Scan and search
         int blockcount = t.blockCnt;
         for (int i = 0; i < blockcount; i++){
@@ -310,6 +315,16 @@ std::vector<ValueVec> RecordManager::SelectAllRecord(Table &t){
 }
 
 
-PieceVec RecordManager::IndexSelect(Table &t, int ColumnID, const std::vector<Condition> &con){
+PieceVec RecordManager::IndexSelect(Table &t, int ColumnID, const Condition &con){
+    const auto &attr = t.columns[ColumnID];
+    PieceVec res;
+    if(attr.columnName != con.columnName)
+        Rpanic("IndexSelect error, column name inconsistent!");
     
+    if(con.op != OP::EQ)
+        Rpanic("IndexSelect error, range select not supported!");
+
+    int off = im->FindIndex(attr.index, t, attr.columnName, con.value);
+    res.emplace_back(std::make_pair(off/BLOCK_SIZE, off%BLOCK_SIZE));
+    return res;
 }

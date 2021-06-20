@@ -23,13 +23,14 @@ struct Nodemap {
     BPTreeNode<T> *node;
 };
 
+
 template<typename T>
 class BPTree {
 public:
+    typedef BPTreeNode<T> *TreeNode;
     string fileName;
     TreeNode root, head;
     int sizeofKey, level, keyCount, nodeCount, degree;
-    typedef BPTreeNode<T> *TreeNode;
     BPTree(string fileName, int sizeofKey, int degree);
     ~BPTree(){}
     TreeNode getHeadNode() const { return head; }

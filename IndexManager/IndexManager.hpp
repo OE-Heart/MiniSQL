@@ -1,8 +1,8 @@
 /*
  * @Author: Gcx
  * @Date: 2021-06-19 18:28:23
- * @LastEditors: GCX
- * @LastEditTime: 2021-06-19 22:44
+ * @LastEditors: Yinwhe
+ * @LastEditTime: 2021-06-20 15:10:37
  * @Description: file information
  * @Copyright: Copyright (c) 2021
  */
@@ -10,36 +10,55 @@
 #pragma once
 #include <string>
 #include <map>
-#include <memory>
 #include "BPTreeNode.hpp"
 #include "BPTree.hpp"
 #include "BufferManager.hpp"
 #include "Table.hpp"
+#include "Condition.hpp"
 
 extern BufferManager* bm;
 
-template<typename T>
-class IndexManager;
-
-template<typename T>
 class IndexManager{
+private:
+    _index_manager<int> *int_im;
+    _index_manager<double> *float_im;
+    _index_manager<std::string> *char_im;
 public:
-    std::map<std::string,BPTree<T>> tree_map;
-    //BPTree<T> tree;
-    IndexManager()=default;
+    IndexManager();
     ~IndexManager();
-    void create_index(map<std::string,BPTree<T>> &tree_map,Table & table,std::string & column_name);
-    int  find_index(map<std::string,BPTree<T>> &tree_map,Table & table,const T &key);
-    void insert_index(map<std::string,BPTree<T>> &tree_map,Table & table,const T &key,int offset);
-    void delete_index(map<std::string,BPTree<T>> &tree_map,Table & table,const T &key,int offset);
-    void alter_index(map<std::string,BPTree<T>> &tree_map,Table & table,const T &key_before,const T &key_after,int offset);
-    void drop_index(map<std::string,BPTree<T>> &tree_map,Table & table);
+    void CreateIndex(const std::string index_name, Table & table, const std::string & column_name);
+    int  FindIndex(const std::string index_name, Table & table, const std::string & column_name, const Value &val);
+    void InsertIndex(const std::string index_name, Table & table, const std::string & column_name, const Value &val, int offset);
+    void DeleteIndex(const std::string index_name, Table & table, const std::string & column_name, const Value &val);
+    void AlterIndex(const std::string index_name, Table & table, const std::string & column_name, const Value &val_before, const Value &val_after, int offset);
+    void DropIndex(const std::string index_name, Table & table, const std::string & column_name);
 };
 
 template<typename T>
-void IndexManager<T>::create_index(map<std::string,BPTree<T>> &tree_map,Table & table,std::string & column_name){
+class _index_manager{
+public:
+    std::map<std::string, BPTree<T>> tree_map;
+    _index_manager()=default;
+    ~_index_manager();
+    void create_index(const std::string index_name, Table & table,const std::string & column_name);
+    int  find_index(const std::string index_name, Table & table,const T &key);
+    void insert_index(const std::string index_name, Table & table,const T &key,int offset);
+    void delete_index(const std::string index_name, Table & table,const T &key);
+    void alter_index(const std::string index_name, Table & table,const T &key_before,const T &key_after,int offset);
+    void drop_index(const std::string index_name, Table & table);
+};
+
+template<typename T>
+void _index_manager<T>::create_index(const std::string index_name, Table & table,const std::string & column_name){
     BPTree<T> tree;
-    tree.filename=table.tableName;
+    std::pair<std::map<std::string,BPTree<T>>::iterator, bool> ret;
+    ret=tree_map.insert(std::pair<std::string,BPTree<T>>(index_name,tree));
+    if(ret.second==false){
+        std::cout<<"This table already had an index";
+        return;
+    }
+
+    tree.filename=index_name;
     tree.keyCount = 0;
     tree.level = 1;
     tree.nodeCount = 1;
@@ -71,51 +90,45 @@ void IndexManager<T>::create_index(map<std::string,BPTree<T>> &tree_map,Table & 
             }
         }
     }
-    std::pair<std::map<std::string,BPTree<T>>::iterator,bool> ret;
-    ret=tree_map.insert(std::pair<std::string,BPTree<T>>(table.tableName,tree));
-    if(ret.second==false){
-        std::cout<<"This table has already had an index";
-    }
-
 }
 
 template<typename T>
-int  IndexManager<T>::find_index(map<std::string,BPTree<T>> &tree_map,Table & table,const T &key){
+int _index_manager<T>::find_index(const std::string index_name, Table & table,const T &key){
     std::map<std::string,BPTree<T>>::iterator ret;
-    ret=tree_map.find(table.tableName);
+    ret=tree_map.find(index_name);
     BPTree<T> tree=ret.second;
     return tree.find(key); 
 }
 
 template<typename T>
-void IndexManager<T>::insert_index(map<std::string,BPTree<T>> &tree_map,Table & table,const T &key,int offset){
+void _index_manager<T>::insert_index(const std::string index_name, Table & table,const T &key,int offset){
     std::map<std::string,BPTree<T>>::iterator ret;
-    ret=tree_map.find(table.tableName);
+    ret=tree_map.find(index_name);
     BPTree<T> tree=ret.second;
     tree.insert(key,offset);
 }
 
 template<typename T>
-void IndexManager<T>::delete_index(map<std::string,BPTree<T>> &tree_map,Table & table,const T &key,int offset){
+void _index_manager<T>::delete_index(const std::string index_name, Table & table,const T &key){
     std::map<std::string,BPTree<T>>::iterator ret;
-    ret=tree_map.find(table.tableName);
+    ret=tree_map.find(index_name);
     BPTree<T> tree=ret.second;
     tree.remove(key);
 }
 
 template<typename T>
-void IndexManager<T>::alter_index(map<std::string,BPTree<T>> &tree_map,Table & table,const T &key_before,const T &key_after,int offset){
+void _index_manager<T>::alter_index(const std::string index_name, Table & table,const T &key_before,const T &key_after,int offset){
     std::map<std::string,BPTree<T>>::iterator ret;
-    ret=tree_map.find(table.tableName);
+    ret=tree_map.find(index_name);
     BPTree<T> tree=ret.second;
     tree.remove(key_before);
     tree.insert(key_after,offset);    
 }
 
 template<typename T>
-void drop_index(map<std::string,BPTree<T>> &tree_map,Table & table){
+void drop_index(const std::string index_name, Table & table){
     std::map<std::string,BPTree<T>>::iterator ret;
-    ret=tree_map.find(table.tableName);
+    ret=tree_map.find(index_name);
     BPTree<T> tree=ret.second;
     BPTree<T>::cascadeDelete(tree->root);
     tree_map.erase(ret);
