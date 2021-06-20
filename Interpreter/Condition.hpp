@@ -2,7 +2,7 @@
  * @Author: Ou Yixin
  * @Date: 2021-06-18 14:59:10
  * @LastEditors: Yinwhe
- * @LastEditTime: 2021-06-19 13:44:30
+ * @LastEditTime: 2021-06-20 11:42:54
  * @Description: 
  * @FilePath: /MiniSQL/Interpreter/Condition.hpp
  */
@@ -27,5 +27,7 @@ struct Condition
     std::string columnName;
     OP op;
     Value value;
+    Condition(){};
+    Condition(std::string &, OP, const Value &);
     bool isTrue(const Value&) const;
 };

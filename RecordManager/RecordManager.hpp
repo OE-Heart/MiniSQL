@@ -1,8 +1,8 @@
 /*
  * @Author: Yinwhe
  * @Date: 2021-06-18 21:53:58
- * @LastEditTime: 2021-06-20 10:59:56
- * @LastEditors: Ou Yixin
+ * @LastEditTime: 2021-06-20 11:22:44
+ * @LastEditors: Yinwhe
  * @Description: Doc
  * @FilePath: /MiniSQL/RecordManager/RecordManager.hpp
  */
@@ -49,4 +49,5 @@ public:
     void    DeleteAllRecord(Table &t);
     std::vector<ValueVec> SelectRecord(Table &t, const std::vector<Condition> &con);
     std::vector<ValueVec> SelectAllRecord(Table &t);
+    PieceVec IndexSelect(Table &t, int ColumnID, const std::vector<Condition> &con);
 };

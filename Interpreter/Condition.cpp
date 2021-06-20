@@ -2,11 +2,17 @@
  * @Author: Yinwhe
  * @Date: 2021-06-19 13:52:10
  * @LastEditors: Yinwhe
- * @LastEditTime: 2021-06-19 23:26:17
+ * @LastEditTime: 2021-06-20 11:43:20
  * @Description: file information
  * @Copyright: Copyright (c) 2021
  */
 #include "Condition.hpp"
+
+Condition::Condition(std::string &str, OP op, const Value &val){
+    this->columnName = str;
+    this->op = op;
+    this->value = val;
+}
 
 template <typename T>
 static bool isCondTrue(const T &lhs, const T &rhs, OP op) {

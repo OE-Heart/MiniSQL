@@ -2,13 +2,15 @@
  * @Author: Yinwhe
  * @Date: 2021-06-16 09:50:16
  * @LastEditors: Yinwhe
- * @LastEditTime: 2021-06-20 11:13:49
+ * @LastEditTime: 2021-06-20 12:20:27
  * @Description: file information
  * @Copyright: Copyright (c) 2021
  */
 #include <cstdio>
 #include <iostream>
 #include <algorithm>
+#include <iostream>
+#include <iomanip>
 #include "RecordManager.hpp"
 
 // #define DEBUG
@@ -45,7 +47,7 @@ void RecordManager::DropTable(Table &t){
 
 ValueVec RecordManager::GetRecord(Table &t, char *data){
     #ifdef DEBUG
-    printf("RM GetRecord data: %d\n", data);
+    printf("RM GetRecord data: %p\n", data);
     #endif
     const std::vector<Column> &attr = t.columns;
     std::vector<Value> res;
@@ -113,11 +115,13 @@ void RecordManager::PutRecord(Table &t, const std::vector<Value> v, char *data){
 }
 
 bool RecordManager::CheckUnique(Table &t, int ColumnID, const Value &v){
-    // if (t.columns[ColumnID].index != "")
-    // { // use index to check uniqueness
-    //     PieceVec vec = IndexSelect(t, t.attrbs[id], Condition(t.attrbs[id].name, v, CondType::EQUAL));
-    //     return ! vec.empty();
-    // }
+    if (t.columns[ColumnID].index != "")
+    { // use index to check uniqueness
+        std::vector<Condition> con;
+        con.emplace_back(Condition(t.columns[ColumnID].columnName, OP::EQ, v));
+        PieceVec vec = IndexSelect(t, ColumnID, con);
+        return !vec.empty();
+    }
     int blockcount = t.blockCnt;
     for (int i = 0; i < blockcount; i++){
         int bid = bm->bread(t.tableName, i);
@@ -250,7 +254,7 @@ PieceVec RecordManager::SelectPos(Table &t, const std::vector<Condition> con)
                 
                 std::vector<Value> res = GetRecord(t, data + offset);
                 bool good = true;
-                for (Condition c : con){
+                for (auto const &c : con){
                     int index = t.indexOfCol(c.columnName);
                     if (!c.isTrue(res[index])){
                         good = false;
@@ -286,6 +290,7 @@ void RecordManager::DeleteAllRecord(Table &t){
 std::vector<ValueVec> RecordManager::SelectRecord(Table &t, const std::vector<Condition> &con)
 {
     std::vector<std::vector<Value> > res;
+
     PieceVec v = SelectPos(t, con);
     for (auto piece : v){
         #ifdef DEBUG
@@ -302,4 +307,9 @@ std::vector<ValueVec> RecordManager::SelectRecord(Table &t, const std::vector<Co
 std::vector<ValueVec> RecordManager::SelectAllRecord(Table &t){
     std::vector<Condition> con; // Con is empty
     return SelectRecord(t, con);
+}
+
+
+PieceVec RecordManager::IndexSelect(Table &t, int ColumnID, const std::vector<Condition> &con){
+    
 }

@@ -1,8 +1,8 @@
 /*
  * @Author: Yinwhe
  * @Date: 2021-06-19 13:50:11
- * @LastEditors: Ou Yixin
- * @LastEditTime: 2021-06-20 00:34:46
+ * @LastEditors: Yinwhe
+ * @LastEditTime: 2021-06-20 12:18:20
  * @Description: file information
  * @Copyright: Copyright (c) 2021
  */
@@ -30,7 +30,7 @@ Column Table::getColumn(const std::string& columnName) const
 int Table::indexOfCol(const std::string& columnName){
     if(cmaps.empty()){// Create map of column names
         for(int i=0;i<columns.size();i++){
-            if(columns[i].columnName == columnName) cmaps[columnName] = i;
+            cmaps[columns[i].columnName] = i;
         }
     }
     return cmaps.at(columnName);
@@ -44,7 +44,6 @@ int Table::size()
         recordSize = 0;
         for (const auto &col : columns) {
             recordSize += col.size();
-            std::cout << "Table::size() " << col.size() << "\n";
         }
         return recordSize;
     }
