@@ -29,15 +29,10 @@ void CatalogManager::newIndex(const std::string &indexName, const std::string &t
 {
     indices[indexName] = Index{indexName, tableName, columnName};
     auto &table = tables[tableName];
-    for (auto &column : table.columns) 
-    {
-        if (column.columnName == columnName) 
-        {
-            //column.index是个字符串
-            column.index = columnName;
-            break;
-        }
-    }
+    int index = table.indexOfCol(columnName);
+    Column &column = table.columns[index];
+    //column.index是个字符串
+    column.index = columnName;
 }
 
 void CatalogManager::dropTable(const std::string &tableName) 

@@ -47,8 +47,9 @@ void API::createIndex(const std::string &indexName, const std::string &tableName
 
     CM->newIndex(indexName, tableName, columnName);
     Index &index = CM->getIndex(indexName);
+    Table &table = CM->getTable(tableName);
 
-    //TODO
+    RM->im->CreateIndex(indexName, table, columnName);
 }
 
 void API::dropTable(const std::string &tableName)
