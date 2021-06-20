@@ -51,4 +51,5 @@ public:
     void    DeleteAllRecord(Table &t);
     std::vector<ValueVec> SelectRecord(Table &t, const std::vector<Condition> &con);
     std::vector<ValueVec> SelectAllRecord(Table &t);
+    IndexManager  *im;
 };
