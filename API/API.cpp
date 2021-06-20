@@ -45,10 +45,10 @@ void API::createIndex(const std::string &indexName, const std::string &tableName
         return ;
     }
 
-    CM->newIndex(indexName, tableName, columnName);
     Index &index = CM->getIndex(indexName);
     Table &table = CM->getTable(tableName);
 
+    CM->newIndex(indexName, tableName, columnName);
     RM->im->CreateIndex(indexName, table, columnName);
 }
 
@@ -78,11 +78,12 @@ void API::dropIndex(const std::string &indexName)
         std::cout << "ERROR : You have an error in your SQL syntax; index named " << indexName << " doesn't exist.\n";
         return ;
     }
-
+    
     Index &index = CM->getIndex(indexName);
-    CM->dropIndex(indexName);
+    Table &table = CM->getTable(index.tableName);
 
-    //TODO
+    CM->dropIndex(indexName);
+    RM->im->DropIndex(indexName, table, index.columnName);
 }
 
 void API::insertOn(const std::string &tableName, std::vector<Value> &valueList)
