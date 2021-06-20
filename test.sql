@@ -9,5 +9,4 @@ insert into t1 values(7,'Porry',17,1000.00);
 insert into t1 values(8,'Green',24,8000.00);
 insert into t1 values(8,'Jim',20,4000.00);
 insert into t1 values(9,'Green',22,4000.00);
-
 select * from t1;
