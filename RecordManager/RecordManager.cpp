@@ -2,7 +2,7 @@
  * @Author: Yinwhe
  * @Date: 2021-06-16 09:50:16
  * @LastEditors: Yinwhe
- * @LastEditTime: 2021-06-20 15:19:39
+ * @LastEditTime: 2021-06-20 16:54:22
  * @Description: file information
  * @Copyright: Copyright (c) 2021
  */
@@ -15,6 +15,9 @@
 #include "IndexManager.hpp"
 
 // #define DEBUG
+
+BufferManager *bm;
+IndexManager  *im;
 
 RecordManager::RecordManager(){
     bm = new BufferManager();

@@ -1,7 +1,7 @@
 /*
  * @Author: Yinwhe
  * @Date: 2021-06-18 21:53:58
- * @LastEditTime: 2021-06-20 15:21:03
+ * @LastEditTime: 2021-06-20 16:52:28
  * @LastEditors: Yinwhe
  * @Description: Doc
  * @FilePath: /MiniSQL/RecordManager/RecordManager.hpp
@@ -41,8 +41,6 @@ private:
     PieceVec    SelectPos(Table &, const std::vector<Condition>);
     PieceVec    IndexSelect(Table &t, int ColumnID, const Condition &con);
 public:
-    BufferManager *bm;
-    IndexManager *im;
 
     RecordManager();
     ~RecordManager();
