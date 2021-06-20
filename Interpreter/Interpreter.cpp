@@ -2,7 +2,7 @@
  * @Author: Ou Yixin
  * @Date: 2021-06-09 23:19:04
  * @LastEditors: Ou Yixin
- * @LastEditTime: 2021-06-20 11:04:10
+ * @LastEditTime: 2021-06-20 11:47:17
  * @Description: 
  * @FilePath: /MiniSQL/Interpreter/Interpreter.cpp
  */
@@ -626,9 +626,11 @@ void Interpreter::parseExec(const std::vector<std::string> &strvec)
         std::cout << "ERROR : You have an error in your SQL syntax; file named " << fileName << " doesn't exist.\n";
         return ;
     }
-
+    
+    auto start = std::chrono::high_resolution_clock::now();
     std::string str;
     std::string line;
+    int cmdNum = 0;
     while (std::getline(infile, line))
     {
         for (int i = 0; i < line.length(); i++) 
@@ -646,6 +648,7 @@ void Interpreter::parseExec(const std::vector<std::string> &strvec)
             line.pop_back();
         if (line.back() == ';')
         {
+            cmdNum++;
             std::vector<std::string> cmd = Tokenizer(str);
             Parse(cmd);
             str.clear();
@@ -653,4 +656,7 @@ void Interpreter::parseExec(const std::vector<std::string> &strvec)
         }
         str.push_back(' ');
     }
+    auto end = std::chrono::high_resolution_clock::now();
+    auto duration = std::chrono::duration_cast<std::chrono::microseconds>(end - start);
+    std::cout << cmdNum << " commands were successfully executed and took " << double(duration.count()) *std::chrono::microseconds::period::num / std::chrono::microseconds::period::den << "s.\n";
 }
