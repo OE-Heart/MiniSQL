@@ -2,7 +2,7 @@
  * @Author: Yinwhe
  * @Date: 2021-06-16 09:50:16
  * @LastEditors: Yinwhe
- * @LastEditTime: 2021-06-20 18:03:02
+ * @LastEditTime: 2021-06-20 19:54:58
  * @Description: file information
  * @Copyright: Copyright (c) 2021
  */
@@ -14,7 +14,7 @@
 #include "RecordManager.hpp"
 #include "IndexManager.hpp"
 
-#define DEBUG
+// #define DEBUG
 
 BufferManager *bm;
 
@@ -335,6 +335,7 @@ PieceVec RecordManager::IndexSelect(Table &t, int ColumnID, const Condition &con
         Rpanic("IndexSelect error, range select not supported!");
 
     int off = im->FindIndex(attr.index, t, attr.columnName, con.value);
+    off *= (t.size()+1);
     #ifdef DEBUG
     printf("IndexSelect off:%d\n", off);
     #endif
