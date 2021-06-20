@@ -2,7 +2,7 @@
  * @Author: Yinwhe
  * @Date: 2021-06-16 09:50:16
  * @LastEditors: Yinwhe
- * @LastEditTime: 2021-06-20 00:09:58
+ * @LastEditTime: 2021-06-20 00:25:21
  * @Description: file information
  * @Copyright: Copyright (c) 2021
  */
@@ -44,6 +44,9 @@ void RecordManager::DropTable(Table &t){
 }
 
 ValueVec RecordManager::GetRecord(Table &t, char *data){
+    #ifdef DEBUG
+    printf("RM GetRecord data: %d\n", data);
+    #endif
     const std::vector<Column> &attr = t.columns;
     std::vector<Value> res;
     int size = attr.size();
