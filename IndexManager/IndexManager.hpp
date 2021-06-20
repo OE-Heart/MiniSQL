@@ -18,22 +18,6 @@
 
 extern BufferManager* bm;
 
-class IndexManager{
-private:
-    _index_manager<int> *int_im;
-    _index_manager<double> *float_im;
-    _index_manager<std::string> *char_im;
-public:
-    IndexManager();
-    ~IndexManager();
-    void CreateIndex(const std::string index_name, Table & table, const std::string & column_name);
-    int  FindIndex(const std::string index_name, Table & table, const std::string & column_name, const Value &val);
-    void InsertIndex(const std::string index_name, Table & table, const std::string & column_name, const Value &val, int offset);
-    void DeleteIndex(const std::string index_name, Table & table, const std::string & column_name, const Value &val);
-    void AlterIndex(const std::string index_name, Table & table, const std::string & column_name, const Value &val_before, const Value &val_after, int offset);
-    void DropIndex(const std::string index_name, Table & table, const std::string & column_name);
-};
-
 template<typename T>
 class _index_manager{
 public:
@@ -64,7 +48,7 @@ void _index_manager<T>::create_index(const std::string index_name, Table & table
     tree.nodeCount = 1;
     tree.sizeofKey=sizeof(T);
     tree.degree= 4096/ (sizeof(T) + sizeof(int));
-    tree.root = new BPTreeNode<T>::BPTreeNode<T>(tree.degree, true);
+    tree.root = new BPTreeNode<T>(tree.degree, true);
     tree.head = tree.root;
 
     int num_record=4096/(table.size()+1);//每个block里有这么多条record
@@ -133,3 +117,19 @@ void drop_index(const std::string index_name, Table & table){
     BPTree<T>::cascadeDelete(tree->root);
     tree_map.erase(ret);
 }
+
+class IndexManager{
+private:
+    _index_manager<int> *int_im;
+    _index_manager<double> *float_im;
+    _index_manager<std::string> *char_im;
+public:
+    IndexManager();
+    ~IndexManager();
+    void CreateIndex(const std::string index_name, Table & table, const std::string & column_name);
+    int  FindIndex(const std::string index_name, Table & table, const std::string & column_name, const Value &val);
+    void InsertIndex(const std::string index_name, Table & table, const std::string & column_name, const Value &val, int offset);
+    void DeleteIndex(const std::string index_name, Table & table, const std::string & column_name, const Value &val);
+    void AlterIndex(const std::string index_name, Table & table, const std::string & column_name, const Value &val_before, const Value &val_after, int offset);
+    void DropIndex(const std::string index_name, Table & table, const std::string & column_name);
+};
