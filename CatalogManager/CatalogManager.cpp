@@ -53,14 +53,9 @@ void CatalogManager::dropIndex(const std::string &indexName)
     auto index = indices[indexName];
     indices.erase(indexName);
     auto table = tables[index.tableName];
-    for (auto &column : table.columns) 
-    {
-        if (column.columnName == index.columnName) 
-        {
-            column.index = "";
-            break;
-        }
-    }
+    int i = table.indexOfCol(index.columnName);
+    Column &column = table.columns[i];
+    column.index = "";
 }
 
 bool CatalogManager::existTable(const std::string &tableName) const
