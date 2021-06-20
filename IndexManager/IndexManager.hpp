@@ -2,7 +2,7 @@
  * @Author: Gcx
  * @Date: 2021-06-19 18:28:23
  * @LastEditors: Yinwhe
- * @LastEditTime: 2021-06-20 16:55:20
+ * @LastEditTime: 2021-06-20 18:52:43
  * @Description: file information
  * @Copyright: Copyright (c) 2021
  */
@@ -10,6 +10,7 @@
 #pragma once
 #include <string>
 #include <map>
+#include <iostream>
 #include "BPTreeNode.hpp"
 #include "BPTree.hpp"
 #include "BufferManager.hpp"
@@ -35,6 +36,7 @@ public:
 template<typename T>
 void _index_manager<T>::create_index(const std::string index_name, Table & table,const std::string & column_name){
     BPTree<T> tree(index_name, sizeof(T), 4096/(sizeof(T) + sizeof(int)));
+    // TODO: Error to fix, sizeof(T) can be wrong!
 
     std::pair<typename std::map<std::string, BPTree<T>>::iterator, bool> ret;
     ret=tree_map.insert(std::pair<std::string, BPTree<T>>(index_name, tree));
@@ -51,6 +53,10 @@ void _index_manager<T>::create_index(const std::string index_name, Table & table
 
     int num_record=4096/(table.size()+1);//每个block里有这么多条record
     int index_col= table.indexOfCol(column_name);
+    int sum=1;
+    for(int k=0;k<index_col;k++){//找到column_name对应的那个地址起始值
+        sum+=table.columns[k].size();
+    }
     for(int i=0;i<table.blockCnt;i++){//找blockcnt个block  
         BID blk=bm->bread(table.tableName,i); //blk是table这个文件的第i个块
         char *data=bm->baddr(blk);
@@ -60,13 +66,9 @@ void _index_manager<T>::create_index(const std::string index_name, Table & table
                 continue;
             } 
             else{
-                int sum=0;
-                sum++;
-                for(int k=0;k<index_col;k++){//找到column_name对应的那个地址起始值
-                    sum+=table.columns[k].size();
-                }
                 data+=sum;
                 T key = *(T*)data;
+                std::cout<<"BTree insert:"<<key<<"-"<<i*num_record+j<<std::endl;
                 tree.insert(key,i*num_record+j);   
                 data=data+table.size()+1-sum;//下一条record             
             }
@@ -76,8 +78,10 @@ void _index_manager<T>::create_index(const std::string index_name, Table & table
 
 template<typename T>
 int _index_manager<T>::find_index(const std::string index_name, Table & table,const T &key){
+    std::cout<<"find_index:"<<index_name<<" "<<key<<std::endl;
     typename std::map<std::string, BPTree<T>>::iterator ret;
     ret=tree_map.find(index_name);
+    std::cout<<ret->first<<std::endl;
     BPTree<T> tree=ret->second;
     return tree.find(key);
 }

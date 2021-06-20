@@ -2,7 +2,7 @@
  * @Author: Yinwhe
  * @Date: 2021-06-16 09:50:16
  * @LastEditors: Yinwhe
- * @LastEditTime: 2021-06-20 17:58:10
+ * @LastEditTime: 2021-06-20 18:03:02
  * @Description: file information
  * @Copyright: Copyright (c) 2021
  */
@@ -241,12 +241,12 @@ PieceVec RecordManager::SelectPos(Table &t, const std::vector<Condition> con)
     PieceVec v;
     bool flag = false;
     for (const Condition &c : con){
-        if(c.op != OP::EQ) break; // Not supported
-        #ifdef DEBUG
-        printf("SelectPos Use index\n");
-        #endif
         int index = t.indexOfCol(c.columnName);
         if (t.columns[index].index != ""){
+            #ifdef DEBUG
+            printf("SelectPos Use index, indexname:%s, on:%s\n", t.columns[index].index.c_str(), t.columns[index].columnName.c_str());
+            #endif
+            if(c.op != OP::EQ) break; // Not supported
             if (!flag)
             {
                 flag = true;
