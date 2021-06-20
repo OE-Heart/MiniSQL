@@ -17,7 +17,6 @@
 // #define DEBUG
 
 BufferManager *bm;
-IndexManager  *im;
 
 RecordManager::RecordManager(){
     bm = new BufferManager();
