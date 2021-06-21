@@ -32,9 +32,9 @@ void Interpreter::mainLoop()
             std::vector<std::string> cmd = Tokenizer(str);
             Parse(cmd);
         }
-        catch (std::runtime_error &error)
+        catch (std::exception &error)
         {
-            std::cout << "ERROR : " << error.what() << "\n";
+            std::cerr << error.what() << std::endl;
         }
     }
 }
@@ -109,7 +109,7 @@ void Interpreter::Parse(const std::vector<std::string> &strvec)
         std::cout << "Bye\n";
         API::endLoop();
     }
-    else std::cout << "ERROR : You have an error in your SQL syntax; check the manual that corresponds to your MiniSQL server version for the right syntax to use near '" << strvec.at(0) << "'\n";
+    else throw("ERROR : You have an error in your SQL syntax; check the manual that corresponds to your MiniSQL server version for the right syntax to use near '" + strvec.at(0) + "'.\n");
 }
 
 void Interpreter::parseCreateTable(const std::vector<std::string> &strvec)
@@ -128,8 +128,7 @@ void Interpreter::parseCreateTable(const std::vector<std::string> &strvec)
         }
         else
         {
-            std::cout << "ERROR : You have an error in your SQL syntax; the primary key must be set when create table." << "'\n";
-            return ;
+            throw("ERROR : You have an error in your SQL syntax; the primary key must be set when create table.\n");
         }
         
         for (int i = 4; i < vecSize - 7; )
@@ -141,6 +140,7 @@ void Interpreter::parseCreateTable(const std::vector<std::string> &strvec)
             {
                 hasPrimaryKey = true;
                 column.isPrimaryKey = true;
+                column.isUnique = true;
             }
 
             if (strvec.at(i) == "int")
@@ -162,7 +162,7 @@ void Interpreter::parseCreateTable(const std::vector<std::string> &strvec)
             }
             else
             {
-                std::cout << "ERROR : You have an error in your SQL syntax; the type " << strvec.at(i) <<" is not defined." << "'\n";
+                throw("ERROR : You have an error in your SQL syntax; the type "+strvec.at(i)+" is not defined.\n");
                 return ;
             }
 
@@ -177,8 +177,7 @@ void Interpreter::parseCreateTable(const std::vector<std::string> &strvec)
 
         if (!hasPrimaryKey)
         {
-            std::cout << "ERROR : You have an error in your SQL syntax; the primary key must be set when create table.\n";
-            return ;
+            throw("ERROR : You have an error in your SQL syntax; the primary key must be set when create table.\n");
         }
 
         auto start = std::chrono::high_resolution_clock::now();
@@ -187,9 +186,9 @@ void Interpreter::parseCreateTable(const std::vector<std::string> &strvec)
         auto duration = std::chrono::duration_cast<std::chrono::microseconds>(end - start);
         std::cout << "Command was successfully executed and took " << double(duration.count()) * std::chrono::microseconds::period::num / std::chrono::microseconds::period::den << "s.\n";
     }
-    catch (std::out_of_range)
+    catch (std::exception &error)
     {
-        throw std::runtime_error(ErrorMsg);
+        std::cerr << error.what() << std::endl;
     }
 }
 
@@ -197,8 +196,7 @@ void Interpreter::parseCreateIndex(const std::vector<std::string> &strvec)
 {
     if (strvec.at(3) != "on" || strvec.at(5) != "(" || strvec.at(7) != ")")
     {
-        std::cout << ErrorMsg;
-        return ;
+        throw("ERROR : You have an error in your SQL syntax; you can use 'create index INDEXNAME on TABLENAME(COLUMNNAME);' to create index.\n");
     }
 
     std::string indexName = strvec.at(2);
@@ -212,9 +210,9 @@ void Interpreter::parseCreateIndex(const std::vector<std::string> &strvec)
         auto duration = std::chrono::duration_cast<std::chrono::microseconds>(end - start);
         std::cout << "Command was successfully executed and took " << double(duration.count()) * std::chrono::microseconds::period::num / std::chrono::microseconds::period::den << "s.\n";
     }
-    catch (std::out_of_range)
+    catch (std::exception &error)
     {
-        throw std::runtime_error(ErrorMsg);
+        std::cerr << error.what() << std::endl;
     }
 }
 
@@ -229,9 +227,9 @@ void Interpreter::parseDropTable(const std::vector<std::string> &strvec)
         auto duration = std::chrono::duration_cast<std::chrono::microseconds>(end - start);
         std::cout << "Command was successfully executed and took " << double(duration.count()) * std::chrono::microseconds::period::num / std::chrono::microseconds::period::den << "s.\n";
     }
-    catch (std::out_of_range)
+    catch (std::exception &error)
     {
-        throw std::runtime_error(ErrorMsg);
+        std::cerr << error.what() << std::endl;
     }
 }
 
@@ -246,9 +244,9 @@ void Interpreter::parseDropIndex(const std::vector<std::string> &strvec)
         auto duration = std::chrono::duration_cast<std::chrono::microseconds>(end - start);
         std::cout << "Command was successfully executed and took " << double(duration.count()) * std::chrono::microseconds::period::num / std::chrono::microseconds::period::den << "s.\n";
     }
-    catch (std::out_of_range)
+    catch (std::exception &error)
     {
-        throw std::runtime_error(ErrorMsg);
+        std::cerr << error.what() << std::endl;
     }
 }
 
@@ -256,8 +254,7 @@ void Interpreter::parseInsert(const std::vector<std::string> &strvec)
 {
     if (strvec.at(1) != "into" || strvec.at(3) != "values" || strvec.at(4) != "(")
     {
-        std::cout << ErrorMsg;
-        return ;
+        throw("ERROR : You have an error in your SQL syntax; you can use 'insert into TABLENAME values(VALUE1, VALUE2, ...);' to insert.\n");
     }
 
     std::string tableName = strvec.at(2);
@@ -269,8 +266,7 @@ void Interpreter::parseInsert(const std::vector<std::string> &strvec)
         CatalogManager *cm = API::getCatalogManager();
         if (!cm->existTable(tableName))
         {
-            std::cout << "ERROR : You have an error in your SQL syntax; tabel named " << tableName << " doesn't exist.\n";
-            return ;
+            throw("ERROR : You have an error in your SQL syntax; tabel named " + tableName + " doesn't exist.\n");
         }
         Table table = cm->getTable(tableName);
 
@@ -295,8 +291,7 @@ void Interpreter::parseInsert(const std::vector<std::string> &strvec)
             }
             catch(...)
             {
-                std::cout << "ERROR : You have an error in your SQL syntax; value type is not defined.\n";
-                return ;
+                throw("ERROR : You have an error in your SQL syntax; value type is not defined.\n");
             }
             valueList.push_back(v);
         }
@@ -307,9 +302,9 @@ void Interpreter::parseInsert(const std::vector<std::string> &strvec)
         auto duration = std::chrono::duration_cast<std::chrono::microseconds>(end - start);
         std::cout << "Command was successfully executed and took " << double(duration.count()) * std::chrono::microseconds::period::num / std::chrono::microseconds::period::den << "s.\n";
     }
-    catch (std::out_of_range)
+    catch (std::exception &error)
     {
-        throw std::runtime_error(ErrorMsg);
+        std::cerr << error.what() << std::endl;
     }
 }
 
@@ -318,8 +313,7 @@ void Interpreter::parseDelete(const std::vector<std::string> &strvec)
 
     if (strvec.at(1) != "from")
     {
-        std::cout << ErrorMsg;
-        return ;
+        throw("ERROR : You have an error in your SQL syntax; you can use 'delete from TABLENAME;' or 'delete from TABLENAME where (CON1 and CON2 ...);' to delete.\n");
     }
 
     std::string tableName = strvec.at(2);
@@ -337,16 +331,15 @@ void Interpreter::parseDelete(const std::vector<std::string> &strvec)
             std::cout << "Command was successfully executed and took " << double(duration.count()) * std::chrono::microseconds::period::num / std::chrono::microseconds::period::den << "s.\n";
             return ;
         }
-        catch (std::out_of_range)
+        catch (std::exception &error)
         {
-            throw std::runtime_error(ErrorMsg);
+            std::cerr << error.what() << std::endl;
         }
     }
 
     if (strvec.at(3) != "where")
     {
-        std::cout << ErrorMsg;
-        return ;
+        throw("ERROR : You have an error in your SQL syntax; you can use 'delete from TABLENAME;' or 'delete from TABLENAME where (CON1 and CON2 ...);' to delete.\n");
     }
 
     try
@@ -354,8 +347,7 @@ void Interpreter::parseDelete(const std::vector<std::string> &strvec)
         CatalogManager *cm = API::getCatalogManager();
         if (!cm->existTable(tableName))
         {
-            std::cout << "ERROR : You have an error in your SQL syntax; tabel named " << tableName << " doesn't exist.\n";
-            return ;
+            throw("ERROR : You have an error in your SQL syntax; tabel named " + tableName + " doesn't exist.\n");
         }
         Table table = cm->getTable(tableName);
 
@@ -403,8 +395,7 @@ void Interpreter::parseDelete(const std::vector<std::string> &strvec)
             }
             else
             {
-                std::cout << "ERROR : You have an error in your SQL syntax; operator is not defined.\n";
-                return ;
+                throw("ERROR : You have an error in your SQL syntax; operator is not defined.\n");
             }
             i++;
             
@@ -418,8 +409,7 @@ void Interpreter::parseDelete(const std::vector<std::string> &strvec)
                 }
                 if (j == table.columns.size())
                 {
-                    std::cout << "ERROR : You have an error in your SQL syntax; column named " << columnName << " doesn't exist.\n";
-                    return ;
+                    throw("ERROR : You have an error in your SQL syntax; column named " + columnName + " doesn't exist.\n");
                 }
                 Column column = table.columns.at(j);
                 switch (column.field)
@@ -437,8 +427,7 @@ void Interpreter::parseDelete(const std::vector<std::string> &strvec)
             }
             catch(...)
             {
-                std::cout << "ERROR : You have an error in your SQL syntax; value type is not defined.\n";
-                return ;
+                throw("ERROR : You have an error in your SQL syntax; value type is not defined.\n");
             }
             Condition condition;
             condition.columnName = columnName;
@@ -454,9 +443,9 @@ void Interpreter::parseDelete(const std::vector<std::string> &strvec)
         auto duration = std::chrono::duration_cast<std::chrono::microseconds>(end - start);
         std::cout << "Command was successfully executed and took " << double(duration.count()) * std::chrono::microseconds::period::num / std::chrono::microseconds::period::den << "s.\n";
     }
-    catch (std::out_of_range)
+    catch (std::exception &error)
     {
-        throw std::runtime_error(ErrorMsg);
+        std::cerr << error.what() << std::endl;
     }
 }
 
@@ -464,8 +453,7 @@ void Interpreter::parseSelect(const std::vector<std::string> &strvec)
 {
     if (strvec.at(1) != "*" || strvec.at(2) != "from")
     {
-        std::cout << ErrorMsg;
-        return ;
+        throw("ERROR : You have an error in your SQL syntax; you can use 'select * from TABLENAME;' or 'select * from TABLENAME where (CON1 and CON2 ...);'.\n");
     }
 
     std::string tableName = strvec.at(3);
@@ -483,16 +471,15 @@ void Interpreter::parseSelect(const std::vector<std::string> &strvec)
             std::cout << "Command was successfully executed and took " << double(duration.count()) * std::chrono::microseconds::period::num / std::chrono::microseconds::period::den << "s.\n";
             return ;
         }
-        catch (std::out_of_range)
+        catch (std::exception &error)
         {
-            throw std::runtime_error(ErrorMsg);
+            std::cerr << error.what() << std::endl;
         }
     }
 
     if (strvec.at(4) != "where")
     {
-        std::cout << ErrorMsg;
-        return ;
+        throw("ERROR : You have an error in your SQL syntax; you can use 'select * from TABLENAME;' or 'select * from TABLENAME where (CON1 and CON2 ...);'.\n");
     }
 
     try
@@ -544,8 +531,7 @@ void Interpreter::parseSelect(const std::vector<std::string> &strvec)
             }
             else
             {
-                std::cout << "ERROR : You have an error in your SQL syntax; operator is not defined.\n";
-                return ;
+                throw("ERROR : You have an error in your SQL syntax; operator is not defined.\n");
             }
             i++;
 
@@ -559,8 +545,7 @@ void Interpreter::parseSelect(const std::vector<std::string> &strvec)
                 }
                 if (j == table.columns.size())
                 {
-                    std::cout << "ERROR : You have an error in your SQL syntax; column named " << columnName << " doesn't exist.\n";
-                    return ;
+                    throw("ERROR : You have an error in your SQL syntax; column named " + columnName + " doesn't exist.\n");
                 }
                 Column column = table.columns.at(j);
 
@@ -581,8 +566,7 @@ void Interpreter::parseSelect(const std::vector<std::string> &strvec)
             }
             catch(...)
             {
-                std::cout << "ERROR : You have an error in your SQL syntax; value type is not defined.\n";
-                return ;
+                throw("ERROR : You have an error in your SQL syntax; value type is not defined.\n");
             }
             Condition condition;
             condition.columnName = columnName;
@@ -597,9 +581,9 @@ void Interpreter::parseSelect(const std::vector<std::string> &strvec)
         auto duration = std::chrono::duration_cast<std::chrono::microseconds>(end - start);
         std::cout << "Command was successfully executed and took " << double(duration.count()) * std::chrono::microseconds::period::num / std::chrono::microseconds::period::den << "s.\n";
     }
-    catch (std::out_of_range)
+    catch (std::exception &error)
     {
-        throw std::runtime_error(ErrorMsg);
+        std::cerr << error.what() << std::endl;
     }
 }
 
@@ -607,8 +591,7 @@ void Interpreter::parseExec(const std::vector<std::string> &strvec)
 {
     if (strvec.at(2) != ";")
     {
-        std::cout << ErrorMsg;
-        return ;
+        throw("ERROR : You have an error in your SQL syntax; you can use 'execfile FILENAME;' to execute.\n");
     }
 
     std::string fileName = "test/"+strvec.at(1);
@@ -616,8 +599,7 @@ void Interpreter::parseExec(const std::vector<std::string> &strvec)
 
     if (!infile)
     {
-        std::cout << "ERROR : You have an error in your SQL syntax; file named " << fileName << " doesn't exist.\n";
-        return ;
+        throw("ERROR : You have an error in your SQL syntax; file named " + fileName + " doesn't exist.\n");
     }
     
     auto start = std::chrono::high_resolution_clock::now();

@@ -33,5 +33,3 @@ private:
     static void parseSelect(const std::vector<std::string> &strvec);
     static void parseExec(const std::vector<std::string> &strvec);
 };
-
-const std::string ErrorMsg = "ERROR : You have an error in your SQL syntax; check the manual that corresponds to your MiniSQL server version for the right syntax.\n";
