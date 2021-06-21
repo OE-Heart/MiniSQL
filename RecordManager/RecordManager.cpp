@@ -2,7 +2,7 @@
  * @Author: Yinwhe
  * @Date: 2021-06-16 09:50:16
  * @LastEditors: Yinwhe
- * @LastEditTime: 2021-06-21 17:50:59
+ * @LastEditTime: 2021-06-21 18:56:12
  * @Description: file information
  * @Copyright: Copyright (c) 2021
  */
@@ -129,9 +129,8 @@ void RecordManager::PutRecord(Table &t, const ValueVec& v, char *data){
 bool RecordManager::CheckUnique(Table &t, int ColumnID, const Value &v){
     if (t.columns[ColumnID].index != "")
     { // use index to check uniqueness
-        printf("CheckUnique using index\n");
         PieceVec vec = IndexSelect(t, ColumnID, Condition(t.columns[ColumnID].columnName, OP::EQ, v));
-        return !vec.empty();
+        return vec.empty();
     }
     int blockcount = t.blockCnt;
     for (int i = 0; i < blockcount; i++){
@@ -246,9 +245,9 @@ PieceVec RecordManager::SelectPos(Table &t, const std::vector<Condition> con)
     for (const Condition &c : con){
         int index = t.indexOfCol(c.columnName);
         if (t.columns[index].index != ""){
-            // #ifdef DEBUG
+            #ifdef DEBUG
             printf("SelectPos Use index, indexname:%s, on:%s\n", t.columns[index].index.c_str(), t.columns[index].columnName.c_str());
-            // #endif
+            #endif
             if(c.op != OP::EQ) break; // Not supported
             if (!flag)
             {

@@ -2,7 +2,7 @@
  * @Author: Gcx
  * @Date: 2021-06-19 18:28:23
  * @LastEditors: Yinwhe
- * @LastEditTime: 2021-06-21 16:41:56
+ * @LastEditTime: 2021-06-21 18:56:22
  * @Description: file information
  * @Copyright: Copyright (c) 2021
  */
@@ -37,7 +37,7 @@ template<typename T>
 void _index_manager<T>::create_index(const std::string index_name, Table & table,const std::string & column_name){
     int index_col= table.indexOfCol(column_name);
     int size=table.columns[index_col].size();
-    int num_record=4096/(table.size()+1);//每个block里有这么多条record
+    int num_record=table.rib();//每个block里有这么多条record
     int sum=1;
     for(int k=0;k<index_col;k++){//找到column_name对应的那个地址起始值
         sum+=table.columns[k].size();
