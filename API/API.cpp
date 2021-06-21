@@ -199,6 +199,7 @@ void API::select(const std::string &tableName, std::vector<Condition> &condition
         }
         std::cout << "\n";
     }
+    std::cout << result.size() << " rows in set\n";
 }
 
 void API::selectAll(const std::string &tableName)
@@ -238,6 +239,7 @@ void API::selectAll(const std::string &tableName)
         }
         std::cout << "\n";
     }
+    std::cout << result.size() << " rows in set\n";
 }
 
 void API::endLoop()

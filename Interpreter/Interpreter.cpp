@@ -616,7 +616,7 @@ void Interpreter::parseExec(const std::vector<std::string> &strvec)
         return ;
     }
 
-    std::string fileName = strvec.at(1);
+    std::string fileName = "test/"+strvec.at(1);
     std::ifstream infile(fileName);
 
     if (!infile)
@@ -647,6 +647,7 @@ void Interpreter::parseExec(const std::vector<std::string> &strvec)
         if (line.back() == ';')
         {
             cmdNum++;
+            std::cout << "Command " << cmdNum << ": \n";
             std::vector<std::string> cmd = Tokenizer(str);
             Parse(cmd);
             str.clear();
