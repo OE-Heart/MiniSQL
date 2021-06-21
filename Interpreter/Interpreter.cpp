@@ -29,12 +29,7 @@ void Interpreter::mainLoop()
         try
         {
             std::string str = getCmdString();
-            // std::cout << str << std::endl;
             std::vector<std::string> cmd = Tokenizer(str);
-            // for (int i = 0; i < cmd.size(); i++)
-            // {
-            //     std::cout << cmd.at(i) << std::endl;
-            // }
             Parse(cmd);
         }
         catch (std::runtime_error &error)
