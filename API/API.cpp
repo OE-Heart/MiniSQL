@@ -47,7 +47,6 @@ void API::createIndex(const std::string &indexName, const std::string &tableName
         return ;
     }
 
-    Index &index = CM->getIndex(indexName);
     Table &table = CM->getTable(tableName);
 
     CM->newIndex(indexName, tableName, columnName);
@@ -69,7 +68,7 @@ void API::dropTable(const std::string &tableName)
     RM->DropTable(table);
     CM->dropTable(tableName);
 
-    // API::dropIndex(tableName+"_Primary");
+    API::dropIndex(tableName+"_Primary");
 }
 
 void API::dropIndex(const std::string &indexName)

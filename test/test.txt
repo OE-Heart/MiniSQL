@@ -56,3 +56,5 @@ drop index iname;
 
 drop table t1;
 select * from t1;
+
+create index idindex on insert100(id);
