@@ -10,12 +10,14 @@
 
 MiniSQL::MiniSQL()
 {
-    
-}
+    auto CM = API::getCatalogManager();
+    auto RM = API::getRecordManager();
 
-MiniSQL::~MiniSQL()
-{
-
+    for (auto const& index : CM->indices)
+    {
+        Table &table = CM->getTable(index.second.tableName);
+        RM->im->CreateIndex(index.second.indexName, table, index.second.columnName);
+    }
 }
 
 void API::createTable(const std::string &tableName, const std::vector<Column> &columns, const std::string &primaryKey)

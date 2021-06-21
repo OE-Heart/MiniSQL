@@ -36,8 +36,9 @@ public:
     void load();
     void save();
 
+    std::unordered_map<std::string, Index> indices;
+
 private:
     std::unordered_map<std::string, Table> tables;
-    std::unordered_map<std::string, Index> indices;
     inline static const std::string catalogFile = "Catalog.minisql";
 };

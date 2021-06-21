@@ -18,7 +18,7 @@
 class MiniSQL{
 public:
     MiniSQL();
-    ~MiniSQL();
+    ~MiniSQL() = default;
     Interpreter interpreter;
 private:
 };
