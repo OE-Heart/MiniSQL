@@ -459,6 +459,7 @@ void IndexManager<T>::create_index(BPTree<T> &tree,Table & table,std::string & c
           //如果record的首位为0，则代表该record不可用，跳到下一条record并continue
           //否则根据每个columns的size，找到column_name对应的那个地址起始值
           //读取需求column_name的那个搜索码值
+            T key = *(T*)data;
           //调用BPTree的insert函数插入该record即可
             }
         }
