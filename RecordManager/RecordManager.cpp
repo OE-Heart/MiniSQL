@@ -2,7 +2,7 @@
  * @Author: Yinwhe
  * @Date: 2021-06-16 09:50:16
  * @LastEditors: Yinwhe
- * @LastEditTime: 2021-06-21 15:40:38
+ * @LastEditTime: 2021-06-21 17:50:59
  * @Description: file information
  * @Copyright: Copyright (c) 2021
  */
@@ -129,6 +129,7 @@ void RecordManager::PutRecord(Table &t, const ValueVec& v, char *data){
 bool RecordManager::CheckUnique(Table &t, int ColumnID, const Value &v){
     if (t.columns[ColumnID].index != "")
     { // use index to check uniqueness
+        printf("CheckUnique using index\n");
         PieceVec vec = IndexSelect(t, ColumnID, Condition(t.columns[ColumnID].columnName, OP::EQ, v));
         return !vec.empty();
     }
@@ -202,11 +203,11 @@ Piece RecordManager::InsertRecord(Table &t, const std::vector<Value> &vals){
     bid = bm->bread(t.tableName, t.blockCnt-1);
     data = bm->baddr(bid);
     #ifdef DEBUG
-    printf("InsertRecord, new block created:%d\n", bid);
+    printf("InsertRecord, new block created, bid:%d\n", bid);
     #endif
     PutRecord(t, vals, data);
     // Update index
-    IndexUpdate(t, vals, 0, (blockcount-1)*t.rib());
+    IndexUpdate(t, vals, 0, (t.blockCnt-1)*t.rib());
     bm->bwrite(bid);
     bm->brelease(bid);
 
@@ -245,9 +246,9 @@ PieceVec RecordManager::SelectPos(Table &t, const std::vector<Condition> con)
     for (const Condition &c : con){
         int index = t.indexOfCol(c.columnName);
         if (t.columns[index].index != ""){
-            #ifdef DEBUG
+            // #ifdef DEBUG
             printf("SelectPos Use index, indexname:%s, on:%s\n", t.columns[index].index.c_str(), t.columns[index].columnName.c_str());
-            #endif
+            // #endif
             if(c.op != OP::EQ) break; // Not supported
             if (!flag)
             {
@@ -332,7 +333,7 @@ std::vector<ValueVec> RecordManager::SelectAllRecord(Table &t){
 
 PieceVec RecordManager::IndexSelect(Table &t, int ColumnID, const Condition &con){
     const auto &attr = t.columns[ColumnID];
-    PieceVec res;
+    PieceVec res;res.clear();
     if(attr.columnName != con.columnName)
         Rpanic("IndexSelect error, column name inconsistent!");
     
@@ -340,11 +341,13 @@ PieceVec RecordManager::IndexSelect(Table &t, int ColumnID, const Condition &con
         Rpanic("IndexSelect error, range select not supported!");
 
     int off = im->FindIndex(attr.index, t, attr.columnName, con.value);
-    off *= (t.size()+1);
+    if(off<0) return res;
+
     #ifdef DEBUG
     printf("IndexSelect off:%d\n", off);
     #endif
-    res.emplace_back(std::make_pair(off/BLOCK_SIZE, off%BLOCK_SIZE));
+    int rib = t.rib();
+    res.emplace_back(std::make_pair(off/rib, (off%rib)*(t.size()+1)));
     return res;
 }
 

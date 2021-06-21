@@ -1,8 +1,8 @@
 /*
  * @Author: Ou Yixin
  * @Date: 2021-06-09 23:25:37
- * @LastEditors: Ou Yixin
- * @LastEditTime: 2021-06-20 11:50:02
+ * @LastEditors: Yinwhe
+ * @LastEditTime: 2021-06-21 17:53:09
  * @Description: 
  * @FilePath: /MiniSQL/API/API.cpp
  */
@@ -33,7 +33,7 @@ void API::createTable(const std::string &tableName, const std::vector<Column> &c
     Table &table = CM->getTable(tableName);
     RM->CreateTable(table);
 
-    // API::createIndex(tableName+"_Primary", tableName, primaryKey);
+    API::createIndex(tableName+"_Primary", tableName, primaryKey);
 }
 
 void API::createIndex(const std::string &indexName, const std::string &tableName, const std::string &columnName)

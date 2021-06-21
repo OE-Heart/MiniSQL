@@ -34,6 +34,7 @@ BID BufferManager::getblk(std::string &str, int off){
     bp->offset = off;
     bp->refcnt = 1;
     bp->isDirty = bp->isPinned = bp->uptodate = false;
+    memset(bp->data, 0, BLOCK_SIZE);
     return empty;
 }
 

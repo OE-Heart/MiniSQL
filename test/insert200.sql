@@ -1,4 +1,4 @@
-create table insert200(id int ,name char(20) unique,age int ,salary float,primary key(id));
+create table insert200(id int ,name char(20),age int ,salary float,primary key(id));
 insert into insert200 values(32089764,'wbfouar',127,320.127);
 insert into insert200 values(910992595,'hgbrbr',41,9109.41);
 insert into insert200 values(303583334,'jcgk',91,3035.91);

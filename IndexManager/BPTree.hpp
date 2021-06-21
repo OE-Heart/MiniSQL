@@ -98,9 +98,9 @@ bool BPTree<T>::findKeyFromNode(TreeNode node, const T &key, Nodemap<T> &res) {
 template<typename T>
 int BPTree<T>::find(const T &key) {//返回的是key所对应的keyoffset
     Nodemap<T> res;
-    if (root==nullptr) { std::cout<<"root null\n"; return -1; }
+    if (root==nullptr) { return -1; }
     if (findKeyFromNode(root, key, res)) { return res.node->keyOffset[res.index]; }
-    else { std::cout<<"not found\n"; return -1; }
+    else { return -1; }
 }
 
 template<typename T>
