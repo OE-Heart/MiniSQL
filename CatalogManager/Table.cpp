@@ -2,7 +2,7 @@
  * @Author: Yinwhe
  * @Date: 2021-06-19 13:50:11
  * @LastEditors: Yinwhe
- * @LastEditTime: 2021-06-20 12:18:20
+ * @LastEditTime: 2021-06-21 15:37:46
  * @Description: file information
  * @Copyright: Copyright (c) 2021
  */
@@ -49,6 +49,16 @@ int Table::size()
     }
 }
 
+int Table::rib(){
+    if (recordInBlock > 0){
+        return recordInBlock;
+    } else {
+        int tmp = this->size() + 1;
+        recordInBlock = (BLOCK_SIZE / tmp);
+        return recordInBlock;
+    }
+}
+
 std::string Table::toString() const
 {
     std::string s;
@@ -60,7 +70,7 @@ std::string Table::toString() const
     s += tableName;
     int columnsSize = columns.size();
     std::copy_n(reinterpret_cast<char *>(&columnsSize), sizeof(int), std::back_inserter(s));
-    std::copy_n(reinterpret_cast<const char*>(&recordCnt), sizeof(int), std::back_inserter(s));
+    // std::copy_n(reinterpret_cast<const char*>(&recordCnt), sizeof(int), std::back_inserter(s));
     std::copy_n(reinterpret_cast<const char*>(&blockCnt), sizeof(int), std::back_inserter(s));
 
     for (const auto &column : columns)
@@ -84,8 +94,8 @@ Table Table::fromString(const char *&p)
     p += nameSize;
     int columnsSize = *reinterpret_cast<const int *>(p);
     p += sizeof(int);
-    table.recordCnt = *reinterpret_cast<const int *>(p);
-    p += sizeof(int);
+    // table.recordCnt = *reinterpret_cast<const int *>(p);
+    // p += sizeof(int);
     table.blockCnt = *reinterpret_cast<const int *>(p);
     p += sizeof(int);
 

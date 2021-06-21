@@ -2,7 +2,7 @@
  * @Author: Yinwhe
  * @Date: 2021-06-16 09:50:16
  * @LastEditors: Yinwhe
- * @LastEditTime: 2021-06-20 19:54:58
+ * @LastEditTime: 2021-06-21 15:40:38
  * @Description: file information
  * @Copyright: Copyright (c) 2021
  */
@@ -40,7 +40,6 @@ void RecordManager::CreateTable(Table &t){
     bm->bwrite(bid);
     bm->brelease(bid);
     t.blockCnt = 1;
-    t.recordCnt = 0;
     #ifdef DEBUG
     printf("RM CreateTable Done\n");
     #endif
@@ -94,7 +93,7 @@ ValueVec RecordManager::GetRecord(Table &t, char *data){
     return res;
 }
 
-void RecordManager::PutRecord(Table &t, const std::vector<Value> v, char *data){
+void RecordManager::PutRecord(Table &t, const ValueVec& v, char *data){
     *data++ = 1; // set as taken
     const std::vector<Column> &attr = t.columns;
     int size = attr.size();
@@ -125,7 +124,6 @@ void RecordManager::PutRecord(Table &t, const std::vector<Value> v, char *data){
         }
         offset += attr[i].size();
     }
-    t.recordCnt+=1;
 }
 
 bool RecordManager::CheckUnique(Table &t, int ColumnID, const Value &v){
@@ -185,8 +183,10 @@ Piece RecordManager::InsertRecord(Table &t, const std::vector<Value> &vals){
     int size = t.size() + 1;
 
     for (int offset=0;offset<BLOCK_SIZE;offset+=size){
-        if (data[offset] == 0 && offset+size<BLOCK_SIZE){ // found free record
+        if (data[offset] == 0 && offset+size<=BLOCK_SIZE){ // found free record
             PutRecord(t, vals, data+offset);
+            // Update index
+            IndexUpdate(t, vals, 0, (blockcount-1)*t.rib()+offset/size);
             bm->bwrite(bid);
             bm->brelease(bid);
             #ifdef DEBUG
@@ -205,6 +205,8 @@ Piece RecordManager::InsertRecord(Table &t, const std::vector<Value> &vals){
     printf("InsertRecord, new block created:%d\n", bid);
     #endif
     PutRecord(t, vals, data);
+    // Update index
+    IndexUpdate(t, vals, 0, (blockcount-1)*t.rib());
     bm->bwrite(bid);
     bm->brelease(bid);
 
@@ -264,7 +266,7 @@ PieceVec RecordManager::SelectPos(Table &t, const std::vector<Condition> con)
             BID bid = bm->bread(t.tableName, i);
             char *data = bm->baddr(bid);
             int size = t.size()+1;
-            for (int offset = 0; offset < BLOCK_SIZE; offset += size){
+            for (int offset = 0; offset < BLOCK_SIZE && offset+size<=BLOCK_SIZE; offset += size){
                 if(!data[offset]) continue; // Empty skip
                 
                 std::vector<Value> res = GetRecord(t, data + offset);
@@ -290,8 +292,11 @@ void RecordManager::DeleteRecord(Table &t, const std::vector<Condition> &con){
     for (auto piece : v){
         BID bid = bm->bread(t.tableName, piece.first);
         char *data = bm->baddr(bid);
+        // Update Index
+        ValueVec res = GetRecord(t, data + piece.second);
+        IndexUpdate(t, res, 1, 0);
+        // delete in the disk
         data[piece.second] = 0;
-        t.recordCnt-=1;
         bm->bwrite(bid);
         bm->brelease(bid);
     }
@@ -341,4 +346,28 @@ PieceVec RecordManager::IndexSelect(Table &t, int ColumnID, const Condition &con
     #endif
     res.emplace_back(std::make_pair(off/BLOCK_SIZE, off%BLOCK_SIZE));
     return res;
+}
+
+void RecordManager::IndexUpdate(Table &t, const ValueVec &vals, int optype, int offset){
+    const auto &cols = t.columns;
+    for(int i=0;i<vals.size();i++){
+        if(cols[i].index.empty())
+            continue;
+        switch(optype){
+            case 0:{
+                im->InsertIndex(cols[i].index, t, cols[i].columnName, vals[i], offset);
+                #ifdef DEBUG
+                printf("IndexUpdate insert done, offset:%d\n", offset);
+                #endif
+                break;
+            }
+            case 1:{
+                im->DeleteIndex(cols[i].index, t, cols[i].columnName, vals[i]);
+                #ifdef DEBUG
+                printf("IndexUpdate delete done\n");
+                #endif
+                break;
+            }
+        }
+    }
 }
