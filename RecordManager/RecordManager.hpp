@@ -1,7 +1,7 @@
 /*
  * @Author: Yinwhe
  * @Date: 2021-06-18 21:53:58
- * @LastEditTime: 2021-06-21 15:20:58
+ * @LastEditTime: 2021-06-23 16:47:27
  * @LastEditors: Yinwhe
  * @Description: Doc
  * @FilePath: /MiniSQL/RecordManager/RecordManager.hpp
@@ -18,17 +18,6 @@
 typedef std::pair<int, int> Piece;
 typedef std::vector<Piece> PieceVec;
 typedef std::vector<Value> ValueVec;
-
-class RecordError : public std::exception{
-    std::string msg;
-public:
-    RecordError(const std::string info){
-        msg = info;
-    }
-    const char *what() const noexcept override{
-        return msg.c_str();
-    }
-};
 
 class RecordManager{
 private:
