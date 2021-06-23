@@ -137,7 +137,7 @@ DropIndex(const std::string index_name, Table & table, const std::string & colum
 
 ### 类图
 
-![img](file:///E:\Tencent  record\1121488332\Image\C2C\Image1\PMMX_OO453Y70M`7QSPM1FV.png)
+![Index Manager](E:\SQL code\MiniSQL\doc\Index Manager\Index Manager.assest\Index Manager.png)
 
 ### 类内关系
 
