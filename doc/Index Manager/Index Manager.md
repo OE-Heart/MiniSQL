@@ -137,7 +137,7 @@ DropIndex(const std::string index_name, Table & table, const std::string & colum
 
 ### 类图
 
-![Index Manager](E:\SQL code\MiniSQL\doc\Index Manager\Index Manager.assest\Index Manager.png)
+![Index Manager](assets/Index Manager.png)
 
 ### 类内关系
 
