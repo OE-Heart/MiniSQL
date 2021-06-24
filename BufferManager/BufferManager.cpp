@@ -1,5 +1,7 @@
 #include "BufferManager.hpp"
 // #define DEBUG
+int IOCnt = 0;
+
 BufferManager::BufferManager(){
     blocks = new Block[BLOCK_SIZE];
     #ifdef DEBUG
@@ -63,7 +65,6 @@ BID BufferManager::bread(std::string &str, int off){
 
     if (fp == NULL) // If not exist, create one
         fp = fopen((str + ".data").c_str(), "wb+");
-
     fseek(fp, off * BLOCK_SIZE, 0);    // Realocate location
     int t = fread(bp->data, BLOCK_SIZE, 1, fp);
     if (t != 1)
@@ -76,6 +77,7 @@ BID BufferManager::bread(std::string &str, int off){
     }
     bp->uptodate = true;
     fclose(fp);
+    IOCnt += 1;
     return bid;
 }
 
@@ -88,6 +90,7 @@ bool BufferManager::bwrite(BID bid){
     fseek(fp, bp->offset * BLOCK_SIZE, 0);
     fwrite(bp->data, BLOCK_SIZE, 1, fp);
     fclose(fp);
+    IOCnt += 1;
     return true;
 }
 

@@ -1,8 +1,8 @@
 /*
  * @Author: Ou Yixin
  * @Date: 2021-06-09 23:19:04
- * @LastEditors: Ou Yixin
- * @LastEditTime: 2021-06-20 11:47:17
+ * @LastEditors: Yinwhe
+ * @LastEditTime: 2021-06-24 11:36:57
  * @Description: 
  * @FilePath: /MiniSQL/Interpreter/Interpreter.cpp
  */
@@ -10,7 +10,7 @@
 #include "../API/API.hpp"
 #include "../CatalogManager/Column.hpp"
 #include "Condition.hpp"
-
+extern int IOCnt;
 void Interpreter::mainLoop()
 {
     std::cout << R"( __  __ _       _ ____   ___  _     )" << "\n";
@@ -659,4 +659,6 @@ void Interpreter::parseExec(const std::vector<std::string> &strvec)
     auto end = std::chrono::high_resolution_clock::now();
     auto duration = std::chrono::duration_cast<std::chrono::microseconds>(end - start);
     std::cout << cmdNum << " commands were successfully executed and took " << double(duration.count()) *std::chrono::microseconds::period::num / std::chrono::microseconds::period::den << "s.\n";
+    std::cout << "IO operation times: " << IOCnt << std::endl;
+    IOCnt = 0;
 }
