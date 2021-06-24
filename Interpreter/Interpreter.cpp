@@ -109,7 +109,11 @@ void Interpreter::Parse(const std::vector<std::string> &strvec)
         std::cout << "Bye\n";
         API::endLoop();
     }
-    else throw("ERROR : You have an error in your SQL syntax; check the manual that corresponds to your MiniSQL server version for the right syntax to use near '" + strvec.at(0) + "'.\n");
+    else
+    {
+        std::cerr << "ERROR : You have an error in your SQL syntax; check the manual that corresponds to your MiniSQL server version for the right syntax to use near '" << strvec.at(0) << "'.\n";
+        // throw("ERROR : You have an error in your SQL syntax; check the manual that corresponds to your MiniSQL server version for the right syntax to use near '" + strvec.at(0) + "'.\n");
+    }
 }
 
 void Interpreter::parseCreateTable(const std::vector<std::string> &strvec)
@@ -128,7 +132,8 @@ void Interpreter::parseCreateTable(const std::vector<std::string> &strvec)
         }
         else
         {
-            throw("ERROR : You have an error in your SQL syntax; the primary key must be set when create table.\n");
+            std::cerr << "ERROR : You have an error in your SQL syntax; the primary key must be set when create table.\n";
+            //throw("ERROR : You have an error in your SQL syntax; the primary key must be set when create table.\n");
         }
         
         for (int i = 4; i < vecSize - 7; )
@@ -162,7 +167,8 @@ void Interpreter::parseCreateTable(const std::vector<std::string> &strvec)
             }
             else
             {
-                throw("ERROR : You have an error in your SQL syntax; the type "+strvec.at(i)+" is not defined.\n");
+                std::cerr << "ERROR : You have an error in your SQL syntax; the type "<<strvec.at(i)<<" is not defined.\n";
+                // throw("ERROR : You have an error in your SQL syntax; the type "+strvec.at(i)+" is not defined.\n");
                 return ;
             }
 
@@ -177,7 +183,8 @@ void Interpreter::parseCreateTable(const std::vector<std::string> &strvec)
 
         if (!hasPrimaryKey)
         {
-            throw("ERROR : You have an error in your SQL syntax; the primary key must be set when create table.\n");
+            std::cerr << "ERROR : You have an error in your SQL syntax; the primary key must be set when create table.\n";
+            // throw("ERROR : You have an error in your SQL syntax; the primary key must be set when create table.\n");
         }
 
         auto start = std::chrono::high_resolution_clock::now();
@@ -196,7 +203,8 @@ void Interpreter::parseCreateIndex(const std::vector<std::string> &strvec)
 {
     if (strvec.at(3) != "on" || strvec.at(5) != "(" || strvec.at(7) != ")")
     {
-        throw("ERROR : You have an error in your SQL syntax; you can use 'create index INDEXNAME on TABLENAME(COLUMNNAME);' to create index.\n");
+        std::cerr << "ERROR : You have an error in your SQL syntax; you can use 'create index INDEXNAME on TABLENAME(COLUMNNAME);' to create index.\n";
+        // throw("ERROR : You have an error in your SQL syntax; you can use 'create index INDEXNAME on TABLENAME(COLUMNNAME);' to create index.\n");
     }
 
     std::string indexName = strvec.at(2);
@@ -254,7 +262,8 @@ void Interpreter::parseInsert(const std::vector<std::string> &strvec)
 {
     if (strvec.at(1) != "into" || strvec.at(3) != "values" || strvec.at(4) != "(")
     {
-        throw("ERROR : You have an error in your SQL syntax; you can use 'insert into TABLENAME values(VALUE1, VALUE2, ...);' to insert.\n");
+        std::cerr << "ERROR : You have an error in your SQL syntax; you can use 'insert into TABLENAME values(VALUE1, VALUE2, ...);' to insert.\n";
+        // throw("ERROR : You have an error in your SQL syntax; you can use 'insert into TABLENAME values(VALUE1, VALUE2, ...);' to insert.\n");
     }
 
     std::string tableName = strvec.at(2);
@@ -266,7 +275,8 @@ void Interpreter::parseInsert(const std::vector<std::string> &strvec)
         CatalogManager *cm = API::getCatalogManager();
         if (!cm->existTable(tableName))
         {
-            throw("ERROR : You have an error in your SQL syntax; tabel named " + tableName + " doesn't exist.\n");
+            std::cerr << "ERROR : You have an error in your SQL syntax; tabel named " << tableName << " doesn't exist.\n";
+            // throw("ERROR : You have an error in your SQL syntax; tabel named " + tableName + " doesn't exist.\n");
         }
         Table table = cm->getTable(tableName);
 
@@ -291,7 +301,8 @@ void Interpreter::parseInsert(const std::vector<std::string> &strvec)
             }
             catch(...)
             {
-                throw("ERROR : You have an error in your SQL syntax; value type is not defined.\n");
+                std::cerr << "ERROR : You have an error in your SQL syntax; value type is not defined.\n";
+                // throw("ERROR : You have an error in your SQL syntax; value type is not defined.\n");
             }
             valueList.push_back(v);
         }
@@ -313,7 +324,8 @@ void Interpreter::parseDelete(const std::vector<std::string> &strvec)
 
     if (strvec.at(1) != "from")
     {
-        throw("ERROR : You have an error in your SQL syntax; you can use 'delete from TABLENAME;' or 'delete from TABLENAME where (CON1 and CON2 ...);' to delete.\n");
+        std::cerr << "ERROR : You have an error in your SQL syntax; you can use 'delete from TABLENAME;' or 'delete from TABLENAME where (CON1 and CON2 ...);' to delete.\n";
+        // throw("ERROR : You have an error in your SQL syntax; you can use 'delete from TABLENAME;' or 'delete from TABLENAME where (CON1 and CON2 ...);' to delete.\n");
     }
 
     std::string tableName = strvec.at(2);
@@ -339,7 +351,8 @@ void Interpreter::parseDelete(const std::vector<std::string> &strvec)
 
     if (strvec.at(3) != "where")
     {
-        throw("ERROR : You have an error in your SQL syntax; you can use 'delete from TABLENAME;' or 'delete from TABLENAME where (CON1 and CON2 ...);' to delete.\n");
+        std::cerr << "ERROR : You have an error in your SQL syntax; you can use 'delete from TABLENAME;' or 'delete from TABLENAME where (CON1 and CON2 ...);' to delete.\n";
+        // throw("ERROR : You have an error in your SQL syntax; you can use 'delete from TABLENAME;' or 'delete from TABLENAME where (CON1 and CON2 ...);' to delete.\n");
     }
 
     try
@@ -347,7 +360,8 @@ void Interpreter::parseDelete(const std::vector<std::string> &strvec)
         CatalogManager *cm = API::getCatalogManager();
         if (!cm->existTable(tableName))
         {
-            throw("ERROR : You have an error in your SQL syntax; tabel named " + tableName + " doesn't exist.\n");
+            std::cerr << "ERROR : You have an error in your SQL syntax; tabel named " << tableName << " doesn't exist.\n";
+            // throw("ERROR : You have an error in your SQL syntax; tabel named " + tableName + " doesn't exist.\n");
         }
         Table table = cm->getTable(tableName);
 
@@ -395,7 +409,8 @@ void Interpreter::parseDelete(const std::vector<std::string> &strvec)
             }
             else
             {
-                throw("ERROR : You have an error in your SQL syntax; operator is not defined.\n");
+                std::cerr << "ERROR : You have an error in your SQL syntax; operator is not defined.\n";
+                // throw("ERROR : You have an error in your SQL syntax; operator is not defined.\n");
             }
             i++;
             
@@ -409,7 +424,8 @@ void Interpreter::parseDelete(const std::vector<std::string> &strvec)
                 }
                 if (j == table.columns.size())
                 {
-                    throw("ERROR : You have an error in your SQL syntax; column named " + columnName + " doesn't exist.\n");
+                    std::cerr << "ERROR : You have an error in your SQL syntax; column named " << columnName << " doesn't exist.\n";
+                    // throw("ERROR : You have an error in your SQL syntax; column named " + columnName + " doesn't exist.\n");
                 }
                 Column column = table.columns.at(j);
                 switch (column.field)
@@ -427,7 +443,8 @@ void Interpreter::parseDelete(const std::vector<std::string> &strvec)
             }
             catch(...)
             {
-                throw("ERROR : You have an error in your SQL syntax; value type is not defined.\n");
+                std::cerr << "ERROR : You have an error in your SQL syntax; value type is not defined.\n";
+                // throw("ERROR : You have an error in your SQL syntax; value type is not defined.\n");
             }
             Condition condition;
             condition.columnName = columnName;
@@ -453,7 +470,8 @@ void Interpreter::parseSelect(const std::vector<std::string> &strvec)
 {
     if (strvec.at(1) != "*" || strvec.at(2) != "from")
     {
-        throw("ERROR : You have an error in your SQL syntax; you can use 'select * from TABLENAME;' or 'select * from TABLENAME where (CON1 and CON2 ...);'.\n");
+        std::cerr << "ERROR : You have an error in your SQL syntax; you can use 'select * from TABLENAME;' or 'select * from TABLENAME where (CON1 and CON2 ...);'.\n";
+        // throw("ERROR : You have an error in your SQL syntax; you can use 'select * from TABLENAME;' or 'select * from TABLENAME where (CON1 and CON2 ...);'.\n");
     }
 
     std::string tableName = strvec.at(3);
@@ -479,7 +497,8 @@ void Interpreter::parseSelect(const std::vector<std::string> &strvec)
 
     if (strvec.at(4) != "where")
     {
-        throw("ERROR : You have an error in your SQL syntax; you can use 'select * from TABLENAME;' or 'select * from TABLENAME where (CON1 and CON2 ...);'.\n");
+        std::cerr << "ERROR : You have an error in your SQL syntax; you can use 'select * from TABLENAME;' or 'select * from TABLENAME where (CON1 and CON2 ...);'.\n";
+        // throw("ERROR : You have an error in your SQL syntax; you can use 'select * from TABLENAME;' or 'select * from TABLENAME where (CON1 and CON2 ...);'.\n");
     }
 
     try
@@ -531,7 +550,8 @@ void Interpreter::parseSelect(const std::vector<std::string> &strvec)
             }
             else
             {
-                throw("ERROR : You have an error in your SQL syntax; operator is not defined.\n");
+                std::cerr << "ERROR : You have an error in your SQL syntax; operator is not defined.\n";
+                // throw("ERROR : You have an error in your SQL syntax; operator is not defined.\n");
             }
             i++;
 
@@ -545,7 +565,8 @@ void Interpreter::parseSelect(const std::vector<std::string> &strvec)
                 }
                 if (j == table.columns.size())
                 {
-                    throw("ERROR : You have an error in your SQL syntax; column named " + columnName + " doesn't exist.\n");
+                    std::cerr << "ERROR : You have an error in your SQL syntax; column named " << columnName << " doesn't exist.\n";
+                    // throw("ERROR : You have an error in your SQL syntax; column named " + columnName + " doesn't exist.\n");
                 }
                 Column column = table.columns.at(j);
 
@@ -566,7 +587,8 @@ void Interpreter::parseSelect(const std::vector<std::string> &strvec)
             }
             catch(...)
             {
-                throw("ERROR : You have an error in your SQL syntax; value type is not defined.\n");
+                std::cerr << "ERROR : You have an error in your SQL syntax; value type is not defined.\n";
+                // throw("ERROR : You have an error in your SQL syntax; value type is not defined.\n");
             }
             Condition condition;
             condition.columnName = columnName;
@@ -591,7 +613,8 @@ void Interpreter::parseExec(const std::vector<std::string> &strvec)
 {
     if (strvec.at(2) != ";")
     {
-        throw("ERROR : You have an error in your SQL syntax; you can use 'execfile FILENAME;' to execute.\n");
+        std::cerr << "ERROR : You have an error in your SQL syntax; you can use 'execfile FILENAME;' to execute.\n";
+        // throw("ERROR : You have an error in your SQL syntax; you can use 'execfile FILENAME;' to execute.\n");
     }
 
     std::string fileName = "test/"+strvec.at(1);
@@ -599,7 +622,8 @@ void Interpreter::parseExec(const std::vector<std::string> &strvec)
 
     if (!infile)
     {
-        throw("ERROR : You have an error in your SQL syntax; file named " + fileName + " doesn't exist.\n");
+        std::cerr << "ERROR : You have an error in your SQL syntax; file named " << fileName << " doesn't exist.\n";
+        // throw("ERROR : You have an error in your SQL syntax; file named " + fileName + " doesn't exist.\n");
     }
     
     auto start = std::chrono::high_resolution_clock::now();
