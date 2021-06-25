@@ -2,7 +2,7 @@
  * @Author: Ou Yixin
  * @Date: 2021-06-09 23:19:04
  * @LastEditors: Yinwhe
- * @LastEditTime: 2021-06-24 11:36:57
+ * @LastEditTime: 2021-06-25 19:40:00
  * @Description: 
  * @FilePath: /MiniSQL/Interpreter/Interpreter.cpp
  */
@@ -570,7 +570,7 @@ void Interpreter::parseSelect(const std::vector<std::string> &strvec)
                 }
                 Column column = table.columns.at(j);
 
-                std::cout << strvec.at(i) <<"\n";
+                // std::cout << strvec.at(i) <<"\n";
 
                 switch (column.field)
                 {

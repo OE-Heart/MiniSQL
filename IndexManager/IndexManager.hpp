@@ -2,7 +2,7 @@
  * @Author: Gcx
  * @Date: 2021-06-19 18:28:23
  * @LastEditors: Yinwhe
- * @LastEditTime: 2021-06-21 18:56:22
+ * @LastEditTime: 2021-06-25 19:26:25
  * @Description: file information
  * @Copyright: Copyright (c) 2021
  */
@@ -82,7 +82,6 @@ template<typename T>
 int _index_manager<T>::find_index(const std::string index_name, Table & table,const T &key){
     typename std::map<std::string, BPTree<T>* >::iterator ret;
     ret=tree_map.find(index_name);
-    std::cout<<ret->first<<std::endl;
     BPTree<T> *tree=ret->second;
     return tree->find(key);
 }

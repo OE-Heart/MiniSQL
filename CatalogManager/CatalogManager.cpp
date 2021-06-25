@@ -2,7 +2,7 @@
  * @Author: Ou Yixin
  * @Date: 2021-06-14 17:41:38
  * @LastEditors: Yinwhe
- * @LastEditTime: 2021-06-20 18:05:47
+ * @LastEditTime: 2021-06-25 20:16:45
  * @Description: 
  * @FilePath: /MiniSQL/CatalogManager/CatalogManager.cpp
  */
@@ -52,7 +52,7 @@ void CatalogManager::dropIndex(const std::string &indexName)
 {
     auto index = indices[indexName];
     indices.erase(indexName);
-    auto table = tables[index.tableName];
+    auto &table = tables[index.tableName];
     int i = table.indexOfCol(index.columnName);
     Column &column = table.columns[i];
     column.index = "";

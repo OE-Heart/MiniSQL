@@ -2,7 +2,7 @@
  * @Author: Yinwhe
  * @Date: 2021-06-16 09:50:16
  * @LastEditors: Yinwhe
- * @LastEditTime: 2021-06-21 18:56:12
+ * @LastEditTime: 2021-06-25 20:20:22
  * @Description: file information
  * @Copyright: Copyright (c) 2021
  */
@@ -172,7 +172,7 @@ Piece RecordManager::InsertRecord(Table &t, const std::vector<Value> &vals){
     // Check uniqueness
     for (int i=0;i<attr.size();i++){
         if (attr[i].isUnique && !CheckUnique(t, i, vals[i])){
-            printf("Insert fails, attribute %s not unique!", attr[i].columnName.c_str());
+            printf("Insert fails, attribute %s not unique!\n", attr[i].columnName.c_str());
             return std::make_pair(-1, -1);
         }
     }
